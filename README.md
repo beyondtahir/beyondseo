@@ -373,11 +373,11 @@ BeyondSEO brings that practical approach to search: inspect the real website, ma
 <p>
   <a href="https://beyondtahir.com"><img src="https://img.shields.io/badge/WEBSITE-Beyond_Tahir-991B1B?style=for-the-badge" alt="Beyond Tahir website"></a>
   <a href="https://instagram.com/beyondtahir"><img src="https://img.shields.io/badge/INSTAGRAM-beyondtahir-050505?style=for-the-badge" alt="Instagram: beyondtahir"></a>
-  <a href="https://youtube.com/@beyondtahirofficial"><img src="https://img.shields.io/badge/YOUTUBE-beyondtahirofficial-991B1B?style=for-the-badge" alt="YouTube: beyondtahirofficial"></a>
+  <a href="https://www.youtube.com/@beyondtahir"><img src="https://img.shields.io/badge/YOUTUBE-beyondtahir-991B1B?style=for-the-badge" alt="YouTube: beyondtahir"></a>
   <a href="https://linkedin.com/in/beyondtahir"><img src="https://img.shields.io/badge/LINKEDIN-Beyond_Tahir-050505?style=for-the-badge" alt="LinkedIn: Beyond Tahir"></a>
 </p>
 
-[Website](https://beyondtahir.com) · [Instagram](https://instagram.com/beyondtahir) · [YouTube](https://youtube.com/@beyondtahirofficial) · [LinkedIn](https://linkedin.com/in/beyondtahir) · [Academy](https://academy.beyondtahir.com)
+[Website](https://beyondtahir.com) · [Instagram](https://instagram.com/beyondtahir) · [YouTube](https://www.youtube.com/@beyondtahir) · [LinkedIn](https://linkedin.com/in/beyondtahir) · [Academy](https://academy.beyondtahir.com)
 
 ---
 
