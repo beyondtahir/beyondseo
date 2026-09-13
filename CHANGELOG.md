@@ -1,0 +1,57 @@
+# Changelog
+
+## 2.4.0
+
+- Launched the branded GitHub project with MIT licensing, a documentation index, verified creator links and issue templates.
+- Fixed crawl exports to use the same package version as the CLI.
+- Added a local skill-folder installer with dry runs, checksum receipts and protection for existing destinations.
+- Added an activation-free launcher that resolves its own runtime and works from other working directories.
+- Documented Claude Code, Codex, ChatGPT Work, Hermes and OpenClaw setup with explicit validation and cloud limits.
+- Added a friendly FAQ, example questions, capability overview and precise no-API-key / model-usage explanation.
+- Clarified why a small observed sample cannot replicate a proprietary authority model; retained conservative scoring model 1.1.
+- Added portability behavior tests for clean copying, path handling, existing files and launcher exit codes.
+
+## 2.3.1
+
+- Changed the reputation headline to supported lower-bound points adjusted for the weakest measured evidence factor; low-confidence results cannot reach 50/100.
+- Kept the old sample-quality midpoint as diagnostic context and added explicit provisional/withheld states and adjustment factors.
+- Prevented duplicate imported evidence and unrelated target links from inflating observed support.
+- Made backlinks, named competitor comparisons and a practical 30/60/90-day plan explicit defaults for general website audits.
+- Added an audit delivery reference and worked example, preserving the practical trial's reporting pattern.
+- Added behavioral coverage for conservative scoring and identical treatment of client/competitor evidence.
+
+## 2.3.0
+
+- Added BeyondSEO Reputation Score, its published rubric, sensitivity ranges, coverage and attributable source reviews.
+- Added five-page discovery plans, saved search-result imports and native link/mention verification without a service account.
+- Grouped repeated publishers; excluded same-site sources and separated owned/affiliated evidence from independent editorial proof.
+- Added bounded cross-host backlink redirect follow-ups and automatic checks for late links on text-rich JavaScript pages.
+- Switched SEO metadata, duplicates and page inventories to successful rendered content while preserving raw noindex evidence.
+- Added heuristic missing-content detection for HTTP 200 screens and their referring internal links.
+- Separated robots disallow, unavailable policy, robots scope limits and redirect loops.
+- Removed external SEO metric dependencies and added behavior tests for trial regressions and reputation evidence boundaries.
+
+## 2.2.0
+
+- Added plain-language readiness reports, separate search-crawler robots observations and raw/rendered indexing evidence.
+- Added supplied-backlink verification, snapshot comparisons and bounded review loops.
+- Added staged single-file text updates with local/SFTP/FTPS transport, reviewed hashes, backups and guarded rollback.
+- Compacted the main skill and added friendly reporting, answer writing and reputation workflows.
+- Verified all 27 supplied PDF links against the catalog and added seven separately researched reputation routes.
+- Added behavioral coverage for comparisons, monitoring, backlink verification and publishing safeguards.
+
+## 2.1.0
+
+- Added automatic browser fallback and an explicit browser mode.
+- Added public dependency loading, visible-element waits, bounded scrolling and viewport screenshots.
+- Added Markdown/text documents and improved selection for pages with incomplete main landmarks.
+- Added a recorded robots-policy override for authorized crawling.
+- Added the installable `beyondseo` command, environment checks and a cross-platform setup script.
+- Organized the SEO playbooks, examples, browser documentation and repository contribution files.
+- Expanded regression coverage for browser behavior, content extraction and access diagnostics.
+
+## 2.0.0
+
+- Introduced the local HTTP crawler, BeautifulSoup extraction, SQLite resume and evidence exports.
+- Added optional local Chromium observations and practical SEO finding candidates.
+- Separated website observations from rankings, private analytics and backlink-index measurements.

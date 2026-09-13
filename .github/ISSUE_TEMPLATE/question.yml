@@ -1,0 +1,16 @@
+name: Usage question
+description: Ask about a command, workflow or documented behavior.
+labels: [question]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Tell us the outcome and which guide or command you used.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and evidence
+      description: Include version, operating system and a small redacted example. Keep client data and credentials private.
