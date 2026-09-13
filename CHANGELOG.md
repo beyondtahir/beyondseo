@@ -4,6 +4,8 @@
 
 - Launched the branded GitHub project with MIT licensing, a documentation index, verified creator links and issue templates.
 - Fixed crawl exports to use the same package version as the CLI.
+- Closed the crawl database when initialization rejects an incompatible resume or an existing output directory, preventing Windows file locks.
+- Made the FTPS fixture's replacement capability explicit on all operating systems and verified that unsupported replacements preserve the live file and recovery receipt.
 - Added a local skill-folder installer with dry runs, checksum receipts and protection for existing destinations.
 - Added an activation-free launcher that resolves its own runtime and works from other working directories.
 - Documented Claude Code, Codex, ChatGPT Work, Hermes and OpenClaw setup with explicit validation and cloud limits.

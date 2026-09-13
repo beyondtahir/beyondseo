@@ -14,7 +14,7 @@ Tests exercise crawl scope, robots rules/availability/scope limits, redirects, s
 
 Reputation tests cover source-review attribution, ranges, grouping, owned/sponsored sources, mentions versus links, incomplete captures, import provenance and saved-evidence reuse. Additional tests ensure low-confidence headlines remain below 50, unsupported headlines are withheld, source limits retain unchecked candidates, duplicate rows cannot inflate coverage, unrelated target links cannot count, and owner/competitor evidence receives identical treatment. Source review notes are assessments; tests establish model behavior, not calibration to rankings.
 
-The suite also includes readiness, snapshot comparisons, review loops and guarded content updates. Local SFTP and FTPS fixtures verify staging, upload, receipt and rollback behavior. An untrusted FTPS certificate is rejected; a trusted fixture uses encrypted channels. These checks do not certify every hosting provider.
+The suite also includes readiness, snapshot comparisons, review loops and guarded content updates. Local SFTP and FTPS fixtures verify staging, upload, receipt and rollback behavior. An untrusted FTPS certificate is rejected; a trusted fixture uses encrypted channels. FTPS tests cover servers that support replacement and servers that refuse it, verifying that a refusal preserves the live file and backup. Rejected crawler initialization also checks that its database connection closes. These checks do not certify every hosting provider.
 
 ## Assistant portability checks
 

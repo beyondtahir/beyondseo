@@ -71,31 +71,35 @@ class Crawler:
         self.sitemap_evidence = []
         self.log = lambda s: print(s, file=sys.stderr, flush=True)
         self.db = sqlite3.connect(str(self.out / "crawl.sqlite3"))
-        self.db.execute("PRAGMA journal_mode=WAL")
-        self.db.executescript("""CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY,value TEXT);
-        CREATE TABLE IF NOT EXISTS urls (url TEXT PRIMARY KEY,depth INTEGER,source TEXT,state TEXT DEFAULT 'pending',reason TEXT DEFAULT '');
-        CREATE TABLE IF NOT EXISTS pages (url TEXT PRIMARY KEY,payload TEXT);
-        CREATE TABLE IF NOT EXISTS sitemap_urls (url TEXT,sitemap TEXT,lastmod TEXT,PRIMARY KEY(url,sitemap));""")
-        old = self.meta("config")
-        if old and not resume:
-            raise ValueError(
-                "Output already contains a crawl. Use --resume or a new output directory."
-            )
-        semantic = asdict(config)
-        for key in ("max_pages", "workers", "delay", "timeout", "retries"):
-            semantic.pop(key)
-        signature = {"config": semantic, "selectors": self.selectors, "schema_version": 1}
-        if old and old != signature:
-            raise ValueError(
-                "Resume configuration differs. Only page budget, workers, delay, timeout and retries may change."
-            )
-        if not old:
-            self.setmeta("config", signature)
-            self.setmeta("started_at", utcnow())
-        self.transport = Transport(config)
-        self.robots = RobotsCache(self.transport)
-        self.db.execute("UPDATE urls SET state='pending' WHERE state='fetching'")
-        self.db.commit()
+        try:
+            self.db.execute("PRAGMA journal_mode=WAL")
+            self.db.executescript("""CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY,value TEXT);
+            CREATE TABLE IF NOT EXISTS urls (url TEXT PRIMARY KEY,depth INTEGER,source TEXT,state TEXT DEFAULT 'pending',reason TEXT DEFAULT '');
+            CREATE TABLE IF NOT EXISTS pages (url TEXT PRIMARY KEY,payload TEXT);
+            CREATE TABLE IF NOT EXISTS sitemap_urls (url TEXT,sitemap TEXT,lastmod TEXT,PRIMARY KEY(url,sitemap));""")
+            old = self.meta("config")
+            if old and not resume:
+                raise ValueError(
+                    "Output already contains a crawl. Use --resume or a new output directory."
+                )
+            semantic = asdict(config)
+            for key in ("max_pages", "workers", "delay", "timeout", "retries"):
+                semantic.pop(key)
+            signature = {"config": semantic, "selectors": self.selectors, "schema_version": 1}
+            if old and old != signature:
+                raise ValueError(
+                    "Resume configuration differs. Only page budget, workers, delay, timeout and retries may change."
+                )
+            if not old:
+                self.setmeta("config", signature)
+                self.setmeta("started_at", utcnow())
+            self.transport = Transport(config)
+            self.robots = RobotsCache(self.transport)
+            self.db.execute("UPDATE urls SET state='pending' WHERE state='fetching'")
+            self.db.commit()
+        except BaseException:
+            self.db.close()
+            raise
 
     def meta(self, key):
         row = self.db.execute("SELECT value FROM meta WHERE key=?", (key,)).fetchone()
