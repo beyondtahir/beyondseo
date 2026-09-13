@@ -1,0 +1,5 @@
+{
+  "name": {"selector": "h1", "all": false},
+  "prices": ".price",
+  "article_links": {"selector": "article a", "attribute": "href", "all": true}
+}

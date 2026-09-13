@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If BeyondSEO supports your work, please cite this repository."
+title: "BeyondSEO: Your complete SEO house"
+type: software
+version: 2.4.0
+authors:
+  - family-names: Ashraf
+    given-names: Muhammad Tahir
+    website: https://beyondtahir.com
+repository-code: https://github.com/beyondtahir/beyondseo
+url: https://github.com/beyondtahir/beyondseo
+license: MIT
+keywords:
+  - SEO
+  - answer engine optimization
+  - web crawling
+  - reputation
+  - backlinks

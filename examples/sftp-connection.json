@@ -1,0 +1,9 @@
+{
+  "type": "sftp",
+  "host": "hosting.example.com",
+  "port": 22,
+  "root": "/var/www/example/public",
+  "username_env": "BEYONDSEO_USERNAME",
+  "key_file": "~/.ssh/website_ed25519",
+  "known_hosts": "~/.ssh/known_hosts"
+}

@@ -1,0 +1,32 @@
+name: Bug report
+description: Report an unexpected crawl, extraction or setup result.
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the expected behavior and what you observed.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Give the command and a small public or local fixture. Remove tokens, cookies and private content.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Paste beyondseo doctor output and your operating system.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant evidence
+      description: Include a small redacted excerpt from summary.json or the affected page record.

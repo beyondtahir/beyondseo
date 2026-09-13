@@ -1,0 +1,21 @@
+# A practical reputation prospect directory
+
+Use this alongside the [27 supplied article sources](backlink-source-catalog.md). These seven additional routes were researched from the organizations' own pages on September 14, 2026. They are prospects for accurate profiles, work samples, reviews or membership, not confirmed client backlinks or promises of ranking value.
+
+Choose routes by business fit. Check eligibility, existing profiles and account ownership before recommending a prospect. These are generic routes, not a completed client audit.
+
+| Website and official route | Suitable purpose | What to prepare | Verification before action |
+|---|---|---|---|
+| [Clutch](https://clutch.co/get-listed) — [listing guide](https://help.clutch.co/en/knowledge/get-listed-on-clutch) | B2B service profile and attributable client reviews | Accurate service focus, project examples and clients willing to give genuine feedback | Check eligibility, duplicates and ownership. The guide describes a free profile; confirm current terms. A profile alone is self-declared information. |
+| [Goodfirms](https://account.goodfirms.co/users/newregister) — [listing guide](https://help.goodfirms.co/how-can-my-business-get-listed-on-goodfirms/) | Relevant service/software listing and supporting evidence | Business details, suitable category and verifiable work | Check category fit, review process and current free/paid options; no price or placement guarantee is assumed. |
+| [Behance project guide](https://help.behance.net/hc/en-us/articles/204483684-Guide-Create-Publish-A-Project) | Design portfolio and documented process | Original work, permission to show it, project context and relevant case-study URL | Confirm rights, public visibility and where links appear. An owned portfolio is evidence of work, not independent editorial endorsement. |
+| [Dribbble](https://dribbble.com/) | Design profile and visual work discovery | Real projects with context and accurate service details | Inspect current account options and link behavior. Keep self-published promotion separate from reviews or editorial recognition. |
+| [LinkedIn Page guide](https://www.linkedin.com/help/linkedin/answer/a543852/creating-a-linkedin-company-page?lang=en) | Consistent organization identity and useful business updates | Correct name, description, website, people and services | Check existing pages and administrator access. The guide describes free Page creation; premium services are separate. |
+| [Google Business Profile eligibility](https://support.google.com/business/answer/13763036?hl=en) — [getting started](https://support.google.com/business/answer/7039811?hl=en) | Local discovery and genuine customer reviews for eligible businesses | Real operating model, business details and ownership verification | Check eligibility first. Online-only businesses are not automatically eligible. Never invent a location or encourage fabricated reviews. |
+| [P@SHA membership](https://www.pasha.org.pk/apply-membership/) — [directory](https://directory.pasha.org.pk/index.php) | Relevant Pakistan technology-industry participation and membership evidence | Business eligibility documents and a real membership objective | Confirm requirements, current fees, renewal terms and directory inclusion. Membership is not a purchased ranking endorsement. |
+
+For each selected prospect, specify the client target URL, proposed work, owner, budget status, route checked and next acceptance check. Fees are unknown unless verified from current terms. The PDF supplied with the project contains free article examples and no verified paid rate card.
+
+Also research identifiable customer/partner case studies, industry publications, conference contributions and local associations matched to the client's actual work. These can provide different evidence from owned profiles. Record the real publication and route before presenting one as an actionable prospect.
+
+Do not automatically submit accounts, buy packages or send outreach. If authorized to act, use the actual platform's supported account tools. The bundled file editor changes authorized website files; it is not a universal third-party account automation tool.

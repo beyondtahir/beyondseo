@@ -1,0 +1,5 @@
+{
+  "page_heading": {"selector": "h1", "all": false},
+  "prices": ".price_color, .price",
+  "product_links": {"selector": "article h3 a", "attribute": "href", "all": true}
+}
