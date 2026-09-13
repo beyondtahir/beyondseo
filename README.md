@@ -368,6 +368,11 @@ Based in Pakistan, Tahir works across AI consulting, development and practical t
 
 BeyondSEO brings that practical approach to search: inspect the real website, make the evidence understandable, create useful improvements and review the result. Its purpose is to help people carry out a complete SEO engagement with clarity and control.
 
+### Contributors
+
+- **Muhammad Tahir Ashraf (Beyond Tahir)** — creator, product direction and maintenance.
+- **Codex (OpenAI)** — implementation, debugging, testing and documentation assistance.
+
 ### Stay connected
 
 <p>
