@@ -142,7 +142,9 @@ class HostingTransportTests(unittest.TestCase):
         "Install the hosting-test extra for localhost protocol tests",
     )
     def test_ftps_stage_apply_verify_rollback(self):
+        import errno
         import ipaddress
+        import json
         import logging
         import os
         import ssl
@@ -157,6 +159,7 @@ class HostingTransportTests(unittest.TestCase):
         from cryptography.hazmat.primitives.asymmetric import rsa
         from cryptography.x509.oid import NameOID
         from pyftpdlib.authorizers import DummyAuthorizer
+        from pyftpdlib.filesystems import AbstractedFS
         from pyftpdlib.handlers import TLS_FTPHandler
         from pyftpdlib.servers import FTPServer
 
@@ -202,9 +205,19 @@ class HostingTransportTests(unittest.TestCase):
             authorizer = DummyAuthorizer()
             authorizer.add_user("fixture", "fixture-only", str(root), perm="elradfmwMT")
 
+            class ReplaceFileSystem(AbstractedFS):
+                reject_replacement = False
+
+                def rename(self, src, dst):
+                    if self.reject_replacement and os.path.exists(dst):
+                        raise FileExistsError(errno.EEXIST, "File exists", dst)
+                    # Model a server with replacement support on every runner OS.
+                    os.replace(src, dst)
+
             class Handler(TLS_FTPHandler):
                 pass
 
+            Handler.abstracted_fs = ReplaceFileSystem
             Handler.authorizer = authorizer
             Handler.certfile = str(certfile)
             Handler.keyfile = str(keyfile)
@@ -255,6 +268,16 @@ class HostingTransportTests(unittest.TestCase):
                         == "rolled_back"
                     )
                     assert (root / "www/index.html").read_text() == "before"
+                    assert not list((root / "www").glob("*.beyondseo-*"))
+                    # A server without this capability must preserve the live file.
+                    ReplaceFileSystem.reject_replacement = True
+                    refused = stage(store, "index.html", draft, root / "refused-plan")
+                    with self.assertRaisesRegex(ValueError, "needs inspection"):
+                        apply_change(store, root / "refused-plan", refused["plan_sha256"])
+                    assert (root / "www/index.html").read_text() == "before"
+                    assert (root / "refused-plan/before.txt").read_text() == "before"
+                    receipt = json.loads((root / "refused-plan/receipt.json").read_text())
+                    assert receipt["status"] == "needs_inspection"
                     assert not list((root / "www").glob("*.beyondseo-*"))
                 finally:
                     store.close()

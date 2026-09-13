@@ -1,5 +1,6 @@
 import gzip
 import json
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -212,8 +213,16 @@ class CrawlerTests(unittest.TestCase):
         second = self.crawl(self.config(max_pages=40, sitemaps=False), resume=True)
         self.assertGreater(second["attempted_urls"], 2)
         self.assertEqual(Handler.hits["/"], 1)
-        with self.assertRaises(ValueError):
-            Crawler(self.config("/other"), self.out, resume=True)
+        for config, resume in ((self.config("/other"), True), (self.config(), False)):
+            connection = sqlite3.connect(self.out / "crawl.sqlite3")
+            try:
+                with patch("beyondseo.engine.sqlite3.connect", return_value=connection):
+                    with self.assertRaises(ValueError):
+                        Crawler(config, self.out, resume=resume)
+                with self.assertRaises(sqlite3.ProgrammingError):
+                    connection.execute("SELECT 1")
+            finally:
+                connection.close()
 
     def test_redirect_boundaries_and_loop(self):
         t = Transport(self.config())
