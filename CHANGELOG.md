@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.0
+
+- Added a 206-entry publishing library with 241 traceable source rows and documented posting guidance for 22 destinations.
+- Added website-specific shortlists of 15 or 20 sources, including topics, writing briefs, posting steps, eligibility, link rules and a calendar.
+- Added topic, prerequisite, free-term and freshness filters, with clear research gaps when too few sources qualify.
+- Added Markdown, CSV and JSON plan exports and an optional PDF importer that preserves visible rows and conflicting source claims.
+- Kept source-sheet DR values separate from current measured authority and from the BeyondSEO Reputation Score.
+- Refreshed the README, assistant setup and posting guide with clear examples and a development guide.
+
 ## 2.4.0
 
 - Launched the branded GitHub project with MIT licensing, a documentation index, verified creator links and issue templates.
@@ -19,7 +28,7 @@
 - Kept the old sample-quality midpoint as diagnostic context and added explicit provisional/withheld states and adjustment factors.
 - Prevented duplicate imported evidence and unrelated target links from inflating observed support.
 - Made backlinks, named competitor comparisons and a practical 30/60/90-day plan explicit defaults for general website audits.
-- Added an audit delivery reference and worked example, preserving the practical trial's reporting pattern.
+- Added a complete audit delivery standard and a worked example.
 - Added behavioral coverage for conservative scoring and identical treatment of client/competitor evidence.
 
 ## 2.3.0
@@ -31,7 +40,7 @@
 - Switched SEO metadata, duplicates and page inventories to successful rendered content while preserving raw noindex evidence.
 - Added heuristic missing-content detection for HTTP 200 screens and their referring internal links.
 - Separated robots disallow, unavailable policy, robots scope limits and redirect loops.
-- Removed external SEO metric dependencies and added behavior tests for trial regressions and reputation evidence boundaries.
+- Removed external SEO metric dependencies and added regression tests for crawler behavior and reputation evidence boundaries.
 
 ## 2.2.0
 
@@ -39,7 +48,7 @@
 - Added supplied-backlink verification, snapshot comparisons and bounded review loops.
 - Added staged single-file text updates with local/SFTP/FTPS transport, reviewed hashes, backups and guarded rollback.
 - Compacted the main skill and added friendly reporting, answer writing and reputation workflows.
-- Verified all 27 supplied PDF links against the catalog and added seven separately researched reputation routes.
+- Added a source library and seven additional reputation routes.
 - Added behavioral coverage for comparisons, monitoring, backlink verification and publishing safeguards.
 
 ## 2.1.0

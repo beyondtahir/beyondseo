@@ -1,0 +1,14 @@
+{
+  "business": "Example Automation Studio",
+  "website": "https://example.com",
+  "audience": "service-business owners evaluating automation",
+  "topics": ["technology", "business", "software", "education"],
+  "markets": ["Pakistan", "United Kingdom"],
+  "assets": [],
+  "posts_per_week": 2,
+  "evidence_basis": "Illustrative profile only. Replace this with facts and URLs observed on the actual website before using the plan.",
+  "pages": [
+    {"url": "https://example.com/automation-guide", "topic": "AI workflow automation", "status": "planned"},
+    {"url": "https://example.com/knowledge-base-guide", "topic": "customer-support knowledge bases", "status": "planned"}
+  ]
+}

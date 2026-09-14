@@ -96,7 +96,7 @@ Confidence is “moderate within this sample” only when there are at least fiv
 
 If no link checks were conclusive, withhold the headline while retaining any positive mentions from partial captures. If checked sources establish no external evidence, report zero supported evidence within the sample, not a whole-web reputation verdict.
 
-For example, supported sample points of 72.4 with 12 conclusive checks out of 46, 92% source review and full breadth/discovery give a factor of 0.26087 and a **provisional headline of 18.9/100, low confidence**. The diagnostic midpoint of 74.8 must not replace it. A model revision can change the headline even when the website and all captured links are unchanged.
+For a fictional example, supported sample points of 80 with 10 conclusive checks out of 40, 90% source review and full breadth/discovery give a factor of 0.25 and a **provisional headline of 20/100, low confidence**. A higher diagnostic midpoint must not replace it. A model revision can change the headline even when the website and all captured links are unchanged.
 
 The adjusted range varies unknown rubric dimensions at the same evidence factor and ceiling. It is a sensitivity range, **not a statistical confidence interval**, and cannot describe unseen web evidence. The weights and 49-point ceiling are transparent conservative design choices, not calibrated ranking thresholds. A low-confidence result never receives a strong-authority badge, positive overall grade or an implied ranking prediction.
 

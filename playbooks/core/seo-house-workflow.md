@@ -39,30 +39,17 @@ Google's guidance for its search AI features builds on ordinary SEO fundamentals
 
 ## 3. Use the saved backlink website list
 
-First establish current backlink and mention evidence through [native discovery and verification](../../references/reputation.md). Report the conservative headline, coverage and confidence; low-confidence scores remain below 50 and unsupported scores are withheld. Use the same rules for clients and competitors. Keep existing verified links separate from prospects and retained example articles.
+First establish current backlink and mention evidence through [native discovery and verification](../../references/reputation.md). Report the conservative headline, coverage and confidence; low-confidence scores remain below 50 and unsupported scores are withheld. Apply the same rules to clients and competitors. Keep existing links separate from future publishing opportunities.
 
-For the authority/backlink portion of every complete plan, inspect `backlink-system/backlink-source-database.csv` and its source-library guide. The catalog contains 27 user-supplied article/source URLs on six publishing platforms across nine topical categories. Keep the exact URLs; do not replace the user's list with generic advice to “build backlinks.”
+Use the 206-entry catalog and [posting standard](../backlink-system/free-paid-backlink-source-library.md) for this business. The 241 original PDF rows are retained in `backlink-system/backlink-source-database.csv`; grouped destinations and reviewed guidance are in `backlink-system/posting-sites.json`. Distinct profile or article URLs on the same platform do not count as independent sites.
 
-Use `python scripts/backlink_sources.py` from the repository root to display the catalog. Filter by platform/category when useful. In a recommendation table, include:
+Provide 15 suitable sources, or 20 when requested and qualified; respect a different explicit count. The shortlist must give direct routes, business fit, content format, specific titles/actions and outlines, relevant target pages, allowed link placements, posting steps, eligibility, free terms, evidence dates and timing matched to capacity. Draft requested priority pieces using real facts. See [the practical guide](../../docs/backlink-posting-guide.md) for helper commands.
 
-| Field | What belongs here |
-|---|---|
-| Platform and exact source URL | The actual saved entry or a separately verified new prospect |
-| Source role | Existing article/example, controlled asset, directory/citation, editorial prospect or paid promotion |
-| Why it fits | The site's business, market, audience and relevant page/topic |
-| Proposed target URL | The specific commercial, resource or proof page the link would support |
-| Content/outreach action | New original article, factual update if owned, partner request, case study, expert contribution or other appropriate action |
-| Suggested topic and anchor | A useful standalone topic and natural descriptive anchor |
-| Access/editorial route | Confirmed publishing route, account ownership or outreach contact; otherwise unknown |
-| Verification | Date checked, response status, visible target link, declared noindex/rel/canonical and unverified items |
-| Effort, cost and priority | Evidence-backed estimate or unknown, plus the reason for its position in the plan |
-| Owner and completion check | Responsible role and the observable outcome |
+Refresh platform guidance and inspect the intended community or category before recommending execution. Exclude closed or ineligible routes. Research additional relevant primary sources when too few qualify; explain unresolved gaps instead of repeating unrelated websites. Do not transfer the same technology-platform list to a different industry.
 
-A saved article URL is not automatically an editable account, an existing backlink to this client, or an open submission form. Verify those facts before recommending a specific action. Do not imply that these 27 URLs are 27 independent authority websites or guaranteed ranking links.
+Retain the PDF's DR values only as unverified source claims: no provider/date is supplied and some entries conflict. Do not relabel them DA or sort recommendations by them. Assess relevance, public accessibility, content standards, editorial independence and audience benefit using current evidence. A proposed placement is not a measured backlink, independent endorsement or promise of ranking value.
 
-If the client's niche does not match the library, retain the catalog as reviewed evidence and say why no entry was selected. Then research relevant industry, local, partner or editorial prospects separately. Do not force AI-tool articles into an unrelated client campaign. Actual suggestions must identify websites and URLs, not just categories; label an unverified lead as a prospect.
-
-Paid promotion needs a distinct referral/brand objective, current terms and appropriate link qualification. Google's [link-spam guidance](https://developers.google.com/search/docs/essentials/spam-policies#link-spam) distinguishes legitimate advertising from paid ranking manipulation. Do not label a paid placement safe merely because its anchor is branded or its domain metric is high. No posting, outreach messages or purchases are implied by preparing the plan.
+Use [additional reputation routes](../../docs/reputation-prospects.md) and suitable partner, industry and local opportunities where useful. Paid promotion needs a distinct referral/brand objective, current terms and appropriate link qualification. Preparing a plan does not authorize posting, outreach or purchases.
 
 ## 4. Turn findings into a page plan
 

@@ -2,7 +2,7 @@
 name: beyondseo
 description: Run a complete SEO house for audits, friendly reports, competitors, content, AEO, GEO, entity, authority, reputation, local SEO and backlinks. Use the owned crawler, source catalog, repeatable reviews and reviewed website changes.
 metadata:
-  version: 2.4.0
+  version: 2.5.0
   author: Muhammad Tahir Ashraf — Beyond Tahir
 ---
 
@@ -42,7 +42,7 @@ When asked to write, provide usable titles, headings, answer blocks, supporting 
 
 ## Build reputation
 
-Review [the saved catalog](docs/backlink-source-catalog.md): all 27 supplied article URLs are retained. Also review [the reputation prospect directory](docs/reputation-prospects.md). Select relevant exact URLs, target pages, useful content/actions, ownership/editorial routes and verification steps. A saved article is not a confirmed backlink or independent endorsement.
+Use [the posting library](playbooks/backlink-system/free-paid-backlink-source-library.md) and [practical guide](docs/backlink-posting-guide.md) to select from 206 website/community entries imported from the source PDF. For backlink requests, give 15 relevant sources, or 20 when requested and qualified; respect a different explicit count. Inspect the actual business first. Each source needs a direct route, reason, specific title/action and outline, target page, permitted link placement, posting steps, free terms, eligibility, authority evidence and a capacity-based schedule. Write the priority drafts when asked. Recheck current platform rules; research a shortfall instead of padding it. The PDF's unverified DR values are not DA and must not determine recommendations. Distinguish articles, answers, communities and owned resources. See [additional reputation routes](docs/reputation-prospects.md) for profiles and industry recognition. Proposed placements are not acquired backlinks or independent endorsements.
 
 Use [our reputation system](references/reputation.md) for five-page discovery, native verification and the BeyondSEO Reputation Score. Use the conservative, evidence-adjusted headline; low confidence cannot produce 50/100 or higher. Withhold an unsupported score. Show status, confidence, range, model version and actual coverage; never substitute the higher diagnostic sample-quality midpoint. Apply identical rules to the client and competitors. Separate backlinks, page mentions and unverified candidates; exclude own-site links and identify related sources. Never extrapolate a whole-web total or call a snippet a confirmed link. Use [the reputation plan](playbooks/backlink-system/reputation-growth-plan.md) for next actions. Publishing, messages, purchases and account access need task-specific authorization.
 

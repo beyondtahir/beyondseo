@@ -25,7 +25,7 @@ See the [full capability map](../references/capabilities.md) for executable feat
 
 The native CLI makes **no language-model API calls**, requires **no API keys**, and consumes **no model tokens** when run directly. It fetches websites and uses local Python and optional Chromium. Installation downloads dependencies; live crawling needs internet access. Your hardware, hosting and bandwidth still have their ordinary costs.
 
-When an AI assistant reads the skill, reasons about an audit or writes copy, its model usage still applies. BeyondSEO adds no separate model account, scraping subscription or paid SEO-data dependency. A local-model host may avoid paid model API usage if it supports your model and the tools needed; that configuration is outside this release's tested setup. “No required API keys for BeyondSEO” is the accurate promise.
+When an AI assistant reads the skill, reasons about an audit or writes copy, its model usage still applies. BeyondSEO adds no separate model account, scraping subscription or paid SEO-data dependency. A local-model host may avoid paid model API usage if it supports your model and the tools needed; configure and check that runtime through the host’s own setup guidance. “No required API keys for BeyondSEO” is the accurate promise.
 
 ## Why isn't my website showing in AI answers?
 
@@ -39,9 +39,11 @@ Yes. Ask for the finished answer block, supporting sections, FAQs, relevant link
 
 ## Is my backlink website list included?
 
-Yes: [all 27 original source URLs](backlink-source-catalog.md), plus [seven researched prospect routes](reputation-prospects.md). The original list is mostly publishing-platform examples. It is not 27 confirmed client backlinks, 27 independent publishers or a guarantee that any account can publish there.
+Yes. The [free-posting catalog](backlink-source-catalog.md) includes 206 website/community entries from 241 original rows. It groups duplicate routes and distinguishes articles, answers, social posts, resource sites and communities. Public guidance has been reviewed for 22 destinations; the wider list remains a research pool. [Seven additional reputation routes](reputation-prospects.md) cover profiles and industry recognition.
 
-Recommendations give suitable exact source URLs, the client page to support, a worthwhile contribution and a verification step. Reputation needs relevant independent proof as well as accurate profiles. More placements alone do not establish trust.
+Ask for 15 or 20 sources suited to your website. You should receive direct routes, a specific topic and outline for each, a relevant page to support, posting steps, current restrictions, a realistic calendar and authority limits. The assistant can also write the first drafts. It researches missing suitable sources instead of padding the count. [See the posting workflow](backlink-posting-guide.md).
+
+The PDF's numbers are unverified DR values, not DA. An open account, a high sheet rating or a self-published post does not establish independent authority, indexing or ranking gains.
 
 ## Can it score backlinks like a large SEO platform?
 
@@ -67,7 +69,8 @@ The `watch` command runs a bounded number of foreground checks. Ongoing schedule
 - “Check these backlink URLs. Separate real links, mentions, owned profiles and sources you couldn't verify.”
 - “Use five actual search-result pages to discover reputation sources. Show completed coverage and keep the score conservative.”
 - “Compare us with these two companies using the same evidence and scoring rules. Don't assume they rank above us.”
-- “Give me ten relevant reputation opportunities with exact URLs and a useful contribution for each.”
+- “Give me 15 suitable free posting sources for my website. Explain where, what, how and when to post, then draft the first two pieces.”
+- “Build a 20-source backlink plan for our audience. Show eligibility, link rules and authority evidence; research any shortfall instead of adding unrelated sites.”
 - “Build a 30/60/90-day plan with owners, dependencies and a way to check every task.”
 - “Compare these two crawls and explain what improved, what broke and what we still haven't measured.”
 - “Prepare a reviewed text change for this page, with a backup and rollback plan.”

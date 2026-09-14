@@ -29,13 +29,13 @@ BeyondSEO follows useful evidence principles: verified links, publisher diversit
 
 ## A worked example
 
-Suppose supported sample points are 72.4, with 12 conclusive checks among 46 candidates, 92% source review and full recorded search coverage. Verification is the weakest factor:
+In a fictional example, supported sample points are 80, with 10 conclusive checks among 40 candidates, 90% source review and full breadth/discovery coverage. Verification is the weakest factor:
 
 ```text
-72.4 × (12 / 46) = 18.9 / 100
+80 × (10 / 40) = 20 / 100
 ```
 
-Report **18.9/100, provisional, low confidence**. A higher diagnostic midpoint from source-quality assumptions is not the headline. The low result describes limited supported evidence; it does not prove the unread pages are poor or that the business has little reputation everywhere.
+Report **20/100, provisional, low confidence**. A higher diagnostic midpoint from source-quality assumptions is not the headline. The low result describes limited supported evidence; it does not prove the unread pages are poor or that the business has little reputation everywhere.
 
 ## How to improve responsibly
 

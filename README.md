@@ -9,10 +9,10 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.4.0-991B1B?style=flat-square" alt="Version 2.4.0"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.5.0-991B1B?style=flat-square" alt="Version 2.5.0"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
-  <a href="docs/validation.md"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
+  <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-050505?style=flat-square" alt="MIT license"></a>
 </p>
 
@@ -259,22 +259,37 @@ The score is our own evidence measure. It is not a proprietary provider's author
 
 [Plain-language scoring guide →](docs/scoring-explained.md) · [Complete formula and verification workflow →](references/reputation.md)
 
-### The source library is included
+### Find the right places to publish
 
-The original library preserves **27 exact source URLs across six publishing platforms and nine topic categories**, with **seven additional researched reputation routes** in a separate directory.
+BeyondSEO turns your website and business goals into a practical publishing plan. Its library includes **206 websites and communities**, with article platforms, newsletters, professional networks, answers, communities and resource sites kept distinct.
 
-| Platform | Saved source URLs |
-|---|---:|
-| Medium | 6 |
-| Forem | 13 |
-| Dev.to | 3 |
-| Substack | 3 |
-| WebYourself | 1 |
-| Blogspot | 1 |
+Ask for **15 or 20 suitable sources**. The skill reads your services, audience and useful pages, then explains which destinations fit and what contribution to make at each one.
 
-These are source/example articles and prospect routes, not 27 guaranteed client backlinks or independent endorsements. A useful plan selects relevant exact URLs, explains the contribution to make, identifies the client page to support and gives a verification step. It can also research suitable niche, industry and local opportunities.
+| Your question | What BeyondSEO gives you |
+|---|---|
+| Where should I publish? | A relevant website and posting route, with audience fit, eligibility and free terms |
+| What should I write? | A specific title or contribution, outline, supporting facts and requested drafts |
+| Which page should I link? | A useful destination on your website, natural anchor and permitted link placement |
+| How do I post it? | Platform-specific steps for an article, answer, discussion, newsletter or resource |
+| What about DR and authority? | Source-sheet DR values, their verification status, relevance and the publication's editorial role |
+| When should I publish? | A calendar based on your capacity, page readiness and editorial dependencies |
+| How do I know it helped? | Checks for the published link, retained content, referral traffic and useful responses |
 
-[Browse the original source catalog →](docs/backlink-source-catalog.md) · [Reputation prospects →](docs/reputation-prospects.md) · [Growth workflow →](playbooks/backlink-system/reputation-growth-plan.md)
+> “Review my website and recommend 15 suitable free posting sources. Tell me what to write, where to link and how to publish. Plan around two pieces per week and draft the first two articles.”
+
+The library includes documented posting guidance for **22 destinations**, with dates and primary sources. Other entries remain available for research. The helper filters by topic, eligibility, free-term status and guidance freshness. When fewer than the requested count qualify, the skill researches additional suitable sources and explains any remaining gap.
+
+**A publishing opportunity is a prospect.** Account access, commercial terms, acceptance and the actual link still need checking. Source-sheet DR values are unverified and do not determine recommendations; BeyondSEO does not invent DA scores or promise ranking gains.
+
+For a local plan, copy [the example business profile](examples/posting-profile.json), save it as `../client-runs/business.json`, fill in your actual details and run:
+
+```sh
+python3 scripts/backlink_sources.py --profile ../client-runs/business.json --limit 15 --out ../client-runs/posting-plan
+```
+
+You receive **Markdown, CSV and JSON**, including writing briefs, posting steps and a calendar. This helper uses no API keys or model calls. The full skill adds website review, current research, editorial judgment and the requested finished writing through your assistant.
+
+[Browse all sources →](docs/backlink-source-catalog.md) · [Posting guide →](docs/backlink-posting-guide.md) · [Additional reputation routes →](docs/reputation-prospects.md)
 
 ## What a complete audit delivers
 
@@ -329,7 +344,7 @@ Keep client evidence and credentials outside this repository.
 
 **Researchers and educators:** inspect the source, practice with local fixtures and learn where crawl evidence ends and interpretation begins.
 
-Use it on local hardware or a suitable remote environment with Python, permitted network access and optional Chromium. Host discovery and execution support vary; see [the tested compatibility record](docs/validation.md).
+Use it on local hardware or a suitable remote environment with Python, permitted network access and optional Chromium. Choose the appropriate [assistant setup](docs/agent-installation.md) and check the engine in the environment where it will run.
 
 ## Keep improving
 
@@ -339,13 +354,13 @@ The watch command collects evidence. The skill uses it to recommend subsequent w
 
 [Review loops, hosting setup and guarded edits →](docs/operations.md)
 
-## Tested scope and project status
+## Project status
 
-BeyondSEO **2.4.0** is a **beta**. The local release suite passed **110 behavioral tests** on Python 3.12/macOS, covering HTTP and browser crawling, reputation scoring, installer behavior, reporting and local SFTP/FTPS fixtures. A clean installation captured JavaScript content and reproduced a saved reputation assessment.
+BeyondSEO **2.5.0** is available under the **MIT license** and remains in beta. Python 3.10 or newer is required; local Chromium enables JavaScript rendering. Use `scripts/run.py doctor` to check your environment before starting an engagement.
 
-Codex's actual skill discovery and Hermes's actual skill/reference loader passed local checks without model requests. Full assistant runs across every listed host have not been certified. The workflow badge at the top links to current GitHub CI results; the [validation record](docs/validation.md) separates local, hosted and host-specific evidence.
+The engine reports access restrictions and incomplete observations. Actual rankings, search-engine indexing, AI citations and business outcomes require their own evidence. Share reproducible issues and useful improvements through the repository's contribution process.
 
-We welcome reproducible reports of limits and failures. There are no claims of universal access, complete web-wide backlink coverage or guaranteed search/AI rankings.
+[Release notes →](CHANGELOG.md) · [Development guide →](docs/development.md) · [Contribute →](CONTRIBUTING.md)
 
 ## Documentation and support
 
@@ -356,7 +371,7 @@ We welcome reproducible reports of limits and failures. There are no claims of u
 | [Capabilities and example questions](docs/questions.md) | [Complete capability map](references/capabilities.md) |
 | [Backlink source library](docs/backlink-source-catalog.md) | [Reputation methodology](references/reputation.md) |
 | [Answer and entity workflow](playbooks/core/seo-house-workflow.md) | [Measurement boundaries](references/measurement-boundaries.md) |
-| [Review and improve](docs/operations.md) | [Validation](docs/validation.md) |
+| [Review and improve](docs/operations.md) | [Development guide](docs/development.md) |
 
 [Documentation index](docs/README.md) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/beyondtahir/beyondseo/issues/new?template=bug.yml) · [Request a feature](https://github.com/beyondtahir/beyondseo/issues/new?template=feature.yml) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 

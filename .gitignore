@@ -28,3 +28,8 @@ private/
 *connection.private.json
 *.pem
 *.key
+
+/client-runs/
+/reports/
+/trial-runs/
+/validation-runs/

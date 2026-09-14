@@ -31,21 +31,19 @@ See the [complete plan template](../playbooks/templates/complete-seo-plan.md) an
 
 ## Your included backlink list
 
-The saved catalog contains **27 source URLs**, spanning Medium, Forem, Dev.to, Substack, WebYourself and Blogspot, in nine topical categories. [Browse every saved URL](backlink-source-catalog.md).
-
-To filter it locally:
+The catalog contains **206 website/community entries** from 241 visible PDF rows and 237 distinct URL strings. [Browse every entry](backlink-source-catalog.md). Public posting guidance has been reviewed for 22 destinations; the remaining pool needs qualification.
 
 ```sh
-python scripts/backlink_sources.py
-python scripts/backlink_sources.py --platform Medium
-python scripts/backlink_sources.py --category Writing --format json
+python3 scripts/backlink_sources.py --platform Medium
+python3 scripts/backlink_sources.py --category technology --status guidance_reviewed
+python3 scripts/backlink_sources.py --profile ../client-runs/business.json --limit 20 --out ../client-runs/posting-plan
 ```
 
-This command only reads the supplied catalog. It does not check whether an article is currently live, owned by the user, indexed or linking to a client. Those are separate checks before a source becomes an actionable recommendation.
+Use [the example profile](../examples/posting-profile.json) and [practical posting guide](backlink-posting-guide.md). A backlink request should produce 15 or 20 relevant source recommendations when supported, explaining where, what, how and when to publish. Each has a title/action, outline, specific target page, route, free terms, eligibility, link restrictions and follow-up check. Different formats receive different briefs. The helper reports a shortfall if too few qualify; the assistant researches additional appropriate sources.
 
-A useful recommendation includes the source URL, relevant client page, proposed standalone article or asset, natural anchor, publishing/outreach route, evidence status and next action. The skill should not merely say “get links from Medium.” If a client's niche does not fit these mostly technology/content-related sources, it explains the mismatch and researches suitable prospects separately.
+The helper reads supplied facts and documented routes. It does not crawl the business, create accounts, publish, measure current DA/DR or confirm acquired links. The skill completes website review, current-rule checks and the requested writing. Original sheet DR values remain unverified and do not rank the suggestions.
 
-The library is one input to an authority plan. Relevant associations, partners, industry publications, local citations, original studies, expert contributions and independent recognition may be more appropriate for a particular business.
+The library is one input to an authority plan. Relevant associations, partners, industry publications, local citations, original studies and independent recognition can provide evidence that an owned publication cannot.
 
 ## Terms used in this project
 

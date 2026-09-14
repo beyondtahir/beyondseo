@@ -4,13 +4,13 @@ One folder contains the skill, specialist playbooks and native Python engine. No
 
 ## Choose your environment
 
-| Environment | Local installation or use | Validation status |
+| Environment | Local installation or use | Requirements |
 |---|---|---|
-| Claude Code | `.claude/skills/beyondseo` in a project, or `~/.claude/skills/beyondseo` | Official folder format checked; CLI present locally; a model-driven acceptance run remains to be done |
-| Codex | `.agents/skills/beyondseo` in a project, or `~/.agents/skills/beyondseo` | Actual CLI 0.153.4 discovered the new project skill through `skills/list`; native engine and local browser tested |
-| ChatGPT Work | For local Work, open the source folder and explicitly load `SKILL.md`; select an installed skill through the available picker | Local file workflow documented; cloud installation and execution are not certified |
-| Hermes Agent | `~/.hermes/skills/beyondseo` for the default macOS/Linux profile | Actual v0.21.1 loader discovered the skill and read its scoring reference in an isolated profile; no model call |
-| OpenClaw | `<active-workspace>/skills/beyondseo`, or `~/.openclaw/skills/beyondseo` | Official format checked; host execution has not been tested here |
+| Claude Code | `.claude/skills/beyondseo` in a project, or `~/.claude/skills/beyondseo` | Access to the full skill folder, a local Python runtime and the required shell/network permissions |
+| Codex | `.agents/skills/beyondseo` in a project, or `~/.agents/skills/beyondseo` | Load the skill and run the engine in the same accessible execution environment |
+| ChatGPT Work | Open the local folder and load `SKILL.md`, or use available workspace skill controls | Cloud workers need their own files, dependencies and execution support |
+| Hermes Agent | `~/.hermes/skills/beyondseo` for the default macOS/Linux profile | Use the active profile's skills location and prepare Python/Chromium there |
+| OpenClaw | `<active-workspace>/skills/beyondseo`, or `~/.openclaw/skills/beyondseo` | Check the active workspace, skill permissions and available runtime |
 
 Host names identify compatibility, not authorship. BeyondSEO is created and maintained by Muhammad Tahir Ashraf — Beyond Tahir.
 
@@ -101,7 +101,7 @@ evidence outside the skill folder and report any missing capabilities.
 
 Use the skill picker when the installed skill is available. OpenAI documents standalone desktop skills separately from workspace skills and plugin distribution; a filesystem copy does not establish cloud installation or sharing. [Build skills](https://learn.chatgpt.com/docs/build-skills), [skill controls](https://learn.chatgpt.com/docs/enterprise/skills).
 
-For cloud Work, use the workspace's supported skill controls if available and confirm that **all supporting files**, Python dependencies and browser execution are accessible. This release does not provide or claim a tested cloud importer. If the worker cannot run the native engine, run it locally and supply the resulting reports and relevant evidence for analysis. Describe that run as analysis of supplied evidence. Do not claim a fresh crawl, native execution or an installed cloud skill merely because a Markdown file was attached.
+For cloud Work, use the workspace's supported skill controls if available and confirm that **all supporting files**, Python dependencies and browser execution are accessible. BeyondSEO does not include a dedicated cloud importer. If the worker cannot run the native engine, run it locally and supply the resulting reports and relevant evidence for analysis. Describe that run as analysis of supplied evidence. Do not claim a fresh crawl, native execution or an installed cloud skill merely because a Markdown file was attached.
 
 ## Check a new host before client work
 
@@ -111,7 +111,7 @@ For cloud Work, use the workspace's supported skill controls if available and co
 4. Ask for a complete audit and confirm that it includes backlink evidence, named competitor pages and actions with acceptance checks. Missing evidence must be labeled, not filled with invented facts.
 5. Ask a focused writing question and confirm it supplies usable copy without launching an unnecessary full audit.
 
-Passes here establish compatibility with that installed host/version and permissions. They do not guarantee every website, future dependency version or ranking outcome. The [validation record](validation.md) describes completed checks.
+These steps help you confirm that the selected host can load the skill and execute the engine with its current permissions. See [development](development.md) for the repository checks and [setup](setup.md) for runtime troubleshooting.
 
 ## Host references
 
