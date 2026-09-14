@@ -1,6 +1,6 @@
 # What a complete audit delivers
 
-Use this standard for a general website audit, report or complete SEO plan. It retains the useful pattern from the practical trial: explain where the site stands, show dated evidence, compare relevant websites and give work the owner can act on. An explicitly focused request can use the relevant subset.
+Use this standard for a general website audit, report or complete SEO plan. Explain where the site stands, show dated evidence, compare relevant websites and give work the owner can act on. An explicitly focused request can use the relevant subset.
 
 ## A readable first page
 
@@ -18,7 +18,7 @@ Deliver:
 - Mentions without observed links, owned/affiliated sources and unverified candidates as separate categories.
 - A conservative headline score when supported, with model version, confidence, range, coverage and the factors limiting it. Low-confidence scores stay below 50. No conclusive checks means no headline score; observed mentions are still reported.
 - An assessment of independent proof, profile consistency, relevant case studies and actual review evidence. A self-published claim or profile does not automatically establish independent endorsement.
-- Exact prospects and a plan: why the source fits, proposed contribution, relevant target page, route/ownership status, effort and verification step. Review the included 27-source catalog, but do not force unrelated articles into a campaign.
+- Exact prospects and a plan: select 15 relevant sources, or 20 when requested and qualified, from the catalog and additional research. Follow [the posting standard](../playbooks/backlink-system/free-paid-backlink-source-library.md): give a direct route, fit, specific title/action and outline, target page, link restrictions, posting steps, eligibility/free terms, evidence date, authority limits and capacity-based timing. Research a shortfall; never pad the count. Unverified sheet DR is not measured DA and does not determine selection.
 
 The same rubric, unknown-data treatment, scope and ceilings apply to every client and competitor. Estimates remain subject to sample and review bias; do not advertise them as statistically unbiased. A low evidence score calls for better evidence or better coverage, not an automatic claim of poor customer reputation.
 
@@ -38,8 +38,8 @@ Deliver the [complete plan](../playbooks/templates/complete-seo-plan.md): URL-ba
 
 Sequence access/content repairs and measurement first, then service/answer improvements and substantiated case studies, followed by suitable independent reputation work and measured reviews. Adapt to the site's evidence and capacity. A new service page, outreach message or hosting change is a proposal until covered by the user's authorization.
 
-## Preserve a repeatable trial
+## Preserve the engagement evidence
 
 Keep the report, action register, competitor evidence, source verification, coverage records, drafts and original crawl snapshots together outside the public product repository. Use a fresh folder for a new capture or model assessment. Preserve model/version and original dates; label a changed formula separately from a website change.
 
-The [worked audit pattern](../examples/audit-walkthrough.md) demonstrates the handoff. The saved client trial remains a dated example; its competitors, numerical results and priorities are not universal defaults for other businesses.
+The [worked audit pattern](../examples/audit-walkthrough.md) illustrates the handoff with fictional numbers. Choose evidence, competitors, priorities and schedules for the actual business.

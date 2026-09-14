@@ -1,28 +1,242 @@
-Category,Platform,Source Type,URL,Status,Best Use
-AI Assistants & Agents Tools,Medium,Free article post,https://medium.com/@sahilchandio2004/top-5-super-simple-ai-assistants-agents-tools-anyone-can-use-8731b0244336,Existing seed asset,AI assistants/agents support article
-AI Assistants & Agents Tools,Medium,Free article post,https://medium.com/@sahilchandio860/top-5-next-level-ai-agents-tools-kids-love-too-50f4e7529b69?postPublishedType=initial,Existing seed asset,AI agents/tools support article
-AI Assistants & Agents Tools,Forem,Free article post,https://open.forem.com/skye_wright_1443d44f7b6d1/top-5-more-easy-ai-agents-tools-for-fun-work-4f7a,Existing seed asset,AI agents/tools support article
-Writing & Content Creation,Dev.to,Free article post,https://dev.to/skye_wright_1443d44f7b6d1/top-5-best-ai-tools-for-writing-content-creation-1bl2,Existing seed asset,Writing/content support article
-Writing & Content Creation,Forem,Free article post,https://future.forem.com/skye_wright_1443d44f7b6d1/5-best-ai-copywriting-tools-that-dont-suck-in-2026-1a8c,Existing seed asset,Copywriting/content support article
-Writing & Content Creation,Dev.to,Free article post,https://dev.to/sahil_vvvchandio_3b863/top-5-ai-blog-writing-tools-to-crush-deadlines-2026-4ck2,Existing seed asset,AI blog writing support article
-"Design, Art & Creativity",Forem,Free article post,https://open.forem.com/sahil_vvvchandio_3b863/top-5-best-ai-tools-for-design-2cgo,Existing seed asset,AI design support article
-"Design, Art & Creativity",Forem,Free article post,https://future.forem.com/sahil_vvvchandio_3b863/5-best-ai-tools-design-art-creativity-flux-canva-2026-em1,Existing seed asset,AI design/art support article
-"Design, Art & Creativity",Forem,Free article post,https://vibe.forem.com/sahil_vvvchandio_3b863/best-5-ai-for-easy-designs-no-skills-needed-59i0,Existing seed asset,AI design support article
-Video & Animation,Forem,Free article post,https://vibe.forem.com/skye_wright_1443d44f7b6d1/best-ai-for-easy-video-editing-animation-2026-fe6,Existing seed asset,AI video support article
-Video & Animation,Forem,Free article post,https://zeroday.forem.com/skye_wright_1443d44f7b6d1/top-5-free-ai-video-makers-from-idea-to-viral-clip-1pfn,Existing seed asset,AI video maker support article
-Video & Animation,Forem,Free article post,https://zeroday.forem.com/sahil_vvvchandio_3b863/5-ai-tools-to-animate-videos-like-a-pro-in-seconds-12la,Existing seed asset,AI animation support article
-"Voice, Sound & Music",Forem,Free article post,https://design.forem.com/skye_wright_1443d44f7b6d1/5-ai-tools-that-make-pro-music-from-text-in-seconds-57op,Existing seed asset,AI music support article
-"Voice, Sound & Music",Forem,Free article post,https://design.forem.com/sahil_vvvchandio_3b863/top-5-free-ai-sound-tools-create-hits-without-skills-4agj,Existing seed asset,AI sound/music support article
-"Voice, Sound & Music",WebYourself,Free article post,https://webyourself.eu/posts/1725930,Existing seed asset,Voice/sound support post
-Coding & Development,Substack,Free article post,https://open.substack.com/pub/sahilchandio/p/5-ai-tools-that-code-10x-faster-for?r=6d2z96&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true,Existing seed asset,AI coding support article
-Coding & Development,Substack,Free article post,https://open.substack.com/pub/sahilchandio1/p/top-5-free-ai-dev-tools-from-noob?r=6x2iys&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true,Existing seed asset,AI dev tools support article
-Coding & Development,Blogspot,Free article post,https://beyondtool.blogspot.com/2026/01/best-ai-coding-assistants-write-bug.html,Existing seed asset,AI coding assistant support article
-Business & Productivity,Medium,Free article post,https://medium.com/@sahilchandio2004/top-5-free-ai-productivity-hacks-every-team-needs-e72037ac2097,Existing seed asset,AI productivity support article
-Business & Productivity,Medium,Free article post,https://medium.com/@sahilchandio860/5-ai-tools-that-slash-work-hours-by-50-2026-tested-52b2bcf86bda,Existing seed asset,AI productivity support article
-Business & Productivity,Substack,Free article post,https://open.substack.com/pub/sahilchandio/p/best-ai-for-business-save-hours-on?r=6d2z96&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true,Existing seed asset,AI business support article
-Everyday & Lifestyle,Medium,Free article post,https://medium.com/@sahilchandio2004/5-ai-tools-to-crush-your-daily-chaos-in-minutes-4c420a39a02d,Existing seed asset,AI lifestyle support article
-Everyday & Lifestyle,Medium,Free article post,https://medium.com/@sahilchandio860/lazy-hack-5-ai-tricks-for-effortless-days-db15a416315d?postPublishedType=repub,Existing seed asset,AI lifestyle support article
-Everyday & Lifestyle,Forem,Free article post,https://open.forem.com/skye_wright_1443d44f7b6d1/transform-mornings-top-5-ai-hacks-for-busy-lives-h45,Existing seed asset,AI lifestyle support article
-Other / Experimental,Forem,Free article post,https://open.forem.com/sahil_vvvchandio_3b863/unlock-5-bold-ai-tools-for-next-level-experiments-1lmf,Existing seed asset,AI experimental support article
-Other / Experimental,Dev.to,Free article post,https://dev.to/skye_wright_1443d44f7b6d1/5-experimental-ai-tools-that-redefine-your-work-in-2026-2n48,Existing seed asset,AI experimental support article
-Other / Experimental,Forem,Free article post,https://vibe.forem.com/skye_wright_1443d44f7b6d1/5-pro-ai-tools-pushing-boundaries-tested-for-2026-3fmo,Existing seed asset,AI experimental support article
+id,source_page,source_section,source_url,sheet_dr,sheet_link_label
+pdf-001,1,article,https://medium.com/,94,index
+pdf-002,1,article,https://substack.com/,93,index
+pdf-003,1,article,https://dev.to/,90,index
+pdf-004,1,article,https://www.blogger.com/u/1/onboarding?pli=1,95,index
+pdf-005,1,article,https://www.reddit.com/?feed=home,95,index
+pdf-006,1,article,https://teletype.in/,62,index
+pdf-007,1,article,https://hubpages.com/feed/,87,index
+pdf-008,1,article,https://hashnode.com/,88,index
+pdf-009,1,article,https://articleted.com/,0,index
+pdf-010,1,article,https://articlesnatch.com/,0,index
+pdf-011,1,article,https://www.articlization.com/,0,index
+pdf-012,1,article,https://www.academia.edu/,91,index
+pdf-013,1,article,https://blog.freeadstime.org/profile-creation-9/,51,index
+pdf-014,1,article,https://blogmethod.yookalo.com/article-method.php,34,index
+pdf-015,1,article,https://sites.google.com/u/1/?pli=1&authuser=1,34,index
+pdf-016,1,article,https://sites.google.com/u/1/?authuser=1,34,index
+pdf-017,1,article,https://articles.h1ad.com/#google_vignette,55,index
+pdf-018,1,article,https://homment.com/,61,no follow
+pdf-019,1,article,https://blogvisit.freeadstime.org/visitors-and-members.php,45,index
+pdf-020,1,article,https://www.howto-tips.com/,32,index
+pdf-021,1,article,https://www.letsdiskuss.com/user/sahilchandio1714,45,index
+pdf-022,1,article,https://loudpages.com/,64,index
+pdf-023,1,article,https://blog.shopolop.com/profile-creation-2/,27,index
+pdf-024,1,article,https://blog.shopolop.com/profile-creation/,21,index
+pdf-025,1,article,https://www.storeboard.com/profile/businessname.asp,20,index
+pdf-026,1,article,https://substack.com/home,20,index
+pdf-027,1,article,https://www.textiledegree.com/,20,index
+pdf-028,1,article,https://blogfourth.wallclassifieds.com/,54,index
+pdf-029,1,article,https://wordpress.com/setup/onboarding/domains?start_ref=https%3A%2F%2Fwordpress.com%2F,31,no follow
+pdf-030,1,article,https://github.com/,30,index
+pdf-031,1,article,https://www.linkedin.com/feed/,30,index
+pdf-032,1,article,https://medium.com/,30,index
+pdf-033,1,article,https://www.quora.com/,33,index
+pdf-034,1,article,https://x.com/home,33,index
+pdf-035,1,article,http://yooarticles.net/,36,index
+pdf-036,1,article,http://writerspenarticledirectory.com/,32,index
+pdf-037,1,article,https://www.wellnessarticlelibrary.com/,31,index
+pdf-038,1,article,https://uberarticles.com/category/content-marketing/,31,index
+pdf-039,1,article,https://www.traveltourismdirectory.net/,55,index
+pdf-040,1,article,https://topsitenet.com/,21,index
+pdf-041,1,article,https://top7business.com/,25,index
+pdf-042,1,article,https://www.thefreelibrary.com/,55,index
+pdf-043,1,article,https://www.techmanik.com/,46,index
+pdf-044,1,article,https://simplysearch4it.com/,24,index
+pdf-045,1,article,https://www.seoforums.me.uk/,45,index
+pdf-046,1,article,https://www.ourblogpost.com/,42,index
+pdf-047,1,article,https://new-list.com/,64,index
+pdf-048,1,article,https://www.netezinearticles.com/submit-articles/,45,index
+pdf-049,1,article,https://netarticleshack.com/,64,index
+pdf-050,2,article,https://jurnalulnational.eu/,89,index
+pdf-051,2,article,https://myseoarticle.com/,55,index
+pdf-052,2,article,http://mazines.com/contactsubmit.php,55,index
+pdf-053,2,article,https://learnloftblog.com/thank-you/,45,index
+pdf-054,2,article,https://ladypens.com/#,54,index
+pdf-055,2,article,https://jumparticles.com/register.asp,24,index
+pdf-056,2,article,http://www.howtoadvice.com/,61,index
+pdf-057,2,article,https://hackernoon.com/,45,index
+pdf-058,2,article,https://guestsposting.com/,33,index
+pdf-059,2,article,https://gruks.com/,32,index
+pdf-060,2,article,https://goarticles.info/,21,index
+pdf-061,2,article,https://ezinemark.com/,22,index
+pdf-062,2,article,https://believe.evancarmichael.com/homepage,26,index
+pdf-063,2,article,https://edarticle.com/#,23,index
+pdf-064,2,article,https://e-topic.com/,24,index
+pdf-065,2,article,https://buzzle.com/,25,index
+pdf-066,2,article,https://www.business2community.com/,66,index
+pdf-067,2,article,https://bilalarticles.com/,21,index
+pdf-068,2,article,https://www.articleslist.net/#google_vignette,55,index
+pdf-069,2,article,https://articleside.com/submit.htm,25,index
+pdf-070,2,article,https://articlesforwebsite.com/register/,21,index
+pdf-071,2,article,https://www.articlesfactory.com/,41,index
+pdf-072,2,article,https://articleseen.com/register.aspx,22,index
+pdf-073,2,article,https://articlesdir.org/,22,index
+pdf-074,2,article,https://articlesbase.com/about-us/,32,index
+pdf-075,2,article,https://www.articlerich.com/login-register-today-news-pro/?signup,32,index
+pdf-076,2,article,https://articlekit.com/,30,index
+pdf-077,2,article,https://www.articlegeek.com/,15,index
+pdf-078,2,article,https://www.articledoctor.com/,12,index
+pdf-079,2,article,https://www.articlecity.com/blog/,12,index
+pdf-080,2,article,https://www.articlecede.com/,12,index
+pdf-081,2,article,https://articlecatalog.com/register.asp,15,index
+pdf-082,2,article,https://articles.abilogic.com/,16,index
+pdf-083,2,article,https://www.123articleonline.com/message,14,index
+pdf-084,2,article,https://ww7.101articles.com/?usid=102&utid=d9e645192d3e427ed4f121f6e3b51b96,15,index
+pdf-085,2,article,https://us.blastingnews.com/login/,11,index
+pdf-086,2,article,https://awarepakistan.com/submit/,25,index
+pdf-087,2,article,https://propakistani.pk/guest-writing/,25,index
+pdf-088,2,article,https://www.parhlo.com/author/,32,index
+pdf-089,2,article,https://hubpages.com/user/new/,25,index
+pdf-090,2,article,https://www.tumblr.com/,25,index
+pdf-091,2,article,https://business.quora.com/resources/everything-you-need-to-know-about-quora-spaces/,36,index
+pdf-092,2,article,https://substack.com/signup,25,index
+pdf-093,2,article,https://articlebiz.com/submitArticle,56,index
+pdf-094,2,article,https://www.sooperarticles.com/submit-article.html,64,index
+pdf-095,2,article,https://www.theodysseyonline.com/core/setup/account,54,index
+pdf-096,2,article,https://www.wattpad.com/myworks/new,58,index
+pdf-097,2,article,https://write.as/,81,index
+pdf-098,2,article,https://www.boredpanda.com/add-new-post/?step=upload,82,no follow
+pdf-099,2,article,https://www.blogger.com/about/,81,index
+pdf-100,2,article,https://www.linkedin.com/article/new/,82,index
+pdf-101,2,article,https://vocal.media/stories/new,87,index
+pdf-102,3,article,https://news.ycombinator.com/submit,81,index
+pdf-103,3,article,https://flipboard.com/,87,index
+pdf-104,3,article,https://community.buzzfeed.com/post,91,index
+pdf-105,3,article,https://www.onmap.ae/marketing-advertising/onlinequranteaching,43,index
+pdf-106,3,article,https://www.qavendors.com/crowdsourced-testing-services/onlinequranteaching,40,index
+pdf-107,3,article,https://www.qavendors.com/crowdsourced-testing-services/onlinequranteaching,31,index
+pdf-108,3,article,https://www.daviadavis.com/onlinequran-teaching,45,index
+pdf-109,3,article,https://www.fechers.com/apparel-clothing/onlinequran-teaching,44,index
+pdf-110,3,article,https://www.markyt.net/top-level-category/onlinequran-teaching,48,index
+pdf-111,3,article,https://greeleylocal.com/accounting-bookkeeping/onlinequran-teaching,21,index
+pdf-112,3,article,https://www.discoverthesprings.com/arts-entertainment/onlinequran-teaching,15,index
+pdf-113,3,article,https://www.businesssoftwarehelp.com/solutioneer/onlinequranteaching,16,index
+pdf-114,3,article,https://www.jommakanluar.com/indoor-premises/onlinequranteaching,45,index
+pdf-115,3,article,https://www.onehbcu.net/alumni-group-or-chapter/onlinequranteaching,43,index
+pdf-116,3,article,https://www.auseka.com.au/onlinequranteaching,12,index
+pdf-117,3,article,https://www.bookyellowpages.com/karachi-pakistan/onlinequran-teaching,25,index
+pdf-118,3,article,https://www.tradiecentre.com.au/onlinequranteaching,25,index
+pdf-119,3,article,https://www.permanentjewelrydirectory.com/pakistan/karachi/online-quranteaching,63,index
+pdf-120,3,article,https://network-48791.mn.co/posts/72626920,32,index
+pdf-121,3,article,https://network-47034.mn.co/posts/72626996,25,index
+pdf-122,3,article,https://fishjines.mn.co/posts/72627005,66,index
+pdf-123,3,article,https://network-19975.mn.co/posts/72627012,12,index
+pdf-124,3,article,https://masses-of-entrepreneurs.mn.co/posts/72627020,8,index
+pdf-125,3,article,https://network-88594.mn.co/posts/72627041,56,index
+pdf-126,3,article,https://ourownnetwork.mn.co/posts/72627050,25,index
+pdf-127,3,article,https://lean-in-bay-area.mn.co/posts/72627055,33,index
+pdf-128,3,article,https://lean-in-bay-area.mn.co/posts/72627055,12,index
+pdf-129,3,article,https://friendtalk.mn.co/posts/72627110,25,index
+pdf-130,3,article,https://pologics.mn.co/posts/72627122,33,index
+pdf-131,3,article,https://wwwpreparatorianis.mn.co/posts/72627134,55,index
+pdf-132,3,article,https://dj-club-sf.mn.co/posts/72627143,55,index
+pdf-133,3,article,https://team-clo.mn.co/posts/72627159,55,index
+pdf-134,3,article,https://edunet.mn.co/posts/72627185,25,index
+pdf-135,3,article,https://tbc-coin.mn.co/posts/72627193,25,index
+pdf-136,3,article,https://kyte-en-espanol.mn.co/posts/72627211,66,index
+pdf-137,3,article,https://gtribe.mn.co/posts/72627227,65,index
+pdf-138,3,article,https://network-373.mn.co/posts/72627246,66,index
+pdf-139,3,article,https://encourage-youth-ministry-uganda.mn.co/posts/72627260,55,index
+pdf-140,3,article,https://network-90617.mn.co/posts/72627279,55,index
+pdf-141,3,article,https://vibe-hangout.mn.co/posts/72627295,55,index
+pdf-142,3,article,https://network-48791.mn.co/members/30065273,54,index
+pdf-143,3,article,https://network-47034.mn.co/members/30065274,55,index
+pdf-144,3,article,https://fishjines.mn.co/members/30065275,55,index
+pdf-145,3,article,https://network-19975.mn.co/members/30065277,55,index
+pdf-146,3,article,https://masses-of-entrepreneurs.mn.co/members/30065279,51,index
+pdf-147,3,article,https://network-88594.mn.co/members/30065280,55,index
+pdf-148,3,article,https://ourownnetwork.mn.co/members/30065283,55,index
+pdf-149,3,article,https://lean-in-bay-area.mn.co/members/30065285,55,index
+pdf-150,3,article,https://wecanchat.mn.co/members/30065288,32,index
+pdf-151,3,article,https://friendtalk.mn.co/members/30065291,31,index
+pdf-152,3,article,https://pologics.mn.co/members/30065292,45,index
+pdf-153,3,article,https://wwwpreparatorianis.mn.co/members/30065294,55,index
+pdf-154,3,article,https://dj-club-sf.mn.co/members/30065295,61,index
+pdf-155,3,article,https://team-clo.mn.co/members/30065298,55,index
+pdf-156,3,article,https://edunet.mn.co/members/30065299,44,index
+pdf-157,3,article,https://tbc-coin.mn.co/members/30065300,32,index
+pdf-158,3,article,https://kyte-en-espanol.mn.co/members/30065301,44,index
+pdf-159,4,article,https://gtribe.mn.co/members/30065302,55,index
+pdf-160,4,article,https://network-373.mn.co/members/30065304,55,index
+pdf-161,4,article,https://encourage-youth-ministry-uganda.mn.co/members/30065305,59,index
+pdf-162,4,article,https://network-90617.mn.co/members/30065307,55,index
+pdf-163,4,article,https://vibe-hangout.mn.co/members/30065310,55,index
+pdf-164,4,article,https://network-90617.mn.co/members/30065307,44,index
+pdf-165,4,article,https://worldwide-entertainment-club.mn.co/posts/72627310,55,index
+pdf-166,4,article,https://englishclub.mn.co/posts/72627317,45,index
+pdf-167,4,article,https://worldwide-entertainment-club.mn.co/members/30065314,84,index
+pdf-168,4,article,https://englishclub.mn.co/members/30065317,84,index
+pdf-169,4,posting,https://arzuka.com,39,index
+pdf-170,4,posting,https://joinentre.com,41,index
+pdf-171,4,posting,https://www.bondhuplus.com,44,index
+pdf-172,4,posting,https://penposh.com,43,index
+pdf-173,4,posting,https://mymeetbook.com,43,index
+pdf-174,4,posting,https://unitymix.com,45,index
+pdf-175,4,posting,https://webyourself.eu,42,index
+pdf-176,4,posting,https://enkling.com,39,index
+pdf-177,4,posting,https://hugsqueeze.com/,37,index
+pdf-178,4,posting,https://akwatik.com,38,index
+pdf-179,4,posting,https://hasster.com,37,index
+pdf-180,4,posting,https://vevioz.com,49,index
+pdf-181,4,posting,https://demo.socialengine.com,49,index
+pdf-182,4,posting,https://biiut.com/,47,index
+pdf-183,4,posting,https://www.chumsay.com/,40,index
+pdf-184,4,posting,https://shareyoursocial.com,49,index
+pdf-185,4,posting,https://benficafansclub.com,16,index
+pdf-186,4,posting,https://mesutozilclub.com,24,index
+pdf-187,4,posting,https://www.lifelineon.com,25,index
+pdf-188,4,posting,https://thewion.com,37,index
+pdf-189,4,posting,https://web.doopinet.com,28,index
+pdf-190,4,posting,https://whoosmind.com,33,index
+pdf-191,4,posting,https://logcla.com,34,index
+pdf-192,4,posting,https://theprome.com,30,index
+pdf-193,4,posting,https://redebuck.com/,30,index
+pdf-194,4,posting,https://ekcochat.com,43,index
+pdf-195,4,posting,https://bondhusova.com,29,index
+pdf-196,4,posting,https://mohamedsalahclub.com,24,index
+pdf-197,4,posting,https://vishalbharat.in/,25,index
+pdf-198,4,posting,https://to-portal.com/,32,index
+pdf-199,4,posting,https://anytime-astro.mn.co,73,index
+pdf-200,4,posting,https://www.rumorcircle.com,54,index
+pdf-201,4,posting,https://heyjinni.com,37,index
+pdf-202,4,posting,https://hallbook.com.br,42,index
+pdf-203,4,posting,https://arzookanak110008.mn.co,73,index
+pdf-204,4,posting,https://facetoshi.live,20,index
+pdf-205,4,posting,https://calisthenics.mn.co,73,index
+pdf-206,4,posting,https://linkmate.mn.co/,24,index
+pdf-207,4,posting,https://www.indianhighcaste.com,21,index
+pdf-208,4,posting,https://ayema.ng/,30,index
+pdf-209,4,posting,https://socialgem.net,39,index
+pdf-210,4,posting,https://energypowerworld.co.uk/,36,index
+pdf-211,4,posting,https://chatterchat.com,43,index
+pdf-212,5,posting,https://zekond.com/,35,index
+pdf-213,5,posting,https://alumni.myra.ac.in/,40,index
+pdf-214,5,posting,https://wiuwi.com/,35,index
+pdf-215,5,posting,https://famenest.com/,37,index
+pdf-216,5,posting,https://neymarfootballforum.com,22,index
+pdf-217,5,posting,https://trngamers.co.uk,29,index
+pdf-218,5,posting,https://doomelang.com/,38,index
+pdf-219,5,posting,https://snipesocial.co.uk,45,index
+pdf-220,5,posting,https://highpriceddatinguk.com,26,index
+pdf-221,5,posting,https://www.bhimchat.com/,42,index
+pdf-222,5,posting,https://jointcorners.com,41,index
+pdf-223,5,posting,https://noifias.it,39,index
+pdf-224,5,posting,https://bresdel.com,47,index
+pdf-225,5,posting,https://afriprime.net/,38,index
+pdf-226,5,posting,https://ivebo.co.uk/,38,index
+pdf-227,5,posting,https://purekonect.com/,33,index
+pdf-228,5,posting,https://wowonder.xyz,42,index
+pdf-229,5,posting,https://upuge.com/,37,index
+pdf-230,5,posting,https://talkin.co.ke/,35,index
+pdf-231,5,posting,https://florevit.com/,32,index
+pdf-232,5,posting,https://globalfreetalk.com/,33,index
+pdf-233,5,posting,https://joyrulez.com/,43,index
+pdf-234,5,posting,https://kahkaham.net/,37,index
+pdf-235,5,posting,https://climbersfamily.com/,36,index
+pdf-236,5,posting,https://antspride.com/,21,index
+pdf-237,5,posting,https://followingbook.com/,39,index
+pdf-238,5,posting,https://linkspreed.web4.one/,33,index
+pdf-239,5,posting,https://blacksnetwork.net/,45,index
+pdf-240,5,posting,https://flexsocialbox.com/,29,index
+pdf-241,5,posting,https://kyourc.com/,41,index

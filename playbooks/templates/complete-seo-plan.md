@@ -52,9 +52,9 @@ Separate verified backlinks, mentions without observed links, owned/affiliated s
 
 ### Relevant prospects
 
-State that the saved source catalog was reviewed. Identify selected entries and excluded categories with reasons. Preserve exact URLs and distinguish existing example articles from verified client backlinks or publishing opportunities.
+Review the posting catalog and follow [the posting standard](../backlink-system/free-paid-backlink-source-library.md). Deliver 15 relevant sources, or 20 when requested and qualified, with specific writing briefs and steps; research or explain a shortfall. Keep existing verified backlinks separate. Identify exclusions with reasons and original DR claims as unverified, not measured DA.
 
-| Platform and source URL | Evidence/verification date | Relevance | Target page | Article/asset/outreach action | Topic and anchor | Route/ownership status | Cost/effort | Priority/owner/check |
+| Website and posting route | Evidence date / authority limits | Fit / format | Target page / link rules | Title and outline | How to post / eligibility | Free terms / effort | Week / owner | Follow-up check |
 |---|---|---|---|---|---|---|---|---|
 
 ## Competitor websites and responses

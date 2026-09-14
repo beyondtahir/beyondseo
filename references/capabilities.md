@@ -4,7 +4,7 @@ This describes BeyondSEO’s crawler and the SEO workflows included in the proje
 
 BeyondSEO is a complete SEO house supported by its own website crawler. The main workflow covers the full website strategy across SEO, AEO, GEO, entity, authority, REO/reputation, local visibility, backlinks and conversion, and produces a practical execution plan. The Python program collects observations; the skill applies specialist methods and business context. Start with [the complete SEO workflow](../playbooks/core/seo-house-workflow.md).
 
-The saved backlink catalog includes all 27 original source records across six platforms and nine categories. Complete plans review this list and use relevant exact URLs in recommendations after appropriate checks. [Browse the catalog](../docs/backlink-source-catalog.md).
+The backlink catalog preserves 241 PDF rows and groups them into 206 website/community entries. Complete plans select 15 or 20 relevant destinations when supported, with writing briefs, routes, restrictions and timing. [Browse the catalog](../docs/backlink-source-catalog.md) and [posting guide](../docs/backlink-posting-guide.md).
 
 ## Website crawler and scraper: implemented
 
@@ -41,6 +41,12 @@ See [operations](../docs/operations.md) for readiness reports, source-page backl
 ## Reputation discovery and rating: implemented
 
 The [native reputation system](reputation.md) prepares a five-page discovery plan, imports saved search HTML or source CSVs, verifies backlinks and page mentions, follows bounded redirect hosts and checks late JavaScript links. It calculates the BeyondSEO Reputation Score with its sensitivity range, confidence and transparent rubric. Own-site sources are excluded; repeated publishers are grouped and related sources cannot supply independent proof. Live search collection uses available browser/search access or supplied evidence; no unattended search-engine collector is included.
+
+## Posting catalog and shortlist helper: implemented
+
+`scripts/backlink_sources.py` filters the local catalog and builds a business-specific shortlist from documented, sufficiently recent routes. It checks topic/market fit, known prerequisites and cost status; emits per-format writing briefs, posting instructions and a capacity-based calendar; and reports shortages instead of filling them with unqualified sites. It does not crawl the supplied business, operate accounts or generate finished articles. Those are separate agent tasks using the actual website and current platform guidance. Sheet DR values do not affect selection.
+
+The optional `scripts/import_backlink_pdf.py` reads visible PDF rows, preserves duplicate records and detects conflicting DR claims. It needs `pypdf` only for importing a new PDF; normal browsing and planning use the standard library.
 
 ## SEO workflows included
 

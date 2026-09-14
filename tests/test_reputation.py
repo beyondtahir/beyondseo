@@ -254,7 +254,7 @@ class ReputationTests(unittest.TestCase):
         rows = reviewed_sample() + [inaccessible("https://blocked.test/")]
         results = []
         for target, brand in [
-            ("https://puredesigners.com", "PureDesigners"),
+            ("https://client.test", "Example Client"),
             ("https://competitor.test", "Competitor"),
         ]:
             same = copy.deepcopy(rows)

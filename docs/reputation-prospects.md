@@ -1,8 +1,8 @@
 # A practical reputation prospect directory
 
-Use this alongside the [27 supplied article sources](backlink-source-catalog.md). These seven additional routes were researched from the organizations' own pages on September 14, 2026. They are prospects for accurate profiles, work samples, reviews or membership, not confirmed client backlinks or promises of ranking value.
+Use this alongside the [posting-site catalog](backlink-source-catalog.md). These seven additional routes were researched from the organizations' own pages on September 14, 2026. They are prospects for accurate profiles, work samples, reviews or membership, not confirmed client backlinks or promises of ranking value.
 
-Choose by business fit. PureDesigners can evaluate the agency/design routes; BeyondTahir can evaluate identity, real client evidence and applicable training/technology routes. Eligibility, existing profiles and account ownership still need checking. These examples do not establish a completed audit of either business.
+Choose by business fit. Agencies can evaluate the portfolio and client-review routes; educators and technology businesses can evaluate identity, useful work samples and relevant industry participation. Confirm eligibility, existing profiles and account ownership before taking action.
 
 | Website and official route | Suitable purpose | What to prepare | Verification before action |
 |---|---|---|---|
@@ -14,7 +14,7 @@ Choose by business fit. PureDesigners can evaluate the agency/design routes; Bey
 | [Google Business Profile eligibility](https://support.google.com/business/answer/13763036?hl=en) — [getting started](https://support.google.com/business/answer/7039811?hl=en) | Local discovery and genuine customer reviews for eligible businesses | Real operating model, business details and ownership verification | Check eligibility first. Online-only businesses are not automatically eligible. Never invent a location or encourage fabricated reviews. |
 | [P@SHA membership](https://www.pasha.org.pk/apply-membership/) — [directory](https://directory.pasha.org.pk/index.php) | Relevant Pakistan technology-industry participation and membership evidence | Business eligibility documents and a real membership objective | Confirm requirements, current fees, renewal terms and directory inclusion. Membership is not a purchased ranking endorsement. |
 
-For each selected prospect, specify the client target URL, proposed work, owner, budget status, route checked and next acceptance check. Fees are unknown unless verified from current terms. The PDF supplied with the project contains free article examples and no verified paid rate card.
+For each selected prospect, specify the client target URL, proposed work, owner, budget status, route checked and next acceptance check. Fees are unknown unless verified from current terms. The source PDF supplies a posting-site research pool, not a verified paid rate card or measured authority dataset.
 
 Also research identifiable customer/partner case studies, industry publications, conference contributions and local associations matched to the client's actual work. These can provide different evidence from owned profiles. Record the real publication and route before presenting one as an actionable prospect.
 

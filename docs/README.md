@@ -25,7 +25,8 @@ Start with the task you want to complete. Each guide connects the commands, evid
 
 | Guide | Covers |
 |---|---|
-| [Source catalog](backlink-source-catalog.md) | All 27 original source URLs with context |
+| [Source catalog](backlink-source-catalog.md) | 206 website/community entries from the source PDF, with source claims and review status |
+| [Posting guide](backlink-posting-guide.md) | Website-specific 15/20-source plans: what to write, how to post, timing and authority limits |
 | [Prospect directory](reputation-prospects.md) | Seven additional researched routes for credible profiles and recognition |
 | [Scoring explained](scoring-explained.md) | What the score means, why confidence matters and a worked example |
 | [Complete reputation method](../references/reputation.md) | Discovery/import, native verification, source reviews, formulas and limitations |
@@ -44,6 +45,6 @@ Start with the task you want to complete. Each guide connects the commands, evid
 
 ## Project and community
 
-[Validation](validation.md) · [Contributing](../CONTRIBUTING.md) · [Security](../SECURITY.md) · [Changelog](../CHANGELOG.md) · [MIT license](../LICENSE) · [Dependency notices](../THIRD_PARTY_NOTICES.md)
+[Development](development.md) · [Contributing](../CONTRIBUTING.md) · [Security](../SECURITY.md) · [Changelog](../CHANGELOG.md) · [MIT license](../LICENSE) · [Dependency notices](../THIRD_PARTY_NOTICES.md)
 
 Questions about expected behavior belong in a [GitHub issue](https://github.com/beyondtahir/beyondseo/issues). Include the version, command, environment and a small redacted reproduction. Contact [Beyond Tahir](https://beyondtahir.com) for consulting, training or private business context.

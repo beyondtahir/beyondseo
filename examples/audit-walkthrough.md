@@ -1,10 +1,10 @@
 # Worked audit pattern
 
-This is an illustrative handoff based on the practical trial workflow. It contains no current claims about a specific client or competitor. Replace the evidence and priorities for each real assignment.
+This fictional example illustrates the handoff for a software consultancy. Replace its numbers, business context and priorities with the actual evidence for each engagement.
 
 ## Starting request
 
-“Audit our company website. We sell AI implementation services from Pakistan to local and overseas customers. Tell us where we stand and what to do.”
+“Audit our software consultancy website. We help service businesses improve their internal workflows. Explain the most useful website and reputation improvements.”
 
 ## Evidence package
 
@@ -15,9 +15,9 @@ This is an illustrative handoff based on the practical trial workflow. It contai
 
 ## How cautious scoring works
 
-Suppose 46 source URLs were checked, but only 12 link checks were conclusive. The selected sources have 92% of their rubric dimensions assessed, and the publisher/search-page budgets are met. Their supported sample points are 72.4.
+Suppose 40 source URLs were checked, with 10 conclusive link checks, 90% source review, full publisher/search-page coverage and supported sample points of 80.
 
-The evidence factor is the weakest measured factor: `12 / 46 = 0.26087`. The headline is `72.4 × 0.26087 = 18.9/100`, provisional, low confidence. Unknown dimensions give a rubric sensitivity range of 18.9–20.1 in this example. The underlying sample midpoint of 74.8 is diagnostic context only. Nothing about the site's actual backlinks changed when the model changed.
+The weakest evidence factor is `10 / 40 = 0.25`. The headline is `80 × 0.25 = 20/100`, provisional and low confidence. These are fictional numbers that illustrate the formula. Report any sensitivity range from the actual assessment, and keep the diagnostic midpoint separate.
 
 Explain: “We captured several useful links, but much of the sample is incomplete. The score reflects how much evidence we can support. Here are the verified sources, the missing checks and the independent proof to strengthen.”
 
