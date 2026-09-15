@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.5.1-991B1B?style=flat-square" alt="Version 2.5.1"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.5.2-991B1B?style=flat-square" alt="Version 2.5.2"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
@@ -75,7 +75,7 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 
 [ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw)
 
-**[Download the ready-to-upload skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.5.1/beyondseo-2.5.1-skill.zip)** · [What it installs and accesses](docs/permissions.md)
+**[Download the ready-to-upload skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.5.2/beyondseo-2.5.2-skill.zip)** · [What it installs and accesses](docs/permissions.md)
 
 For Claude uploads, use this named release asset: it contains the required `beyondseo/` folder. Windows users can also extract it and follow the local assistant guide without installing Git. ChatGPT Work has its own skill-save workflow; the guide includes a copy-paste installation request and help for save errors and runtime permissions.
 
@@ -366,7 +366,7 @@ The watch command collects evidence. The skill uses it to recommend subsequent w
 
 ## Project status
 
-BeyondSEO **2.5.1** is available under the **MIT license** and remains in beta. Python 3.10 or newer is required; local Chromium enables JavaScript rendering. Use `scripts/run.py doctor` to check your environment before starting an engagement.
+BeyondSEO **2.5.2** is available under the **MIT license** and remains in beta. Python 3.10 or newer is required; local Chromium enables JavaScript rendering. Use `scripts/run.py doctor` to check your environment before starting an engagement.
 
 The engine reports access restrictions and incomplete observations. Actual rankings, search-engine indexing, AI citations and business outcomes require their own evidence. Share reproducible issues and useful improvements through the repository's contribution process.
 

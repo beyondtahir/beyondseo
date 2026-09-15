@@ -1,5 +1,7 @@
 import importlib.util
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -211,6 +213,21 @@ class PortabilityTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "BeyondSEO " + __version__)
+
+    @unittest.skipUnless(os.name == "nt", "PowerShell command acceptance runs on Windows")
+    def test_powershell_follow_up_command_preserves_literal_arguments(self):
+        shell = shutil.which("pwsh") or shutil.which("powershell")
+        if not shell:
+            self.skipTest("PowerShell unavailable")
+        expected = "a space, a dollar $sign and an apostrophe '"
+        command = installer.shell_command(
+            [sys.executable, "-c", "import sys; print(sys.argv[1])", expected]
+        )
+        result = subprocess.run(
+            [shell, "-NoProfile", "-Command", command], capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), expected)
 
     def test_launcher_preserves_cli_error_exit_code(self):
         result = subprocess.run(
