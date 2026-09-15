@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.5.2
+
+- Make printed follow-up commands safe to paste into PowerShell when paths contain spaces or special characters.
+
 ## 2.5.1
 
 - Add a complete upload bundle with a matching `beyondseo/` folder, concise metadata and a SHA-256 checksum.

@@ -51,7 +51,7 @@ The package validator does not call Work's save service or safety scanner. There
 
 This route also covers Claude Cowork through its Skills controls.
 
-1. Download **beyondseo-2.5.1-skill.zip** from the [release assets](https://github.com/beyondtahir/beyondseo/releases/tag/v2.5.1). Use the named skill asset; GitHub's automatically generated source ZIP uses a different enclosing folder name.
+1. Download **beyondseo-2.5.2-skill.zip** from the [release assets](https://github.com/beyondtahir/beyondseo/releases/tag/v2.5.2). Use the named skill asset; GitHub's automatically generated source ZIP uses a different enclosing folder name.
 2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
 3. Open **Customize → Skills → + → Create skill → Upload a skill**, then select the ZIP.
 4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”

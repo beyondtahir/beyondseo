@@ -104,7 +104,11 @@ def host_destination(host, workspace=None, profile_home=None):
 
 def shell_command(arguments):
     values = [str(a) for a in arguments]
-    return subprocess.list2cmdline(values) if os.name == "nt" else shlex.join(values)
+    if os.name == "nt":
+        # PowerShell needs the call operator for a quoted executable path.
+        # Literal quotes also preserve spaces and dollar signs in user paths.
+        return "& " + " ".join("'" + value.replace("'", "''") + "'" for value in values)
+    return shlex.join(values)
 
 
 def install(source, destination, dry_run=False, update=False):
