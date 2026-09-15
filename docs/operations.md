@@ -66,7 +66,7 @@ For SFTP install the optional library:
 python -m pip install -e '.[sftp]'
 ```
 
-SFTP requires a verified host key in your known-hosts file and either the configured private key or password variable. Unknown host keys are rejected. FTPS uses the standard Python library, validates the TLS certificate and encrypts its data channel. Plain FTP is not supported.
+Use a dedicated website account and replace the example key/known-hosts paths with files in a private folder for that site. SFTP requires a verified host key in your known-hosts file and either the configured private key or password variable. Unknown host keys are rejected. FTPS uses the standard Python library, validates the TLS certificate and encrypts its data channel. Plain FTP is not supported.
 
 ```sh
 beyondseo edit plan --connection /absolute/path/to/private/connection.json --file index.html --replacement /absolute/path/to/drafts/index.html --out /absolute/path/to/changes/home-answer

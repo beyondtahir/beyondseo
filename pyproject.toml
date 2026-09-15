@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "beyondseo"
-version = "2.5.0"
+version = "2.5.1"
 description = "A complete SEO house with specialist workflows, a backlink source library and its own local crawler."
 readme = "README.md"
 license = "MIT"

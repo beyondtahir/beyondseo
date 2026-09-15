@@ -1,8 +1,8 @@
 ---
 name: beyondseo
-description: Run a complete SEO house for audits, friendly reports, competitors, content, AEO, GEO, entity, authority, reputation, local SEO and backlinks. Use the owned crawler, source catalog, repeatable reviews and reviewed website changes.
+description: Audit websites and plan SEO, AI-search visibility, content, competitors and backlinks using BeyondSEO's crawler, reputation evidence and specialist playbooks.
 metadata:
-  version: 2.5.0
+  version: 2.5.1
   author: Muhammad Tahir Ashraf — Beyond Tahir
 ---
 
@@ -12,7 +12,9 @@ Help people understand their website, improve it and see what changed. Use every
 
 ## Run in the available host
 
-Read [installation](docs/agent-installation.md) for host setup and [questions and capabilities](docs/questions.md) for introductions. Resolve the skill root from this file. Use the host's available file and shell tools; no particular connector or tool name is required. Check `python3 /absolute/skill/path/scripts/run.py doctor` (Windows: `py -3`) in the actual execution environment before crawling. The launcher selects the bundled `.venv` without activation. If Python, networking or browser execution is unavailable, use supplied evidence and label the limitation; never simulate a successful crawl. Load only references needed for the request. The native CLI uses no model tokens or API keys; assistant reasoning still uses the host's model.
+For an installation request, follow [the host-specific guide](docs/agent-installation.md). Confirm registration in the host's skill list separately from the crawler's runtime check. A format check or successful folder copy is not proof of workspace acceptance. Report the actual failed operation and error when a save or setup fails. Read [permissions and runtime requirements](docs/permissions.md) for package review and hosted execution. Installation does not authorize a website crawl, account access or publishing.
+
+Read [questions and capabilities](docs/questions.md) for introductions. Resolve the skill root from this file. Use the host's available file and shell tools; no particular connector or tool name is required. Check `python3 /absolute/skill/path/scripts/run.py doctor` (Windows: `py -3`) in the actual execution environment before crawling. The launcher supports a local `.venv` or an explicit `--runtime` in a host-approved execution folder. If Python, networking or browser execution is unavailable, use supplied evidence and label the limitation; never simulate a successful crawl. Load only references needed for the request. The native CLI uses no model tokens or API keys; assistant reasoning still uses the host's model.
 
 ## Understand and inspect
 

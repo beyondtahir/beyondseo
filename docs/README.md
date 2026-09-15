@@ -7,7 +7,8 @@ Start with the task you want to complete. Each guide connects the commands, evid
 | I want to… | Read this |
 |---|---|
 | Install the engine and run my first crawl | [Setup and troubleshooting](setup.md) |
-| Use Claude Code, Codex, ChatGPT Work, Hermes or OpenClaw | [Assistant installation](agent-installation.md) |
+| Use Claude, Claude Code, Codex, ChatGPT Work, Hermes or OpenClaw | [Assistant installation](agent-installation.md) |
+| Review package permissions or diagnose an installation rejection | [Package permissions](permissions.md) |
 | Understand what the complete SEO house can do | [Capabilities and example questions](questions.md) |
 | Practice without touching a live website | [Local examples](../examples/README.md) |
 | Run the entire audit workflow | [SEO house workflow](../playbooks/core/seo-house-workflow.md) |

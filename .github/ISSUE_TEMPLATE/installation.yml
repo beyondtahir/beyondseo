@@ -1,0 +1,37 @@
+name: Installation help
+description: Get help saving the skill or preparing its crawler.
+labels: [bug]
+body:
+  - type: dropdown
+    id: host
+    attributes:
+      label: Which assistant?
+      options: [ChatGPT Work, Claude website or desktop, Claude Code, Codex, Hermes Agent, OpenClaw, Another assistant]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: BeyondSEO version and environment
+      placeholder: "2.5.1; cloud Work / Windows / macOS / Linux; assistant version if known"
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Which step failed?
+      options: [Download or extraction, Skill save or upload, Skill missing from list, Python setup, Browser setup, First crawl]
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Exact error
+      description: Include the response body, status code or flagged file/rule. Remove credentials and private information. An assistant's summary alone may omit the cause.
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Installation method
+      description: Name the downloaded asset or paste the command/prompt you used. State whether BeyondSEO appears in the skill list and whether doctor ran.

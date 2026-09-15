@@ -2,7 +2,7 @@
 
 This guide takes you from a source checkout to your first saved crawl. You need Python 3.10 or newer and an internet connection for installation. Python 3.12 is the recommended starting point. Browser mode downloads a local copy of Chromium; no account is needed.
 
-For installation in Claude Code, Codex, ChatGPT Work, Hermes or OpenClaw, see [use with your assistant](agent-installation.md). The same native engine supports each documented local workflow; the host still needs file, shell and network capabilities.
+For installation in Claude, Cowork, Claude Code, Codex, ChatGPT Work, Hermes or OpenClaw, see [use with your assistant](agent-installation.md). The same native engine supports each documented local workflow; the host still needs file, shell and network capabilities.
 
 ## 1. Open the project
 
@@ -27,29 +27,29 @@ macOS or Linux:
 
 ```sh
 python3 scripts/setup.py
-source .venv/bin/activate
+python3 scripts/run.py doctor
 ```
 
 Windows PowerShell:
 
 ```powershell
 py -3 scripts/setup.py
-.venv\Scripts\Activate.ps1
+py -3 scripts/run.py doctor
 ```
 
 Setup creates `.venv`, installs the local project and its browser library, downloads Chromium, and checks that it can launch. It does not change your system Python or send a crawl to a hosted service.
 
-If PowerShell prevents activation, run the executable directly; changing your system execution policy is unnecessary:
+The launcher works without activation or changes to PowerShell execution policy:
 
 ```powershell
-.venv\Scripts\beyondseo.exe doctor
-.venv\Scripts\beyondseo.exe crawl https://example.com --out runs/example
+py -3 scripts/run.py doctor
+py -3 scripts/run.py crawl https://example.com --out ../client-runs/example
 ```
 
-On Linux, a minimal installation may also need Chromium's system libraries. With the environment active, run the browser project's dependency installer:
+On Linux, a minimal installation may also need Chromium's system libraries. Run the browser project's dependency installer using this environment:
 
 ```sh
-python -m playwright install-deps chromium
+.venv/bin/python -m playwright install-deps chromium
 ```
 
 That command may request administrator access for system packages. The main BeyondSEO setup script does not install operating-system packages silently.
@@ -59,8 +59,8 @@ That command may request administrator access for system packages. The main Beyo
 For an assistant or a terminal where activation does not persist, use `python3 scripts/run.py doctor` (Windows: `py -3 scripts/run.py doctor`). This launcher selects this folder's `.venv` and forwards CLI arguments and exit codes. Use an absolute script path when running from another directory. It also supports `--version` and every other CLI command.
 
 ```sh
-beyondseo --version
-beyondseo doctor
+python3 scripts/run.py --version
+python3 scripts/run.py doctor
 ```
 
 `doctor` checks package versions and launches Chromium locally. Look for `http_ready: true` and `browser_ready: true`. Its exit code is 0 when both are ready and 1 when either is missing. An HTTP-only installation can still crawl with `--mode http` when the browser check is unavailable.
@@ -68,10 +68,10 @@ beyondseo doctor
 ## 4. Run a small crawl
 
 ```sh
-beyondseo crawl https://example.com --out runs/example --max-pages 10
+python3 scripts/run.py crawl https://example.com --out ../client-runs/example --max-pages 10
 ```
 
-Open `runs/example/report.md` for the crawl report, `documents.jsonl` for readable page data and `content/` for Markdown/text files. Check `summary.json` before interpreting the results: a page limit, a failed request or an incomplete browser observation can restrict coverage even if the command exits successfully.
+Open `../client-runs/example/report.md` for the crawl report, `documents.jsonl` for readable page data and `content/` for Markdown/text files. Check `summary.json` before interpreting the results: a page limit, a failed request or an incomplete browser observation can restrict coverage even if the command exits successfully.
 
 If your site redirects between the bare domain and `www`, include the other host:
 
@@ -81,6 +81,17 @@ beyondseo crawl https://example.com --allow-host www.example.com \
 ```
 
 An additional website host is not automatically inferred. Public browser asset/API dependencies are allowed separately and do not join the page queue.
+
+## Hosted or read-only skill folder
+
+Keep the uploaded skill where the host manages it. Prepare the crawler in a separate folder that the host permits for execution:
+
+```sh
+python3 /path/to/beyondseo/scripts/setup.py --venv /approved/runtime/beyondseo
+python3 /path/to/beyondseo/scripts/run.py --runtime /approved/runtime/beyondseo doctor
+```
+
+Replace both paths with real paths in that execution environment. Setup uses a temporary source copy when building the package, so it does not write build files into the mounted skill. A denied path still needs a host-supported location; the option does not change permissions. Use the same `--runtime` for every crawler command. See [Work save and execution errors](agent-installation.md#when-work-cannot-save-or-run-it).
 
 ## Manual installation
 

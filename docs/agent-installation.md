@@ -1,126 +1,173 @@
-# Use BeyondSEO with your assistant
+# Install BeyondSEO in your assistant
 
-One folder contains the skill, specialist playbooks and native Python engine. No crawling-service account, SEO-data subscription, plugin or API key is required by BeyondSEO. Your assistant needs its own working model connection or subscription; its usage is separate.
+Choose the app you actually use. **Claude on the web, Claude Code and ChatGPT Work have different installation steps.** BeyondSEO contains the complete SEO workflow, backlink library and native crawler; no scraping-service account or SEO API key is required. Your assistant's normal model usage still applies.
 
-## Choose your environment
+| Your app | Start here |
+|---|---|
+| ChatGPT Work | [Ask Work to install it](#chatgpt-work) |
+| Claude website / desktop / Cowork | [Upload the skill bundle](#claude-website-and-desktop-skills) |
+| Claude Code | [One local installation command](#claude-code) |
+| Codex | [One local installation command](#codex) |
+| Hermes Agent | [Choose your active profile](#hermes-agent) |
+| OpenClaw | [Choose your agent's workspace](#openclaw) |
+| Another assistant | [Check its capabilities](#other-assistants) |
 
-| Environment | Local installation or use | Requirements |
-|---|---|---|
-| Claude Code | `.claude/skills/beyondseo` in a project, or `~/.claude/skills/beyondseo` | Access to the full skill folder, a local Python runtime and the required shell/network permissions |
-| Codex | `.agents/skills/beyondseo` in a project, or `~/.agents/skills/beyondseo` | Load the skill and run the engine in the same accessible execution environment |
-| ChatGPT Work | Open the local folder and load `SKILL.md`, or use available workspace skill controls | Cloud workers need their own files, dependencies and execution support |
-| Hermes Agent | `~/.hermes/skills/beyondseo` for the default macOS/Linux profile | Use the active profile's skills location and prepare Python/Chromium there |
-| OpenClaw | `<active-workspace>/skills/beyondseo`, or `~/.openclaw/skills/beyondseo` | Check the active workspace, skill permissions and available runtime |
+## ChatGPT Work
 
-Host names identify compatibility, not authorship. BeyondSEO is created and maintained by Muhammad Tahir Ashraf — Beyond Tahir.
-
-## Install a local skill folder
-
-Clone `https://github.com/beyondtahir/beyondseo.git` and start in that source folder. Choose **one** destination for the host you use. The helper copies the bundled source and documentation, excludes virtual environments, caches and root-level run folders, and writes a checksum receipt. Keep all client files outside the source folder. It performs no downloads, installs no host software and creates no archive.
-
-Preview a Claude Code installation:
-
-```sh
-python3 scripts/install_skill.py --dest "$HOME/.claude/skills/beyondseo" --dry-run
-```
-
-Install using the relevant command:
-
-```sh
-# Claude Code, personal
-python3 scripts/install_skill.py --dest "$HOME/.claude/skills/beyondseo"
-
-# Codex, personal
-python3 scripts/install_skill.py --dest "$HOME/.agents/skills/beyondseo"
-
-# Hermes, default macOS/Linux profile
-python3 scripts/install_skill.py --dest "$HOME/.hermes/skills/beyondseo"
-
-# OpenClaw, shared local skill directory
-python3 scripts/install_skill.py --dest "$HOME/.openclaw/skills/beyondseo"
-```
-
-For a project installation, give the full path to that project's skill folder. The destination must be outside this source checkout and must not exist. Existing installations are never overwritten. For an update, preserve the previous folder as a backup outside the host's discovery folders, then install a fresh copy at the intended location. Keep reports separately.
-
-On Windows PowerShell use `py -3` in place of `python3`. For example:
-
-```powershell
-py -3 scripts/install_skill.py --dest "$env:USERPROFILE\.claude\skills\beyondseo"
-```
-
-Hermes profiles and native Windows installations may use a different data directory. Use the active profile's actual skills path, not an assumed home folder. OpenClaw custom state directories and agent allowlists can also affect discovery. Consult the host references below.
-
-## Prepare the engine where it will run
-
-Inside the **installed BeyondSEO folder**, run:
-
-```sh
-python3 scripts/setup.py
-python3 scripts/run.py --version
-python3 scripts/run.py doctor
-```
-
-Use `py -3` on Windows. Python 3.10+ is required; 3.12 is recommended. Setup creates a local `.venv`, installs the engine and downloads Chromium. `doctor` should report both `http_ready` and `browser_ready` as true. See [complete setup](setup.md) for Linux system libraries, HTTP-only operation and troubleshooting.
-
-The launcher selects the folder's virtual environment automatically. An assistant can call it from any working directory:
-
-```sh
-python3 "/absolute/path/to/beyondseo/scripts/run.py" crawl https://example.com \
-  --out "/absolute/path/to/client-runs/first-audit" --max-pages 10
-```
-
-Resolve that path from the loaded `SKILL.md`; never reuse another person's path. Relative output paths resolve from the command's working directory. Prefer absolute output paths outside the skill. A remote, container or cloud terminal needs its own copy, dependencies, writable output directory and permitted network access. A local installation does not install Python or Chromium in a remote worker.
-
-## Invoke the skill
-
-Claude Code and Hermes:
+Paste this into Work:
 
 ```text
-/beyondseo Audit https://example.com. Include backlinks, named competitors,
-answer readiness, useful copy drafts and a practical 30/60/90-day plan.
+Install BeyondSEO from https://github.com/beyondtahir/beyondseo as a reusable
+Work skill. Read docs/agent-installation.md and docs/permissions.md first.
+Use the complete beyondseo/ skill bundle, including its Python source,
+scripts, playbooks and backlink catalog. Use the workspace's supported
+skill-save tools and confirm it appears in my Skills list.
+
+Then set up the crawler in this Work execution environment. If the skill
+folder cannot host executable files, use scripts/setup.py --venv with a
+host-approved writable execution folder and scripts/run.py --runtime
+with the same folder. Run doctor. Report skill registration, HTTP readiness
+and browser readiness separately. If a step fails, show its exact error
+and investigate that step; a format check alone is not installation success.
 ```
 
-Codex CLI/IDE:
+Work needs access to all bundled files and its supported skill-save controls. A GitHub URL provides a source to import; it is not itself an installation endpoint. After saving, find BeyondSEO in the skill picker and select it with `@` where available. Open a fresh task and ask it to read the bundled backlink catalog to confirm the resources were retained.
+
+OpenAI distinguishes workspace skills from local filesystem skills. A copy on your computer does not register a cloud Work skill. Use the installation controls available in your workspace; a normal chat attachment may only make the files available to that conversation. [Skill authoring](https://learn.chatgpt.com/docs/build-skills) · [Workspace and local controls](https://learn.chatgpt.com/docs/enterprise/skills).
+
+### When Work cannot save or run it
+
+| Error | What the assistant should do |
+|---|---|
+| HTTP 422 during save | Capture the response body, failing operation and submitted file list. Check the skill name, description, complete folder layout and supported file requirements. A 422 alone does not identify a safety finding. |
+| An explicit safety-scan rejection | Read the flagged file/rule, explain the finding and correct the actual issue. Use workspace support if the reason is unavailable. Keep scanning and approval controls enabled. |
+| Permission denied launching Python | Identify which path was denied. Use an execution folder supported by that Work environment with `--venv`; do not place a virtualenv inside a read-only or non-executable skill mount. |
+| Saved skill, missing bundled files | Re-import the complete bundle through the supported workflow and verify a playbook, the catalog and `src/beyondseo/cli.py` are accessible. |
+| Browser cannot launch | Inspect `doctor`; install Chromium/system libraries only where the host permits them. HTTP mode can read initial HTML, but does not establish JavaScript coverage. |
+
+The package validator does not call Work's save service or safety scanner. There is no BeyondSEO switch that grants workspace permissions or guarantees acceptance. Keep a failed save separate from a failed runtime setup; correcting one does not prove the other is resolved.
+
+## Claude website and desktop Skills
+
+This route also covers Claude Cowork through its Skills controls.
+
+1. Download **beyondseo-2.5.1-skill.zip** from the [release assets](https://github.com/beyondtahir/beyondseo/releases/tag/v2.5.1). Use the named skill asset; GitHub's automatically generated source ZIP uses a different enclosing folder name.
+2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
+3. Open **Customize → Skills → + → Create skill → Upload a skill**, then select the ZIP.
+4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”
+
+The archive contains one `beyondseo/` folder, matching `name: beyondseo`, with `SKILL.md` and every runtime resource. Its description is under Claude.ai's documented 200-character limit. Creating an account or entering hosting credentials is unnecessary for installation. Organization permissions can affect whether uploads are available. [Create a custom skill](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) · [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
+
+Saving the skill does not install Python packages. Ask Claude to follow [crawler setup](#crawler-setup-in-a-hosted-environment) using its available execution environment. The Claude API and Claude Code have separate runtime and installation rules.
+
+## Local assistants: get the folder once
+
+**Without Git:** download the named skill ZIP above, extract it, and open a terminal in the extracted `beyondseo` folder. This works when Windows says Git is missing. Confirm that you can see `SKILL.md` and `scripts` directly inside that folder.
+
+**With Git:**
+
+```sh
+git clone https://github.com/beyondtahir/beyondseo.git
+cd beyondseo
+```
+
+Run just the command for your assistant below. It copies the complete skill and prepares the crawler. Python **3.10+** is required; **3.12** is recommended. On Windows PowerShell replace `python3` with `py -3`. Activation and execution-policy changes are unnecessary.
+
+## Claude Code
+
+```sh
+python3 scripts/install_skill.py --host claude-code --setup
+```
+
+The personal location is `~/.claude/skills/beyondseo`. To install only for a project, add `--workspace "/path/to/project"`. Start a new Claude Code session, then use:
 
 ```text
-$beyondseo Audit https://example.com for our target customers.
-Show the evidence and keep uncertain reputation scores conservative.
+/beyondseo Audit https://example.com and give me a practical improvement plan.
 ```
 
-In OpenClaw, select BeyondSEO from the skill picker or ask it to use the installed skill by name. In any host, an explicit fallback is: “Read the SKILL.md in this BeyondSEO folder and follow it for this audit.” Restart or refresh the host if its skill list has not updated. A loaded skill still uses the host's ordinary file, shell, browser and network permissions.
+[Claude Code skills](https://code.claude.com/docs/en/skills).
 
-## ChatGPT Work: local and cloud
+## Codex
 
-For local Work, open or provide access to the BeyondSEO folder and ask:
+```sh
+python3 scripts/install_skill.py --host codex --setup
+```
+
+The personal location is `~/.agents/skills/beyondseo`. Add `--workspace "/path/to/project"` for project scope. Select BeyondSEO in the skill list; CLI and IDE users can invoke `$beyondseo`. If it is not listed, refresh or open a new session. [Official skill guidance](https://learn.chatgpt.com/docs/build-skills).
+
+## Hermes Agent
+
+```sh
+python3 scripts/install_skill.py --host hermes --setup
+```
+
+The helper uses `HERMES_HOME` when set. Otherwise it uses `~/.hermes` on macOS/Linux or `%LOCALAPPDATA%/hermes` on native Windows. If a named profile is active but its path is unavailable, the helper asks for that exact location instead of silently installing into the default profile:
+
+```sh
+python3 scripts/install_skill.py --host hermes --profile-home "/path/to/active-profile" --setup
+```
+
+Start a new Hermes session and ask it to list skills, then invoke `/beyondseo`. Check its active profile if the skill is missing. Remote or container terminals need the same source files and a runtime prepared there.
+
+Hermes' URL importer may fetch only directly referenced resources on some versions. Use the complete folder workflow here so the Python package and nested catalog are retained. Hermes has its own skill scanner; review actual findings and keep its policy enabled. [Hermes skills](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills/) · [Native Windows guidance](https://hermes-agent.nousresearch.com/docs/user-guide/windows-native).
+
+## OpenClaw
+
+For one agent, use its actual workspace:
+
+```sh
+python3 scripts/install_skill.py --host openclaw --workspace "/path/to/agent-workspace" --setup
+```
+
+For a shared installation under the current state directory:
+
+```sh
+python3 scripts/install_skill.py --host openclaw --setup
+```
+
+Shared installation uses `OPENCLAW_STATE_DIR/skills/beyondseo`, or `~/.openclaw/skills/beyondseo` with the default state. Confirm discovery with `openclaw skills list` and `openclaw skills check`, then ask that agent to use BeyondSEO.
+
+A sandboxed agent needs Python and optional Chromium **inside its execution environment**, even if they work on the Gateway host. Ask the administrator to provide those capabilities through the supported sandbox setup. BeyondSEO is distributed through this repository; these instructions do not assume a ClawHub listing. [OpenClaw skills](https://docs.openclaw.ai/tools/skills) · [Skill configuration](https://docs.openclaw.ai/tools/skills-config).
+
+## Crawler setup in a hosted environment
+
+The assistant should identify an approved writable/executable runtime directory. The paths below are placeholders that it must replace with actual paths from its environment:
+
+```sh
+python3 "/path/to/beyondseo/scripts/setup.py" --venv "/approved/runtime/beyondseo"
+python3 "/path/to/beyondseo/scripts/run.py" --runtime "/approved/runtime/beyondseo" doctor
+```
+
+External setup builds from a temporary source copy in the selected runtime directory. It does not write build files into the original skill mount. Use the same `--runtime` when crawling. If the environment cannot execute Python or download dependencies, that remains a host capability limitation; moving files arbitrarily or changing security controls is not a supported fix.
+
+For a normal writable local skill folder, `python3 scripts/setup.py` uses its own `.venv`. Add `--http-only` to setup to skip Chromium. With the local installer use `--setup --http-only`. [Detailed runtime troubleshooting](setup.md).
+
+## Know when installation is complete
+
+Ask your assistant:
 
 ```text
-Read SKILL.md and use the bundled BeyondSEO workflow. Check the local engine
-with scripts/run.py doctor, then audit https://example.com. Save client
-evidence outside the skill folder and report any missing capabilities.
+Check my BeyondSEO installation. Can you find the skill in this host's
+Skills list, read its bundled backlink catalog, and run its native doctor?
+Report each result separately. Then crawl https://example.com with a
+maximum of two pages and save the evidence outside the skill folder.
+Tell me whether HTTP and JavaScript rendering actually worked.
 ```
 
-Use the skill picker when the installed skill is available. OpenAI documents standalone desktop skills separately from workspace skills and plugin distribution; a filesystem copy does not establish cloud installation or sharing. [Build skills](https://learn.chatgpt.com/docs/build-skills), [skill controls](https://learn.chatgpt.com/docs/enterprise/skills).
+There are three separate results: **skill registered**, **HTTP ready**, and **browser ready**. A successful command does not prove every requested page was read; inspect the crawl's saved coverage and errors. In HTTP-only mode a missing browser is expected and `doctor` returns a nonzero status.
 
-For cloud Work, use the workspace's supported skill controls if available and confirm that **all supporting files**, Python dependencies and browser execution are accessible. BeyondSEO does not include a dedicated cloud importer. If the worker cannot run the native engine, run it locally and supply the resulting reports and relevant evidence for analysis. Describe that run as analysis of supplied evidence. Do not claim a fresh crawl, native execution or an installed cloud skill merely because a Markdown file was attached.
+## Updates and existing installations
 
-## Check a new host before client work
+Running the same local install again is safe: an identical installation is reported as already installed. After obtaining a newer source folder, add `--update` to the original command. The helper verifies the previous receipt, preserves the old folder under `beyondseo-backups` outside the host's skill discovery folder, and installs a fresh copy. Changed skill files are preserved and require review before replacement. Add `--setup` to prepare the new runtime.
 
-1. Ask it to name the skill and locate its bundled references and launcher.
-2. Run the version and doctor commands from that host's actual execution environment.
-3. Crawl ten permitted public pages to a fresh folder. Check `summary.json`, captured content and any access errors.
-4. Ask for a complete audit and confirm that it includes backlink evidence, named competitor pages and actions with acceptance checks. Missing evidence must be labeled, not filled with invented facts.
-5. Ask a focused writing question and confirm it supplies usable copy without launching an unnecessary full audit.
+Use `--dry-run` to preview without writing or downloading anything. Use `--dest "/exact/path/beyondseo"` for a custom skill location. This is a filesystem installer; it does not save a ChatGPT workspace skill or change host settings. For web uploads, use the host's supported update controls and avoid leaving two enabled versions.
 
-These steps help you confirm that the selected host can load the skill and execute the engine with its current permissions. See [development](development.md) for the repository checks and [setup](setup.md) for runtime troubleshooting.
+## Other assistants
 
-## Host references
+A host that reads the Agent Skills format can load the workflow. Full native crawling additionally requires accessible source files, Python 3.10+, permitted network access and, for rendered pages, Chromium execution. Register the complete folder using that host's documented controls, then run the checks above. Compatibility with the format is not a promise of every agent's save permissions, tools or operating environment.
 
-Installation guidance checked September 14, 2026. These are host documentation links; BeyondSEO does not call their APIs.
+## Package review and support
 
-- [Claude Code skills](https://code.claude.com/docs/en/skills)
-- [Codex and ChatGPT skill authoring](https://learn.chatgpt.com/docs/build-skills)
-- [Hermes skills](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills/)
-- [Hermes Windows paths](https://hermes-agent.nousresearch.com/docs/user-guide/windows-native)
-- [OpenClaw skills](https://docs.openclaw.ai/tools/skills)
+Read [what the package does and accesses](permissions.md). `python3 scripts/validate_skill.py` checks the description, required resources and bundled links without network access. It does not certify a host's safety decision.
 
-Next: [questions you can ask](questions.md), [full capabilities](../references/capabilities.md), or [scoring explained](scoring-explained.md).
+For an installation issue, include the app name, version, operating system or cloud environment, whether saving or execution failed, and the exact redacted error. Do not include passwords, keys or private client reports. [Report an installation issue](https://github.com/beyondtahir/beyondseo/issues/new?template=installation.yml).

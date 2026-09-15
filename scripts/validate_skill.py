@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Check BeyondSEO bundle metadata and local references. This is not a host safety scan."""
+
+import argparse
+import json
+import re
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+from install_skill import bundle_files
+
+
+def validate(source):
+    source = Path(source).resolve()
+    files = bundle_files(source)
+    included = {p.resolve() for p in files}
+    text = (source / "SKILL.md").read_text(encoding="utf-8")
+    match = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", text, re.S)
+    if not match:
+        raise ValueError("SKILL.md must begin with YAML frontmatter.")
+    metadata = {}
+    for field in ("name", "description"):
+        values = re.findall(rf"^{field}: (.+)$", match[1], re.M)
+        if len(values) != 1:
+            raise ValueError(f"SKILL.md needs one plain, single-line {field}.")
+        metadata[field] = values[0].strip()
+    if metadata["name"] != "beyondseo":
+        raise ValueError("The skill name must be beyondseo.")
+    if not 1 <= len(metadata["description"]) <= 200:
+        raise ValueError("Use a description of 1–200 characters for Claude.ai compatibility.")
+    required = (
+        "scripts/run.py",
+        "scripts/setup.py",
+        "src/beyondseo/cli.py",
+        "src/beyondseo/__init__.py",
+        "playbooks/backlink-system/posting-sites.json",
+    )
+    for name in required:
+        if source / name not in included:
+            raise ValueError(f"Required runtime resource is missing: {name}")
+    checked = 0
+    for page in files:
+        if page.suffix.lower() != ".md":
+            continue
+        body = re.sub(r"```.*?```", "", page.read_text(encoding="utf-8"), flags=re.S)
+        links = re.findall(r"\]\(([^)]+)\)", body) + re.findall(r'(?:src|href)="([^"]+)"', body)
+        for link in links:
+            parsed = urlsplit(link.split(' "', 1)[0].strip("<>"))
+            if parsed.scheme or parsed.netloc or not parsed.path:
+                continue
+            checked += 1
+            target = (page.parent / unquote(parsed.path)).resolve()
+            if not target.is_relative_to(source):
+                raise ValueError(f"Reference leaves the bundle: {page.relative_to(source)}: {link}")
+            if target not in included and not any(target in f.parents for f in included):
+                raise ValueError(
+                    f"Reference missing from bundle: {page.relative_to(source)}: {link}"
+                )
+    return {
+        "name": metadata["name"],
+        "description_characters": len(metadata["description"]),
+        "files": len(files),
+        "bytes": sum(p.stat().st_size for p in files),
+        "local_references": checked,
+        "format_check": "passed",
+        "host_registration": "not checked",
+        "host_safety_scan": "not run",
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", nargs="?", type=Path, default=Path(__file__).resolve().parents[1])
+    args = parser.parse_args()
+    try:
+        print(json.dumps(validate(args.source), indent=2))
+    except (OSError, ValueError) as error:
+        parser.exit(2, f"Bundle check failed: {error}\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
