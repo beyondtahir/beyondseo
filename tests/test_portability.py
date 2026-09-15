@@ -203,20 +203,22 @@ class PortabilityTests(unittest.TestCase):
         self.assertIn("No Python runtime", result.stderr)
 
     def test_builder_accepts_relative_output_outside_checkout(self):
-        archive = self.root / "relative-upload.zip"
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(ROOT / "scripts/build_skill.py"),
-                "--out",
-                os.path.relpath(archive, ROOT),
-            ],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue(zipfile.is_zipfile(archive))
+        # A sibling stays on the source volume when Windows temp uses another drive.
+        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+            archive = Path(directory) / "relative-upload.zip"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/build_skill.py"),
+                    "--out",
+                    os.path.relpath(archive, ROOT),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(zipfile.is_zipfile(archive))
 
     def test_launcher_works_from_unrelated_working_directory(self):
         from beyondseo import __version__
