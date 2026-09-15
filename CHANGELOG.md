@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.6.0
+
+- Added shared, bounded discovery for reputation and competitor work: permitted native DuckDuckGo HTML/Bing RSS, recorded host search/browser results, saved HTML and existing source CSVs. Failures, empty results, parser errors, query context and fallback attempts remain visible; duplicates retain provenance.
+- Added reviewed business profiles, profile-derived queries and service/customer-first competitor selection. Offices, markets and languages stay separate; direct competitors, benchmarks, search leads and rejected candidates are labeled.
+- Added evidence-based audit reports with exact URLs, dates, observations, business context, actions, priority rationale and acceptance checks. Failed/partial captures cannot establish missing content or markup.
+- Fixed SVG accessibility titles being counted as document titles. Missing or denied browser runtime no longer aborts usable HTTP audit work.
+- Added separate environment/search diagnostics, installed-browser detection and explicit, idempotent free Chromium setup. Host browser control remains a separately verified capability.
+- Added deterministic discovery, relevance, evidence and browser-setup regressions. The reputation scoring model remains 1.1; no paid service or API key was introduced.
+
+
 ## 2.5.2
 
 - Make printed follow-up commands safe to paste into PowerShell when paths contain spaces or special characters.

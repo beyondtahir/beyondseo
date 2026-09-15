@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import json
 import re
 from pathlib import Path
 from urllib.parse import urlsplit
 
 from .engine import Crawler
-from .evidence import combined_index_signals, missing_content, selected_data
+from .evidence import capture_quality, combined_index_signals, missing_content, selected_data
 from .network import Config, normalize_url, utcnow
 from .review import read_json, read_pages, save_report
 
@@ -22,7 +23,18 @@ def source_rows(path):
         url = normalize_url(row.get("URL") or row.get("url") or "")
         if not url:
             raise ValueError("Source CSV needs a URL column with valid http(s) addresses.")
-        result.setdefault(url, {**row, "URL": url})
+        provenance = row.get("provenance")
+        if isinstance(provenance, str) and provenance:
+            provenance = json.loads(provenance)
+        provenance = provenance or [
+            {k: v for k, v in row.items() if k not in ("URL", "url", "provenance") and v}
+        ]
+        if not isinstance(provenance, list):
+            raise ValueError("Source provenance must be a JSON list.")
+        existing = result.setdefault(url, {**row, "URL": url, "provenance": []})
+        for observation in provenance:
+            if observation not in existing["provenance"]:
+                existing["provenance"].append(observation)
     if not result:
         raise ValueError("Source CSV has no URLs.")
     return list(result.values())
@@ -135,6 +147,7 @@ def verify_source(
         rendered.get("error")
         or rendered.get("content_warning")
         or rendered.get("javascript_errors")
+        or capture_quality(page)["limits"]
     )
     if usable and links:
         verification = "link_observed"

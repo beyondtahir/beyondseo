@@ -274,7 +274,15 @@ class Crawler:
                         if browser_needed and page.get("data") and not page["error"]:
                             from .render import render_page
 
-                            page["rendered"] = render_page(page, self)
+                            try:
+                                page["rendered"] = render_page(page, self)
+                            except Exception as exc:
+                                # Browser failure must not erase usable HTTP evidence.
+                                page["rendered"] = {
+                                    "error": type(exc).__name__ + ": " + str(exc),
+                                    "data": None,
+                                    "fetched_at": utcnow(),
+                                }
                         self.db.execute(
                             "INSERT OR REPLACE INTO pages VALUES (?,?)",
                             (url, json.dumps(page, ensure_ascii=False)),
@@ -629,6 +637,9 @@ class Crawler:
             {"fetches": self.meta("sitemap_evidence") or [], "urls": sitemap_rows},
         )
         write_json(self.out / "issues.json", issues)
+        from .findings import material_findings
+
+        write_json(self.out / "findings.json", material_findings(issues, pages, summary=summary))
         from .review import export_readiness
 
         export_readiness(

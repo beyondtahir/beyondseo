@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from urllib.parse import parse_qs, urlencode, urljoin, urlsplit
-
-from bs4 import BeautifulSoup
+from urllib.parse import urlencode, urlsplit
 
 from .backlinks import check_sources
 from .engine import write_csv
@@ -449,48 +447,59 @@ def import_search_html(paths, target, query, captured_at, out, engine="Google"):
     target = normalize_url(target)
     if not paths or len(paths) > 20 or not target or not query.strip() or not captured_at.strip():
         raise ValueError("Supply 1–20 saved result pages, target, query and capture timestamp.")
-    rows = {}
-    for index, path in enumerate(paths, 1):
-        soup = BeautifulSoup(Path(path).read_text(encoding="utf-8"), "html.parser")
-        for order, heading in enumerate(soup.select("h3"), 1):
-            anchor = heading.find_parent("a", href=True)
-            if not anchor:
-                continue
-            raw = anchor["href"]
-            if raw.startswith("/url?") or "google.com/url?" in raw:
-                params = parse_qs(urlsplit(raw).query)
-                raw = (params.get("q") or params.get("url") or [""])[0]
-            url = normalize_url(urljoin("https://www.google.com/", raw))
-            h = host(url)
-            if (
-                not url
-                or h == host(target)
-                or h.endswith("." + host(target))
-                or h == "google.com"
-                or h.endswith(".google.com")
-            ):
-                continue
-            rows.setdefault(
-                url,
-                {
-                    "URL": url,
-                    "engine": engine,
-                    "query": query,
-                    "search_page": index,
-                    "result_order": order,
-                    "observed_at": captured_at,
-                    "source_snapshot": Path(path).name,
-                },
-            )
+    from .discovery import discover
+
     out = Path(out)
     if out.exists() and any(out.iterdir()):
         raise ValueError("Choose a new search-import folder.")
-    out.mkdir(parents=True)
-    write_csv(out / "sources.csv", SOURCE_FIELDS, list(rows.values()))
+    original_time = captured_at
+    if len(captured_at) == 10:
+        captured_at += "T00:00:00+00:00"
+    provider = {"Google": "google", "Bing": "bing", "DuckDuckGo": "duckduckgo-html"}.get(
+        engine, engine.lower()
+    )
+    discovered = discover(
+        [],
+        out,
+        target=target,
+        offline=True,
+        saved=[
+            {"path": str(path), "provider": provider, "query": query, "captured_at": captured_at}
+            for path in paths
+        ],
+    )
+    rows = []
+    for candidate in discovered["candidates"]:
+        provenance = candidate["provenance"]
+        for observation in provenance:
+            observation["search_page"] = next(
+                (
+                    i
+                    for i, path in enumerate(paths, 1)
+                    if str(path) == observation.get("source_snapshot")
+                ),
+                None,
+            )
+            observation["timestamp_precision"] = "date" if len(original_time) == 10 else "timestamp"
+        first = provenance[0]
+        rows.append(
+            {
+                "URL": candidate["url"],
+                "engine": engine,
+                "query": query,
+                "search_page": first["search_page"],
+                "result_order": first.get("result_order"),
+                "observed_at": original_time,
+                "source_snapshot": first.get("source_snapshot"),
+                "provenance": provenance,
+            }
+        )
+    write_csv(out / "sources.csv", SOURCE_FIELDS + ["provenance"], rows)
     result = {
         "input_kind": "supplied_search_html",
         "engine_declared_by_operator": engine,
         "snapshots_imported": len(paths),
+        "attempts": discovered["attempts"],
         "candidate_urls": len(rows),
         "captured_at_supplied": captured_at,
         "note": "Extracted result-heading links from supplied HTML. Result order is not a verified search rank; snippets do not establish mentions or backlinks. No live search was performed by this command.",

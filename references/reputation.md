@@ -6,7 +6,7 @@ Read [scoring explained](../docs/scoring-explained.md) for the plain-language in
 
 ## Discover, verify, assess
 
-Start with a five-page budget for `"Brand" -site:example.com`. Use available browser/search access and follow actual results. Record engine, query, date, pages inspected and candidate URLs. Search position and snippets supply discovery context only.
+Use [shared discovery](../docs/discovery-and-competitors.md) for `"Brand" -site:example.com`, named-domain mentions and relevant reputation queries. Detect host search capabilities and use supported native fallbacks. A five-page request is only a budget; never count planned pages as inspected. Record engine, query, date, pages inspected and candidate URLs. Search position and snippets supply discovery context only.
 
 The native crawler requests each source, follows a bounded chain of observed redirect hosts, checks robots and renders scripted content where needed. A link must point to the target host or www alias. A brand mention must appear in captured text. Unreadable pages remain unverified. Review ambiguous names before attributing them to the company.
 
@@ -17,7 +17,10 @@ No paid metric, crawling account or crawling service is required. Search discove
 ## Commands
 
 ```sh
-beyondseo search-plan --target https://example.com --brand "Example" --pages 5 --out runs/discovery
+beyondseo discover --query '"Example" -site:example.com' --target https://example.com --out runs/discovery
+
+# Optional legacy Google navigation plan; this command performs no searches.
+beyondseo search-plan --target https://example.com --brand "Example" --pages 5 --out runs/navigation
 
 # Import saved result HTML in actual page order.
 beyondseo search-import --html page1.html page2.html --target https://example.com \
@@ -33,7 +36,7 @@ beyondseo reputation --evidence runs/reputation/verification/backlinks.json \
   --target https://example.com --brand "Example" --out runs/reassessment
 ```
 
-The importer reads result-heading links and ordinary Google redirect wrappers, excludes the target site and deduplicates URLs. Query, capture time and engine are operator-supplied provenance, not independently authenticated history. For browser DOM extracts or other source lists, supply a CSV directly and retain the discovery evidence alongside it.
+The importer supports Google/Bing result HTML, DuckDuckGo HTML and Bing RSS, excludes the target site, and consolidates URLs without dropping provenance. Recognized empty results, parser failures and access failures are distinct. Query, capture time and engine are operator-supplied provenance, not independently authenticated history. For browser DOM extracts or other source lists, supply a CSV directly and retain the discovery evidence alongside it.
 
 CSV requires `URL`. Discovery fields: `engine`, `query`, `search_page`, `result_order`, `observed_at`, `source_snapshot`. Search-plan creates a blank template. `--alias` accepts real brand variants; it does not perform fuzzy entity matching.
 

@@ -31,7 +31,10 @@ flowchart LR
 | `src/beyondseo/evidence.py` | Shared representation selection, raw noindex preservation and missing-content candidates |
 | `src/beyondseo/backlinks.py` | Source verification, late-link rendering and bounded redirect follow-ups |
 | `src/beyondseo/reputation.py` | Search plans/imports, source review rubric, grouping and estimated reputation reports |
-| `src/beyondseo/doctor.py` | Local environment checks |
+| `src/beyondseo/discovery.py` | Budgeted provider adapters, host/saved imports, provenance, deduplication and cache |
+| `src/beyondseo/research.py` | Evidence packets, validated profile reviews, query generation and competitor gates |
+| `src/beyondseo/findings.py` | Evidence, business impact and acceptance contracts for audit findings |
+| `src/beyondseo/doctor.py` | Separate runtime and optional target/search probes |
 | `playbooks/` | SEO methods, templates, examples and industry guidance |
 | `tests/` | Local HTTP/browser fixtures and regression cases |
 

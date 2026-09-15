@@ -6,7 +6,7 @@ import json
 import re
 from pathlib import Path
 
-from .evidence import missing_content, selected_data
+from .evidence import capture_quality, missing_content, selected_data
 from .extract import index_signals
 from .network import RobotsRules, origin, utcnow
 
@@ -38,10 +38,16 @@ def readiness(pages, summary, robots, sitemaps):
     listed = {r["url"] for r in sitemaps.get("urls", [])}
     for page in pages:
         data, representation = selected_data(page)
+        quality = capture_quality(page)
         url = page.get("final_url") or page["url"]
         observations = []
 
         def add(code, observation, why, action):
+            if (
+                code in {"main_content_empty", "title_missing", "h1_missing", "schema_review"}
+                and not quality["absence_supported"]
+            ):
+                return
             observations.append(
                 {
                     "code": code,
@@ -59,6 +65,13 @@ def readiness(pages, summary, robots, sitemaps):
                 "Check access.json and the response, then repeat this page when access is available.",
             )
         else:
+            if quality["limits"]:
+                add(
+                    "capture_incomplete",
+                    "; ".join(quality["limits"]),
+                    "A partial capture cannot establish missing answers or markup.",
+                    "Resolve the recorded capture limitation and recapture this URL.",
+                )
             missing = missing_content(page)
             if missing:
                 add(

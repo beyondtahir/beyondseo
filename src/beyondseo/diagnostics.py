@@ -44,6 +44,79 @@ def challenge_signal(headers, body):
     return None
 
 
+def failure_detail(error="", *, status=0, headers=None, body=b"", context="network"):
+    """Classify observed evidence, without attributing a generic failure to a provider."""
+    text = str(error)
+    lower = text.lower()
+    code = None
+    if "discovery_request_budget_exhausted" in lower:
+        code = "budget_exhausted"
+    elif "robots_rule_disallowed" in lower:
+        code = "robots_restricted"
+    elif lower.startswith("robots_"):
+        code = "robots_unavailable"
+    elif "network access is disabled" in lower or "network access denied by" in lower:
+        code = "environment_network_restricted"
+    elif (
+        "permissionerror" in lower
+        or "permission denied" in lower
+        or "operation not permitted" in lower
+    ):
+        code = "execution_denied" if context == "execution" else "permission_denied"
+    elif "tool unavailable" in lower or "tool not available" in lower:
+        code = "tool_unavailable"
+    elif "modulenotfounderror" in lower or "no module named" in lower:
+        code = "missing_dependency"
+    elif "executable doesn't exist" in lower or "browser executable not found" in lower:
+        code = "browser_runtime_missing"
+    elif (
+        "gaierror" in lower
+        or "name or service not known" in lower
+        or "nodename nor servname" in lower
+    ):
+        code = "dns_failure"
+    elif (
+        "sslerror" in lower
+        or "sslcertverificationerror" in lower
+        or "certificate_verify_failed" in lower
+    ):
+        code = "tls_failure"
+    elif "timeouterror" in lower or "timed out" in lower or "deadline exceeded" in lower:
+        code = "connection_timeout"
+    elif any(
+        s in lower
+        for s in (
+            "connectionrefusederror",
+            "connectionreseterror",
+            "network is unreachable",
+            "connect failed",
+        )
+    ):
+        code = "connection_failure"
+    elif status == 429:
+        code = "provider_rate_limited"
+    elif challenge_signal(headers or {}, body) or "challenge_response" in lower:
+        code = "provider_challenge"
+    elif status in (401, 403):
+        code = "http_access_denied"
+    elif status >= 400:
+        code = "http_error"
+    elif text:
+        code = "unknown"
+    elif not 200 <= status < 300:
+        code = "unknown"
+    if not code:
+        return None
+    return {
+        "code": code,
+        "evidence": text or f"HTTP {status}",
+        "http_status": status or None,
+        "cause": "unknown"
+        if code in ("unknown", "http_access_denied", "permission_denied")
+        else code,
+    }
+
+
 def classify_access(status, headers, body, error=""):
     if error in ("robots_rule_disallowed", "robots_unavailable", "robots_scope_limited"):
         explanations = {
@@ -89,7 +162,13 @@ def classify_access(status, headers, body, error=""):
             "evidence": f"Server returned HTTP {status}; the response alone does not identify the reason.",
         }
     if error:
-        return {"code": "request_failed", "confidence": "observed", "evidence": error}
+        detail = failure_detail(error, status=status, headers=headers, body=body)
+        return {
+            "code": "request_failed",
+            "confidence": "observed",
+            "evidence": error,
+            "failure_detail": detail,
+        }
     if status >= 500:
         return {
             "code": "server_error",
