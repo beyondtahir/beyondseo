@@ -17,7 +17,7 @@ def build(source, output):
     report = validate(source)
     if output.suffix.lower() != ".zip":
         raise ValueError("Choose an output filename ending in .zip.")
-    if output.is_relative_to(source):
+    if output.resolve().is_relative_to(source):
         raise ValueError("Keep release archives outside the source folder.")
     checksum = output.with_suffix(output.suffix + ".sha256")
     if output.exists() or output.is_symlink() or checksum.exists() or checksum.is_symlink():
