@@ -57,7 +57,8 @@ def extract(html, url, headers=None, selectors=None):
     def content(node):
         return clean(node.get_text(" ", strip=True))
 
-    titles = [content(t) for t in soup.find_all("title")]
+    # SVG/MathML title elements label graphics; they are not document titles.
+    titles = [content(t) for t in soup.find_all("title") if not t.find_parent(["svg", "math"])]
     metas = {}
     for m in soup.find_all("meta"):
         key = str(m.get("name") or m.get("property") or "").lower()
@@ -232,13 +233,27 @@ def index_signals(data, headers, status, final_url):
 
 
 def page_findings(page):
-    from .evidence import combined_index_signals, missing_content, selected_data
+    from .evidence import capture_quality, combined_index_signals, missing_content, selected_data
 
     issues = []
     url = page["url"]
     d, representation = selected_data(page)
+    quality = capture_quality(page)
 
     def add(code, severity, evidence, action, confidence="observed"):
+        if (
+            code
+            in {
+                "missing_title",
+                "missing_description",
+                "missing_h1",
+                "canonical_not_declared",
+                "missing_image_alt",
+                "missing_content_candidate",
+            }
+            and not quality["absence_supported"]
+        ):
+            return
         issues.append(
             {
                 "url": url,
@@ -277,6 +292,13 @@ def page_findings(page):
         )
     if not d:
         return issues
+    if quality["limits"]:
+        add(
+            "capture_incomplete",
+            "medium",
+            "; ".join(quality["limits"]),
+            "Inspect access and browser evidence, then recapture this URL before assessing missing content.",
+        )
     missing = missing_content(page)
     if missing:
         add(

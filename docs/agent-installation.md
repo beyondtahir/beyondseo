@@ -68,7 +68,7 @@ The package validator does not call Work's save service or safety scanner. There
 
 This route also covers Claude Cowork through its Skills controls.
 
-1. Download **beyondseo-2.5.2-skill.zip** from the [release assets](https://github.com/beyondtahir/beyondseo/releases/tag/v2.5.2). Use the named skill asset; GitHub's automatically generated source ZIP uses a different enclosing folder name.
+1. Download **beyondseo-2.6.0-skill.zip** from the [release assets](https://github.com/beyondtahir/beyondseo/releases/tag/v2.6.0). Use the named skill asset; GitHub's automatically generated source ZIP uses a different enclosing folder name.
 2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
 3. Open **Customize → Skills → + → Create skill → Upload a skill**, then select the ZIP.
 4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”
@@ -188,3 +188,7 @@ A host that reads the Agent Skills format can load the workflow. Full native cra
 Read [what the package does and accesses](permissions.md). `python3 scripts/validate_skill.py` checks the description, required resources and bundled links without network access. It does not certify a host's safety decision.
 
 For an installation issue, include the app name, version, operating system or cloud environment, whether saving or execution failed, and the exact redacted error. Do not include passwords, keys or private client reports. [Report an installation issue](https://github.com/beyondtahir/beyondseo/issues/new?template=installation.yml).
+
+## Search and browser readiness after installation
+
+Run `beyondseo doctor` in the actual task runtime. Reuse an available host browser when appropriate; `beyondseo browser-setup` checks first and installs missing free local Chromium components only when requested. See [browser-assisted Google search](browser-search.md) and [diagnostics by environment](discovery-diagnostics.md). Installing a skill does not itself grant browser control or network permission.

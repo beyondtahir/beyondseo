@@ -19,6 +19,9 @@ Start with the task you want to complete. Each guide connects the commands, evid
 |---|---|
 | [CLI reference](../references/crawler.md) | Commands, arguments, scope, limits and evidence outputs |
 | [Browser behavior](browser.md) | HTTP versus JavaScript, waiting, scrolling, public dependencies and access failures |
+| [Discovery and competitor research](discovery-and-competitors.md) | Native and host fallbacks, reviewed business profiles, relevant competitors and evidence-based findings |
+| [Browser-assisted search](browser-search.md) | Reuse a host browser, Google navigation and optional free Chromium setup |
+| [Discovery diagnostics](discovery-diagnostics.md) | Distinguish installation, execution, network, provider and parsing failures |
 | [Architecture](architecture.md) | Fetching, extraction, queue persistence, modules and Python usage |
 | [Capability map](../references/capabilities.md) | What is implemented, what is guided analysis and what requires additional evidence |
 

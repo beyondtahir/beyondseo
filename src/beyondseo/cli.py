@@ -124,7 +124,18 @@ def parser():
         p.add_argument("--no-color", action="store_true")
     p = sub.add_parser("report", help="Regenerate reports from an existing local crawl database.")
     p.add_argument("--out", type=Path, required=True)
-    sub.add_parser("doctor", help="Check Python, installed libraries and local Chromium.")
+    p = sub.add_parser(
+        "doctor", help="Check runtime; optionally probe target and search separately."
+    )
+    p.add_argument("--target")
+    p.add_argument("--query")
+    p.add_argument("--out", type=Path)
+    from .research_cli import add_commands
+
+    add_commands(sub)
+    sub.add_parser(
+        "browser-setup", help="Check first; install missing free Chromium support in this runtime."
+    )
     p = sub.add_parser("readiness", help="Explain search and answer readiness from saved evidence.")
     p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("compare", help="Compare two snapshots of the same website.")
@@ -230,10 +241,16 @@ class OutputLock:
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.command == "browser-setup":
+        from .doctor import prepare_browser
+
+        result = prepare_browser()
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] in ("ready", "already_ready") else 1
     if args.command == "doctor":
         from .doctor import check_environment
 
-        return check_environment()
+        return check_environment(args.target, args.query, args.out)
     if not importlib.util.find_spec("bs4"):
         print(
             "Install local dependencies from the repository: python -m pip install -e .",
@@ -245,6 +262,12 @@ def main(argv=None):
 
     crawler = None
     try:
+        if args.command in ("discover", "profile", "competitors", "audit"):
+            from .research_cli import execute
+
+            result = execute(args)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0
         if args.command in (
             "readiness",
             "compare",
@@ -384,22 +407,6 @@ def main(argv=None):
                     BeautifulSoup("", "html.parser").select(config.wait_for_selector)
                 except Exception as e:
                     raise ValueError("Invalid wait selector: " + str(e)) from e
-            if config.render_mode != "http":
-                if not importlib.util.find_spec("playwright"):
-                    raise ValueError(
-                        "Rendering needs: python -m pip install -e '.[browser]' and: python -m playwright install chromium"
-                    )
-                from playwright.sync_api import sync_playwright
-
-                try:
-                    with sync_playwright() as p:
-                        browser = p.chromium.launch(headless=True)
-                        browser.close()
-                except Exception as e:
-                    raise ValueError(
-                        "Local Chromium is unavailable. Run: python -m playwright install chromium. "
-                        + str(e)
-                    ) from e
         with OutputLock(args.out):
             if args.command == "watch":
                 from .monitor import watch

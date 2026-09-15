@@ -3,6 +3,33 @@
 import re
 
 
+def capture_quality(page):
+    """Positive observations can survive a partial capture; absence claims cannot."""
+    data, representation = selected_data(page)
+    rendered = page.get("rendered") or {}
+    readiness = rendered.get("readiness") or {}
+    usable = bool(data) and not page.get("error") and 200 <= page.get("status", 0) < 300
+    limits = []
+    if not usable:
+        limits.append("No successful usable page capture.")
+    for key in ("error", "content_warning", "javascript_errors"):
+        if rendered.get(key):
+            limits.append("Browser " + key + ": " + str(rendered[key]))
+    if readiness.get("selector_error") or readiness.get("deadline_reached"):
+        limits.append("Browser readiness was incomplete.")
+    if representation == "http" and data.get("script_count") and data.get("word_count", 0) < 80:
+        limits.append("Possible JavaScript shell; rendered content has not been established.")
+    return {
+        "usable": usable,
+        "absence_supported": usable and not limits,
+        "representation": representation,
+        "limits": limits,
+        "captured_at": (rendered.get("fetched_at") or page.get("fetched_at"))
+        if representation == "rendered"
+        else page.get("fetched_at"),
+    }
+
+
 def selected_data(page):
     rendered = page.get("rendered") or {}
     data = rendered.get("data")
@@ -30,7 +57,7 @@ def combined_index_signals(page):
 
 def missing_content(page):
     """Conservative English missing-content candidate, not an indexing diagnosis."""
-    if page.get("error") or not 200 <= page.get("status", 0) < 300:
+    if not capture_quality(page)["absence_supported"]:
         return None
     data, representation = selected_data(page)
     main = re.sub(r"\s+", " ", data.get("main_text", "")).strip()
