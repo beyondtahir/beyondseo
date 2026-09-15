@@ -79,6 +79,23 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 
 For Claude uploads, use this named release asset: it contains the required `beyondseo/` folder. Windows users can also extract it and follow the local assistant guide without installing Git. ChatGPT Work has its own skill-save workflow; the guide includes a copy-paste installation request and help for save errors and runtime permissions.
 
+### Prefer to let your assistant install it?
+
+Paste this into your assistant:
+
+```text
+Install BeyondSEO from https://github.com/beyondtahir/beyondseo in the
+assistant I am using. Follow docs/agent-installation.md for this host.
+Use the complete skill bundle, register it through this app's supported
+skill controls, and confirm it appears in my Skills list.
+Set up the native crawler in a permitted execution environment and run
+doctor. Report skill registration, HTTP readiness and browser readiness
+separately. If a step fails, show the exact error and resolve that step.
+
+```
+
+Use the [step-by-step guide](docs/agent-installation.md) for the upload route or exact CLI command for your app. Saving a skill and preparing its crawler are separate steps.
+
 ## Run the crawler from a terminal
 
 You need **Python 3.10+** and Git. Python **3.12** is recommended. Run these commands in a terminal:

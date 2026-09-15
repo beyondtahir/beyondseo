@@ -12,6 +12,23 @@ Choose the app you actually use. **Claude on the web, Claude Code and ChatGPT Wo
 | OpenClaw | [Choose your agent's workspace](#openclaw) |
 | Another assistant | [Check its capabilities](#other-assistants) |
 
+## Easiest start: paste the GitHub URL
+
+In Work, Cowork or a local coding assistant with installation tools, paste:
+
+```text
+Install BeyondSEO from https://github.com/beyondtahir/beyondseo in the
+assistant I am using. Follow docs/agent-installation.md for this host.
+Use the complete skill bundle, register it through this app's supported
+skill controls, and confirm it appears in my Skills list.
+Set up the native crawler in a permitted execution environment and run
+doctor. Report skill registration, HTTP readiness and browser readiness
+separately. If a step fails, show the exact error and resolve that step.
+
+```
+
+This asks the assistant to do the setup for you. It can use its supported importer or download the complete bundle and follow the matching steps below. Confirm that the skill is actually saved; reading a GitHub page alone does not install it. If the app offers manual uploads, use the ready-made ZIP. You do not need to install another SEO plugin.
+
 ## ChatGPT Work
 
 Paste this into Work:
