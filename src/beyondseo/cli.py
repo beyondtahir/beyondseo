@@ -422,7 +422,7 @@ def main(argv=None):
             if args.command != "report":
                 if args.quiet:
                     crawler.log = lambda _: None
-                elif sys.stderr.isatty() and not args.no_color and "NO_COLOR" not in os.environ:
+                elif sys.stderr.isatty() and not args.no_color and os.getenv("NO_COLOR") is None:
                     try:
                         from colorama import Fore, Style, just_fix_windows_console
 

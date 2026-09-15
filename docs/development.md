@@ -34,4 +34,15 @@ The [repository workflow](https://github.com/beyondtahir/beyondseo/actions/workf
 
 Use [the posting guide](backlink-posting-guide.md) for the optional PDF importer and catalog structure. Preserve original source rows, unverified metric labels and dated primary-source guidance. Review exact posting routes, eligibility and content rules before qualifying an entry. Keep account-specific or client-specific observations outside the shared catalog.
 
+## Build a skill upload asset
+
+From reviewed source, run:
+
+```sh
+python3 scripts/validate_skill.py
+python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.5.1-skill.zip
+```
+
+The builder keeps the complete runtime and resources under one `beyondseo/` folder and emits a SHA-256 sidecar. Developer tests and local environments stay outside the bundle. Existing output archives are preserved. Check that the archive, tag and version fields describe the same source before attaching the ZIP and checksum to a release. Runtime tests, a format check and a host's installation decision establish different things; report their results separately.
+
 See [Contributing](../CONTRIBUTING.md) for change descriptions and [Security](../SECURITY.md) for reporting vulnerabilities.

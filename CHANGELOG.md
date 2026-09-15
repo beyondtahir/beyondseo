@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.1
+
+- Add a complete upload bundle with a matching `beyondseo/` folder, concise metadata and a SHA-256 checksum.
+- Add host-specific installation commands, profile/workspace options, repeat-install detection and backed-up updates.
+- Support a separate approved runtime directory for hosted or read-only skill mounts.
+- Separate skill registration from HTTP/browser readiness, with specific guidance for HTTP 422, permission and scan errors.
+- Keep developer fixtures in the repository; distribute the runtime, playbooks, catalog and documentation in the skill bundle.
+- Clarify package permissions and use dedicated credential paths in the optional hosting example.
+
 ## 2.5.0
 
 - Added a 206-entry publishing library with 241 traceable source rows and documented posting guidance for 22 destinations.
