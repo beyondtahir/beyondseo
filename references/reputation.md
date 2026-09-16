@@ -120,3 +120,9 @@ Use friendly language: “We found three pages linking to you in the sources we 
 The score does not measure sentiment, satisfaction, traffic, conversions, indexing or AI citations. Improving it is not a substitute for useful content, credible business proof and measured customer outcomes.
 
 References: [Google link attributes](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links), [crawlable links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable), [spam policies](https://developers.google.com/search/docs/essentials/spam-policies).
+
+## Deeper competitor comparisons
+
+Use [deep research](../docs/deep-research.md) for a shared five-query-family plan, wider source coverage and evidence-matched cohort comparison. `compare-reputation` recalculates model 1.1 from verified sources, carries all discovered candidates into coverage and withholds ordinal positions for insufficient or unequal evidence. Its position is within the sampled cohort, never a Google rank or AI-visibility score. The main report should explain standing and priorities; source URLs remain available in the evidence appendix.
+
+Native first-result responses preserve their actual page identifier. All retained provenance contributes to the recorded search-sample count without counting duplicate observations twice. Unknown host pagination stays unknown. Strongest source examples are ordered by supported quality points and review completeness; an optimistic midpoint for unknown dimensions does not make a source strong. The headline model's weights remain unchanged.

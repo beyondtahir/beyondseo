@@ -17,7 +17,7 @@ from beyondseo import __version__
 from beyondseo.diagnostics import challenge_signal
 from beyondseo.engine import Crawler, csv_value, parse_sitemap
 from beyondseo.extract import extract, index_signals
-from beyondseo.network import Config, RobotsRules, Transport, addresses, normalize_url
+from beyondseo.network import Config, RobotsCache, RobotsRules, Transport, addresses, normalize_url
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -141,6 +141,43 @@ class Handler(BaseHTTPRequestHandler):
 
 
 class CrawlerTests(unittest.TestCase):
+    def test_www_scope_is_explicit_and_does_not_include_other_hosts(self):
+        strict = Config("https://example.com")
+        self.assertFalse(strict.in_scope("https://www.example.com/robots.txt"))
+        expanded = Config("https://example.com", include_www=True)
+        self.assertTrue(expanded.in_scope("https://www.example.com/robots.txt"))
+        self.assertFalse(expanded.in_scope("https://other.example.com"))
+        self.assertFalse(expanded.in_scope("https://example.com.attacker.test"))
+        self.assertEqual(expanded.robots_policy, "respect")
+        reverse = Config("https://www.example.com", include_www=True)
+        self.assertTrue(reverse.in_scope("https://example.com"))
+        for address in ("http://127.0.0.1", "http://[::1]", "http://localhost"):
+            self.assertEqual(Config(address, include_www=True).allow_hosts, [])
+
+    def test_www_redirect_recovery_still_enforces_destination_robots(self):
+        calls = []
+
+        def response(url, **_):
+            calls.append(url)
+            if url == "https://example.com/robots.txt":
+                return 301, {"location": "https://www.example.com/robots.txt"}, b""
+            if url == "https://www.example.com/robots.txt":
+                return 200, {}, b"User-agent: *\nDisallow: /private\n"
+            if url.startswith("https://example.com/"):
+                return 301, {"location": url.replace("example.com", "www.example.com")}, b""
+            return 200, {"content-type": "text/html"}, b"<h1>Public service</h1>"
+
+        transport = Transport(Config("https://example.com", include_www=True, delay=0))
+        robots = RobotsCache(transport)
+        with patch.object(transport, "once", side_effect=response):
+            public = transport.fetch("https://example.com/service", allowed=robots.allowed)
+            denied = transport.fetch("https://example.com/private", allowed=robots.allowed)
+        self.assertEqual(public.status, 200)
+        self.assertEqual(public.final_url, "https://www.example.com/service")
+        self.assertEqual(denied.error, "robots_rule_disallowed")
+        self.assertNotIn("https://www.example.com/private", calls)
+        self.assertNotIn("https://example.com/private", calls)
+
     @classmethod
     def setUpClass(cls):
         cls.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)

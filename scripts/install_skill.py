@@ -189,6 +189,13 @@ def install(source, destination, dry_run=False, update=False):
         (destination / "beyondseo-install.json").write_text(
             json.dumps({"files_sha256": manifest}, indent=2) + "\n", encoding="utf-8"
         )
+        # Keep a local runtime at the same absolute path so its launchers remain
+        # valid. Copy it from the backup; do not consume the rollback copy or
+        # follow a runtime-directory symlink into an external environment.
+        previous_runtime = backup / ".venv" if backup else None
+        if previous_runtime and previous_runtime.is_dir() and not previous_runtime.is_symlink():
+            shutil.copytree(previous_runtime, destination / ".venv", symlinks=True)
+            result["runtime_preserved"] = True
     except Exception:
         # Only this invocation's newly created directory can reach this cleanup.
         if created:
@@ -267,7 +274,9 @@ def main():
                 )
                 return completed.returncode
         else:
-            print("Prepare the crawler when needed:\n" + shell_command(command))
+            if result.get("runtime_preserved"):
+                print("Existing local runtime preserved. Run scripts/run.py doctor to check it.")
+            print("Prepare or refresh crawler dependencies when needed:\n" + shell_command(command))
         print("Open a new assistant session and check that BeyondSEO appears in its skill list.")
     return 0
 

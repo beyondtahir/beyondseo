@@ -22,6 +22,7 @@ The report separates skill registration (unknown to Python; confirm in the host)
 | HTTP 429 | Respect the provider's limit; use another permitted source or return later. No retry loop. |
 | Robots disallow | Do not fetch that search URL. Another permitted source or a supplied snapshot can be used. |
 | Robots policy unavailable | Inspect the nested robots fetch status/error. No disallow rule has been established. |
+| `robots_scope_limited` / `redirect_out_of_scope` | Inspect the recorded redirect. For a normal site audit, `--include-www` covers the exact www/non-www pair while preserving robots and public-address checks. Use a fresh output folder when changing scope. Other domains require explicit scope review; this is not a robots-disallow override. |
 | Tool unavailable | Use a supported native method or supplied evidence. Do not invent a host tool. |
 | Successful empty / own-site-only results | Report `empty_results` / `no_relevant_results`; refine a relevant query or try another source. This is not a network failure. |
 | Response received, parser failed | Retain the response snapshot and SHA-256; inspect its structure. Do not report zero backlinks. |

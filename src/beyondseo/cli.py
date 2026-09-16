@@ -46,6 +46,11 @@ def parser():
             help="Additional exact website host to crawl (e.g. www.example.com).",
         )
         p.add_argument(
+            "--include-www",
+            action="store_true",
+            help="Include the seed host's exact www/non-www counterpart; retain robots and address checks.",
+        )
+        p.add_argument(
             "--exclude", action="append", default=[], help="Regex against full normalized URL."
         )
         p.add_argument(
@@ -124,6 +129,17 @@ def parser():
         p.add_argument("--no-color", action="store_true")
     p = sub.add_parser("report", help="Regenerate reports from an existing local crawl database.")
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser(
+        "present", help="Export an offline BeyondSEO-branded HTML/PDF client report."
+    )
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--input", type=Path, help="Reviewed report-content JSON.")
+    source.add_argument(
+        "--audit", type=Path, help="Existing audit.json; preserve its findings and limits."
+    )
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--format", choices=["both", "html", "pdf"], default="both")
+    p.add_argument("--overwrite", action="store_true")
     p = sub.add_parser(
         "doctor", help="Check runtime; optionally probe target and search separately."
     )
@@ -251,6 +267,24 @@ def main(argv=None):
         from .doctor import check_environment
 
         return check_environment(args.target, args.query, args.out)
+    if args.command == "present":
+        from .reports import export_report, from_audit
+
+        try:
+            source = args.input or args.audit
+            if source.stat().st_size > 5_000_000:
+                raise ValueError(
+                    "Report input exceeds 5 MB; split the report or keep raw evidence in a separate appendix."
+                )
+            data = json.loads(source.read_text(encoding="utf-8"))
+            if args.audit:
+                data = from_audit(data)
+            result = export_report(data, args.out, args.format, args.overwrite)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print("Report export failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result["status"] == "complete" else 1
     if not importlib.util.find_spec("bs4"):
         print(
             "Install local dependencies from the repository: python -m pip install -e .",
@@ -262,7 +296,14 @@ def main(argv=None):
 
     crawler = None
     try:
-        if args.command in ("discover", "profile", "competitors", "audit"):
+        if args.command in (
+            "discover",
+            "profile",
+            "competitors",
+            "audit",
+            "research-plan",
+            "compare-reputation",
+        ):
             from .research_cli import execute
 
             result = execute(args)
@@ -370,6 +411,7 @@ def main(argv=None):
                 max_sitemaps=args.max_sitemaps,
                 max_query_variants=args.max_query_variants,
                 allow_hosts=args.allow_host,
+                include_www=args.include_www,
                 exclude=args.exclude,
                 allow_private=args.allow_private,
                 sitemaps=not args.no_sitemaps,

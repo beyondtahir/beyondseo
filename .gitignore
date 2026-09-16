@@ -33,3 +33,10 @@ private/
 /reports/
 /trial-runs/
 /validation-runs/
+/host-validation*/
+/deep-research-validation*/
+/acceptance-runs/
+/captures/
+/transcripts/
+*.har
+*.trace.zip

@@ -40,6 +40,7 @@ WEIGHTS = {
     "evidence_quality": 5,
 }
 NON_AGENCIES = {"directory", "marketplace", "publisher", "training", "software_product"}
+NON_SPECIFIC_MARKETS = {"international", "global", "worldwide", "remote", "online", "all"}
 
 
 def host(url):
@@ -186,6 +187,7 @@ def profile(crawl, out, brief=None, review=None):
             unknowns=review.get("unknowns", []) + [k for k in FIELDS if not result["fields"][k]],
             contradictions=review.get("contradictions", []),
             confidence=review.get("confidence", "medium"),
+            search_queries=review.get("search_queries", []),
         )
         for field, claims in brief.get("fields", {}).items():
             if field in FIELDS and claims and result["fields"][field]:
@@ -217,41 +219,94 @@ def values(profile, field, use_brief=False):
 
 
 def research_queries(profile):
+    """Use reviewed buyer wording; legacy profiles produce explicitly unreviewed seeds.
+
+    Service matching keys are for business comparison, not keyword demand. The
+    reviewing agent supplies natural category/service/question queries in the
+    requested language, grounded in the profile or explicit brief.
+    """
     fields = profile["fields"]
     brief = profile.get("brief", {}).get("fields", {})
-    markets = brief.get("markets") or fields["markets"]
+    markets = brief.get("markets") or fields.get("markets", [])
+    markets = [m for m in markets if m["key"].casefold() not in NON_SPECIFIC_MARKETS]
     languages = (
-        brief.get("search_languages") or fields["search_languages"] or fields["website_languages"]
+        brief.get("search_languages")
+        or fields.get("search_languages")
+        or fields.get("website_languages", [])
     )
-    services = fields["core_services"][:4]
-    customers = fields["customer_types"][:2]
+    common = {
+        "purpose": "competitor_discovery_hypothesis",
+        "demand": "unmeasured",
+        "localization": "Requested context only; provider coverage must be reported separately.",
+    }
+    reviewed = profile.get("search_queries", [])
+    if not isinstance(reviewed, list) or len(reviewed) > 20:
+        raise ValueError("search_queries must be a list of at most 20 reviewed queries.")
     queries = []
-    for service in services:
+    for item in reviewed:
+        if not isinstance(item, dict):
+            raise ValueError("Each reviewed search query must be an object.")
+        query = item.get("query")
+        if not isinstance(query, str) or not query.strip() or len(query) > 300:
+            raise ValueError("Reviewed queries need 1–300 characters of natural search wording.")
+        if item.get("intent") not in {"category", "service", "question", "comparison"}:
+            raise ValueError(
+                "Reviewed query intent must be category, service, question or comparison."
+            )
+        basis = item.get("basis")
+        if not isinstance(basis, list) or not basis:
+            raise ValueError("Reviewed queries need a basis in profile or explicit brief claims.")
+        for ref in basis:
+            if not isinstance(ref, dict) or ref.get("field") not in FIELDS:
+                raise ValueError("Query basis needs a recognized profile field and key.")
+            claims = fields.get(ref["field"], []) + brief.get(ref["field"], [])
+            if ref.get("key") not in {c["key"] for c in claims}:
+                raise ValueError("Query basis is absent from the profile and explicit brief.")
+        for name, claims in (("market", markets), ("language", languages)):
+            allowed = {c["value"].casefold() for c in claims} | {
+                c["key"].casefold() for c in claims
+            }
+            requested = item.get(name)
+            if requested and (
+                not isinstance(requested, str) or requested.casefold() not in allowed
+            ):
+                raise ValueError(
+                    "Query " + name + " is not supported by the profile or explicit brief."
+                )
+        spec = {
+            "query": query.strip(),
+            "intent": item["intent"],
+            "market": item.get("market"),
+            "language": item.get("language"),
+            "basis": basis,
+            "query_review_status": "reviewed",
+            **common,
+        }
+        if not any(
+            (q["query"], q["market"], q["language"])
+            == (spec["query"], spec["market"], spec["language"])
+            for q in queries
+        ):
+            queries.append(spec)
+    if queries:
+        return queries
+    # Keep older profiles usable, without silently treating mechanically joined
+    # service descriptions as researched keywords. The host rewrites these seeds.
+    seeds = [("business_category", c) for c in fields.get("business_category", [])[:2]]
+    seeds += [("core_services", c) for c in fields.get("core_services", [])[:2]]
+    for field, claim in seeds:
         for market in markets[:2] or [{"value": "", "key": "unknown"}]:
             for language in languages[:2] or [{"value": "", "key": "unknown"}]:
-                audience = (
-                    customers[len(queries) % len(customers)]["value"] if customers else "business"
-                )
-                intent = (
-                    "agency"
-                    if "implementation" in service["value"].lower()
-                    else "implementation agency"
-                )
-                if "agency" not in values(profile, "business_model"):
-                    intent = (
-                        fields["business_model"][0]["value"]
-                        if fields["business_model"]
-                        else "provider"
-                    )
-                query = (
-                    f"{service['value']} {intent} for {audience.lower()} {market['value']}".strip()
-                )
+                query = claim["value"] + (" in " + market["value"] if market["value"] else "")
                 item = {
                     "query": query,
+                    "intent": "category" if field == "business_category" else "service",
                     "market": market["value"] or None,
                     "language": language["value"] or None,
-                    "basis": {"service": service["key"], "customer": audience},
-                    "localization": "Requested context only; provider coverage must be reported separately.",
+                    "basis": [{"field": field, "key": claim["key"]}],
+                    "query_review_status": "needs_review",
+                    "review_action": "Agent: rewrite in natural buyer language and the requested language; include category/service phrases and useful questions. Save search_queries in the profile review and rerun profile. No user approval is needed for routine phrasing.",
+                    **common,
                 }
                 if item not in queries:
                     queries.append(item)
@@ -287,6 +342,10 @@ def select_competitors(client, candidates, out, limit=5, discovery=None):
             for field in WEIGHTS
             if field != "evidence_quality"
         }
+        # Broad delivery language does not establish that both businesses sell
+        # into the same geographic market. Keep it in the profile, not this gate.
+        broad_market_overlap = set(shared["markets"]) & NON_SPECIFIC_MARKETS
+        shared["markets"] = sorted(set(shared["markets"]) - NON_SPECIFIC_MARKETS)
         if model & NON_AGENCIES and not model & client_model:
             reasons.append("Different business model: " + ", ".join(sorted(model)))
         if not shared["core_services"]:
@@ -312,7 +371,10 @@ def select_competitors(client, candidates, out, limit=5, discovery=None):
         kind = "direct_business_competitor" if shared["markets"] else "aspirational_benchmark"
         scores = {}
         for field in shared:
-            denominator = len(values(client, field, True))
+            client_values = values(client, field, True)
+            if field == "markets":
+                client_values -= NON_SPECIFIC_MARKETS
+            denominator = len(client_values)
             scores[field] = round(WEIGHTS[field] * len(shared[field]) / max(1, denominator), 1)
         refs = [
             ref
@@ -330,6 +392,10 @@ def select_competitors(client, candidates, out, limit=5, discovery=None):
         gaps += ["Review conflict: " + str(c) for c in candidate.get("contradictions", [])]
         if not shared["markets"]:
             gaps.append("No verified overlap with the requested target market; benchmark only.")
+            if broad_market_overlap:
+                gaps.append(
+                    "Shared international/global delivery language is not specific market evidence."
+                )
         if not shared["website_languages"]:
             gaps.append("Website-language overlap not established; not a geographic exclusion.")
         difference = {

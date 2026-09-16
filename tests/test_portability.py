@@ -108,6 +108,29 @@ class PortabilityTests(unittest.TestCase):
             installer.install(self.source, self.dest, update=True)
         self.assertEqual((self.dest / "src/module.py").read_text(), "# customized")
 
+    def test_update_preserves_local_runtime_at_original_path_and_in_backup(self):
+        installer.install(self.source, self.dest)
+        runtime = self.dest / ".venv"
+        runtime.mkdir()
+        (runtime / "pyvenv.cfg").write_text("existing runtime", encoding="utf-8")
+        (self.source / "src/module.py").write_text("# changed", encoding="utf-8")
+        result = installer.install(self.source, self.dest, update=True)
+        self.assertTrue(result["runtime_preserved"])
+        self.assertEqual((runtime / "pyvenv.cfg").read_text(), "existing runtime")
+        backup = Path(result["backup"])
+        self.assertEqual((backup / ".venv/pyvenv.cfg").read_text(), "existing runtime")
+
+    def test_failed_runtime_preservation_rolls_back_entire_update(self):
+        installer.install(self.source, self.dest)
+        (self.dest / ".venv").mkdir()
+        (self.dest / ".venv/pyvenv.cfg").write_text("keep", encoding="utf-8")
+        (self.source / "src/module.py").write_text("# changed", encoding="utf-8")
+        with patch.object(installer.shutil, "copytree", side_effect=OSError("runtime copy failed")):
+            with self.assertRaisesRegex(OSError, "runtime copy failed"):
+                installer.install(self.source, self.dest, update=True)
+        self.assertEqual((self.dest / "src/module.py").read_text(), "# fixture")
+        self.assertEqual((self.dest / ".venv/pyvenv.cfg").read_text(), "keep")
+
     def test_failed_update_restores_previous_installation(self):
         installer.install(self.source, self.dest)
         (self.source / "src/module.py").write_text("# changed", encoding="utf-8")
@@ -201,6 +224,35 @@ class PortabilityTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 2)
         self.assertIn("No Python runtime", result.stderr)
+
+    def test_launcher_uses_installed_runtime_before_rejecting_old_system_python(self):
+        spec = importlib.util.spec_from_file_location("skill_run", ROOT / "scripts/run.py")
+        launcher = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(launcher)
+        runtime = self.root / "runtime"
+        executable = runtime / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+        executable.parent.mkdir(parents=True)
+        executable.touch()
+        with (
+            patch.object(launcher.sys, "version_info", (3, 9, 6)),
+            patch.object(launcher.sys, "argv", ["run.py", "--runtime", str(runtime), "doctor"]),
+            patch.object(launcher.subprocess, "call", return_value=0) as run,
+        ):
+            self.assertEqual(launcher.main(), 0)
+        self.assertEqual(run.call_args.args[0][0], str(executable))
+
+    def test_old_runtime_still_cannot_run_native_engine(self):
+        spec = importlib.util.spec_from_file_location("skill_run", ROOT / "scripts/run.py")
+        launcher = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(launcher)
+        with (
+            patch.object(launcher.sys, "version_info", (3, 9, 6)),
+            patch.object(launcher.sys, "argv", ["run.py", "doctor"]),
+            patch.object(launcher.Path, "is_file", return_value=False),
+            patch.object(launcher.subprocess, "call") as run,
+        ):
+            self.assertEqual(launcher.main(), 2)
+        run.assert_not_called()
 
     def test_builder_accepts_relative_output_outside_checkout(self):
         # A sibling stays on the source volume when Windows temp uses another drive.

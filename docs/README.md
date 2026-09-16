@@ -12,6 +12,7 @@ Start with the task you want to complete. Each guide connects the commands, evid
 | Understand what the complete SEO house can do | [Capabilities and example questions](questions.md) |
 | Practice without touching a live website | [Local examples](../examples/README.md) |
 | Run the entire audit workflow | [SEO house workflow](../playbooks/core/seo-house-workflow.md) |
+| Export a professional branded PDF or HTML report | [Report design and content format](branded-reports.md) |
 
 ## Crawl and investigate
 
@@ -52,3 +53,5 @@ Start with the task you want to complete. Each guide connects the commands, evid
 [Development](development.md) · [Contributing](../CONTRIBUTING.md) · [Security](../SECURITY.md) · [Changelog](../CHANGELOG.md) · [MIT license](../LICENSE) · [Dependency notices](../THIRD_PARTY_NOTICES.md)
 
 Questions about expected behavior belong in a [GitHub issue](https://github.com/beyondtahir/beyondseo/issues). Include the version, command, environment and a small redacted reproduction. Contact [Beyond Tahir](https://beyondtahir.com) for consulting, training or private business context.
+
+- [Deep research and fair competitor comparisons](deep-research.md): browser-first discovery, shared budgets, keyword/AI-readiness analysis and evidence-supported standing.

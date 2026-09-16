@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.7.0
+
+- Added offline branded PDF and HTML reports with the existing BeyondSEO logo, editorial cover, linked contents, evidence tables, source notes and action roadmaps. Normal setup includes the free PDF renderer; HTML stays available when PDF rendering is unavailable.
+- Added report integration checks for embedded assets, pagination, navigation, long tables, escaped content, mobile layout and precise partial-output handling.
+
+- Use reviewed buyer phrases and customer questions for discovery instead of mechanically stacking service labels; validate their profile/brief basis and distinguish hypotheses from keyword recommendations and measured demand.
+- Added browser-first deep-research plans, five reputation query families and shared competitor/source budgets, with evidence-based comparison instead of a backlink-list-only report.
+- Added cohort reputation comparison that recalculates source evidence and withholds ordinal positions when methods, dates, sample coverage or confidence differ.
+- Preserve actual native result-page and multi-query provenance through reputation assessment; do not invent missing host pagination.
+- Order strongest source examples by supported quality points instead of optimistic unknown-dimension midpoints; headline scoring model 1.1 remains unchanged.
+- Added release hygiene checks for client captures, private identifiers and machine-specific paths; live research stays outside the repository.
+
+- Recognize an unavailable host search provider without attributing it to Google or a remote denial; retain its unknown underlying cause and use the next permitted source.
+- Require final competitor classifications to use reviewed evidence, retain known conflicts and use exact discovered domains; keep briefs for uninspected pages conditional.
+- Do not promote broad international/global delivery overlap into a direct geographic competitor match.
+- Let an older default Python hand off to an already installed compatible runtime before checking the engine version requirement.
+- Corrected older capability descriptions to include the implemented native discovery adapters and explain browser choices across agent hosts.
+- Preserve an existing local virtualenv during a backed-up skill update; restore the previous installation if preservation fails.
+- Added explicit `--include-www` scope support for ordinary www/non-www redirects while retaining robots, TLS and address checks. Exact-host crawling remains available.
+- Reject malformed source CSV quoting instead of silently corrupting search-query provenance; native discovery exports remain the preferred input.
+- Clarified model authentication, tool execution and website/search access as separate diagnostic layers, and documented use of packaged commands to avoid unnecessary inline-code approvals.
+
 ## 2.6.0
 
 - Added shared, bounded discovery for reputation and competitor work: permitted native DuckDuckGo HTML/Bing RSS, recorded host search/browser results, saved HTML and existing source CSVs. Failures, empty results, parser errors, query context and fallback attempts remain visible; duplicates retain provenance.

@@ -16,10 +16,21 @@ from .review import read_json, read_pages, save_report
 
 
 def source_rows(path):
-    with Path(path).open(encoding="utf-8-sig", newline="") as f:
-        rows = list(csv.DictReader(f))
+    try:
+        with Path(path).open(encoding="utf-8-sig", newline="") as f:
+            rows = list(csv.DictReader(f, strict=True))
+    except csv.Error as error:
+        raise ValueError(
+            "Malformed source CSV: "
+            + str(error)
+            + ". Use discovery's sources.csv or CSV doubled quotes, not JSON backslash escaping."
+        ) from error
     result = {}
     for row in rows:
+        if None in row:
+            raise ValueError(
+                "Source CSV has extra fields. Quote values containing commas correctly."
+            )
         url = normalize_url(row.get("URL") or row.get("url") or "")
         if not url:
             raise ValueError("Source CSV needs a URL column with valid http(s) addresses.")
@@ -29,8 +40,10 @@ def source_rows(path):
         provenance = provenance or [
             {k: v for k, v in row.items() if k not in ("URL", "url", "provenance") and v}
         ]
-        if not isinstance(provenance, list):
-            raise ValueError("Source provenance must be a JSON list.")
+        if not isinstance(provenance, list) or any(
+            not isinstance(item, dict) for item in provenance
+        ):
+            raise ValueError("Source provenance must be a JSON list of observations.")
         existing = result.setdefault(url, {**row, "URL": url, "provenance": []})
         for observation in provenance:
             if observation not in existing["provenance"]:

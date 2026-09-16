@@ -34,13 +34,19 @@ The backlink catalog preserves 241 PDF rows and groups them into 206 website/com
 
 The command-line interface is documented in `crawler.md`. The crawler does not submit forms or perform publishing actions. Resume continues the same snapshot; a fresh run is needed to refresh completed pages.
 
+## Branded client reports: implemented
+
+`present` exports local PDF and self-contained HTML using the official BeyondSEO logo, black/red palette, editorial cover, linked contents, tables, charts and evidence notes. Normal setup includes the free ReportLab renderer. `--audit` preserves a native audit’s findings; `--input` presents a reviewed strategy report. The renderer does not research, score or verify supplied claims. The assistant prepares the analysis and checks every rendered page before delivery. See [report content and export](../docs/branded-reports.md) for formats, font limits and HTML fallback.
+
 ## Review and implementation: implemented
 
 See [operations](../docs/operations.md) for readiness reports, source-page backlink checks, snapshot comparisons, bounded repeat audits and reviewed local/SFTP/FTPS content-file changes. Changes retain original bytes, verify reviewed hashes and refuse to overwrite later edits during rollback. Remote adapters need compatible hosting; database/CMS editing and arbitrary third-party account automation remain separate.
 
 ## Reputation discovery and rating: implemented
 
-The [native reputation system](reputation.md) prepares a five-page discovery plan, imports saved search HTML or source CSVs, verifies backlinks and page mentions, follows bounded redirect hosts and checks late JavaScript links. It calculates the BeyondSEO Reputation Score with its sensitivity range, confidence and transparent rubric. Own-site sources are excluded; repeated publishers are grouped and related sources cannot supply independent proof. Live search collection uses available browser/search access or supplied evidence; no unattended search-engine collector is included.
+The [shared discovery workflow](../docs/discovery-and-competitors.md) collects bounded search leads through native public-search adapters, available host browser/search tools, saved result HTML or supplied URLs/CSVs. The agent chooses from its actual available capabilities; a particular browser or paid search API is not required. Source failures retain evidence and use permitted fallbacks. Search snippets are leads until the native crawler checks the source page.
+
+The [native reputation system](reputation.md) verifies backlinks and page mentions, follows bounded redirect hosts and checks late JavaScript links. It calculates the BeyondSEO Reputation Score with its sensitivity range, confidence and transparent rubric. Own-site sources are excluded; repeated publishers are grouped and related sources cannot supply independent proof. `search-plan` prepares navigation URLs and a requested page budget; it does not execute a search. Native discovery is a bounded sample, never a complete backlink index.
 
 ## Posting catalog and shortlist helper: implemented
 
@@ -68,7 +74,7 @@ These are agent workflows supported by the reference library. They are available
 | AEO — answer engine optimization | Design clear definitions, direct answers, FAQs, process/cost/risk explanations and comparison sections | Actual page content and audience questions |
 | GEO — generative engine optimization | Review source-worthiness, citation-ready material, proof, clarity and potential content improvements | Page evidence; actual AI mentions/citations require observed answers |
 | Entity SEO | Clarify organization/person identity, profiles, service relationships, structured data and consistent descriptions | Website declarations and verified profiles/proof |
-| Reputation SEO | Review proof pages, reviews, media references, third-party articles and consistency of brand claims | Supplied or directly inspected evidence; broad mention discovery is not automated |
+| Reputation SEO | Discover and verify a bounded sample of mentions, reviews, media references and third-party articles; compare brand claims | Dated discovery records and directly inspected source pages; no complete mention index |
 | Conversation SEO | Map full customer questions and decision paths, objections, follow-up questions and comparisons | Customer/sales questions, supplied reviews and content evidence |
 | Conversion SEO | Review calls to action, service-specific journeys, trust placement, forms and potential friction | Rendered pages; conversion performance needs analytics or business records |
 | Growth planning | Build 30/60/90-day priorities, content hubs, service-page plans and traffic-to-inquiry scenarios | Baselines, resources and explicitly stated assumptions |
@@ -98,7 +104,7 @@ They adapt page strategy, proof, local relevance and conversion focus. They are 
 | Search volume and rankings | No search/rank database is implemented; use supplied dated evidence |
 | Complete inbound backlink graph | No web-wide backlink index is implemented |
 | Traffic, conversions and GBP performance | The website crawler cannot observe private account measurements; supplied exports can support analysis |
-| Search-engine/Maps/social product scraping | No dedicated collectors are implemented |
+| Search-engine/Maps/social product scraping | Bounded native search-result adapters and host browser/search imports are implemented; dedicated Maps/social collectors are not |
 | AI-answer visibility/history | Readiness review is available; actual visibility needs captured answer evidence |
 | Core Web Vitals and performance audits | HTTP elapsed time is recorded; Lighthouse/field measurement is not implemented |
 | Complete schema validation | JSON parsing is implemented; semantic and rich-result validation is separate |
@@ -109,3 +115,5 @@ They adapt page strategy, proof, local relevance and conversion focus. They are 
 | Large distributed service | The current engine runs locally with bounded queues and in-memory reporting |
 
 No hosted scraping provider, plugin or external skill is needed to run the native crawler. BeautifulSoup and Colorama are ordinary local Python libraries; Playwright and Chromium are optional local rendering components. A website's own externally hosted scripts or public content API are website dependencies, not outsourced scraping services.
+
+Deep reputation research now has two native helpers: `research-plan` generates matching query families and bounded cohort budgets after profile review; `compare-reputation` recalculates verified evidence and checks method/date/coverage comparability before assigning a within-sample position. Browser actions and semantic source review remain the host assistant's work. See [deep research](../docs/deep-research.md).

@@ -154,20 +154,19 @@ def assess(verification, related_hosts=(), requested_search_pages=5):
         r.get("verification") in ("link_observed", "no_link_in_captured_content")
         for r in verification["results"]
     )
-    search_pages = sorted(
-        {
-            (
-                str(r["discovery"].get("engine", "")),
-                str(r["discovery"].get("query", "")),
-                str(r["discovery"].get("search_page", "")),
-            )
-            for r in scored
-            if r["discovery"].get("search_page")
-            and r["discovery"].get("engine")
-            and r["discovery"].get("query")
-            and r["discovery"].get("observed_at")
-        }
-    )
+    search_pages = set()
+    for row in scored:
+        meta = row["discovery"]
+        for observation in [meta, *meta.get("provenance", [])]:
+            if not isinstance(observation, dict):
+                continue
+            engine = observation.get("engine") or observation.get("provider")
+            query = observation.get("query")
+            page = observation.get("search_page")
+            date = observation.get("observed_at") or observation.get("captured_at")
+            if engine and query and page and date:
+                search_pages.add((str(engine), str(query), str(page)))
+    search_pages = sorted(search_pages)
     independently_reviewed = sum(r["independent_editorial_evidence"] for r in ranked)
     unknown_independence = sum(r["independence_unknown"] for r in ranked)
     breadth = 25 * min(len(groups) / 5, 1)
@@ -271,11 +270,19 @@ def assess(verification, related_hosts=(), requested_search_pages=5):
         },
         "top_backlinks": sorted(
             [r for r in scored if r["observed_link"]],
-            key=lambda r: (-(r["quality_estimate"] or 0), r["source_url"]),
+            key=lambda r: (
+                -(r["supported_quality_points"] or 0),
+                -r["assessed_weight_percent"],
+                r["source_url"],
+            ),
         )[:10],
         "top_mentions_without_links": sorted(
             [r for r in scored if r["observed_mention"] and not r["observed_link"]],
-            key=lambda r: (-(r["quality_estimate"] or 0), r["source_url"]),
+            key=lambda r: (
+                -(r["supported_quality_points"] or 0),
+                -r["assessed_weight_percent"],
+                r["source_url"],
+            ),
         )[:10],
         "sources": scored,
         "limitations": [

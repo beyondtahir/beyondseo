@@ -118,6 +118,7 @@ class Config:
     scroll_steps: int = 3
     screenshot: bool = False
     headless: bool = True
+    include_www: bool = False
 
     def __post_init__(self):
         self.url = normalize_url(self.url, drop_tracking=self.drop_tracking)
@@ -159,6 +160,14 @@ class Config:
         if self.render:
             self.render_mode = "browser"
         self.allow_hosts = sorted(set(h.lower().rstrip(".") for h in self.allow_hosts))
+        if self.include_www:
+            hostname = urlsplit(self.url).hostname
+            try:
+                ipaddress.ip_address(hostname)
+            except ValueError:
+                if "." in hostname:
+                    alternate = hostname[4:] if hostname.startswith("www.") else "www." + hostname
+                    self.allow_hosts = sorted({*self.allow_hosts, alternate})
         for pattern in self.exclude:
             re.compile(pattern)
 

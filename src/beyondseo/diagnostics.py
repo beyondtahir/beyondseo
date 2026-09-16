@@ -63,7 +63,11 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
         or "operation not permitted" in lower
     ):
         code = "execution_denied" if context == "execution" else "permission_denied"
-    elif "tool unavailable" in lower or "tool not available" in lower:
+    elif (
+        "tool unavailable" in lower
+        or "tool not available" in lower
+        or "web_search is disabled or no provider is available" in lower
+    ):
         code = "tool_unavailable"
     elif "modulenotfounderror" in lower or "no module named" in lower:
         code = "missing_dependency"
@@ -112,7 +116,7 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
         "evidence": text or f"HTTP {status}",
         "http_status": status or None,
         "cause": "unknown"
-        if code in ("unknown", "http_access_denied", "permission_denied")
+        if code in ("unknown", "http_access_denied", "permission_denied", "tool_unavailable")
         else code,
     }
 

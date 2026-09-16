@@ -46,7 +46,7 @@ def main():
     venv.EnvBuilder(with_pip=True).create(env)
     bindir = env / ("Scripts" if sys.platform == "win32" else "bin")
     python = bindir / ("python.exe" if sys.platform == "win32" else "python")
-    extras = ([] if args.http_only else ["browser"]) + (["dev"] if args.dev else [])
+    extras = ["reports"] + ([] if args.http_only else ["browser"]) + (["dev"] if args.dev else [])
     suffix = "[" + ",".join(extras) + "]" if extras else ""
     # Hosted skill folders may be read-only. Build the wheel from a clean temporary
     # source copy in the chosen runtime; never write build files into a mounted skill.

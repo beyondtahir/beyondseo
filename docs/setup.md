@@ -37,7 +37,7 @@ py -3 scripts/setup.py
 py -3 scripts/run.py doctor
 ```
 
-Setup creates `.venv`, installs the local project and its browser library, downloads Chromium, and checks that it can launch. It does not change your system Python or send a crawl to a hosted service.
+Setup creates `.venv`, installs the local project, PDF renderer and browser library, downloads Chromium, and checks that it can launch. It does not change your system Python or send a crawl to a hosted service.
 
 The launcher works without activation or changes to PowerShell execution policy:
 
@@ -63,7 +63,7 @@ python3 scripts/run.py --version
 python3 scripts/run.py doctor
 ```
 
-`doctor` checks package versions and launches Chromium locally. Look for `http_ready: true` and `browser_ready: true`. Its exit code is 0 when both are ready and 1 when either is missing. An HTTP-only installation can still crawl with `--mode http` when the browser check is unavailable.
+`doctor` checks package versions and launches Chromium locally. Look for `http_ready: true` and `browser_ready: true`. Its exit code is 0 when both are ready and 1 when either is missing. An HTTP-only installation can still crawl with `--mode http` when the browser check is unavailable. `pdf_ready` reports the PDF dependency separately; use a fictional `present` run to verify actual export. Skill registration, target reachability and search access are separate checks; see [diagnostics](discovery-diagnostics.md).
 
 ## 4. Run a small crawl
 
@@ -100,7 +100,7 @@ Use these commands if you prefer to run the individual steps yourself:
 ```sh
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[browser]"
+python -m pip install -e ".[browser,reports]"
 python -m playwright install chromium
 beyondseo doctor
 ```
@@ -120,7 +120,7 @@ beyondseo crawl https://example.com --out runs/http --mode http
 Add browser support later from the repository root:
 
 ```sh
-python -m pip install -e ".[browser]"
+python -m pip install -e ".[browser,reports]"
 python -m playwright install chromium
 ```
 
@@ -129,7 +129,7 @@ python -m playwright install chromium
 After updating the source files, activate the environment and run the same installation command again. Reinstall Chromium when the Playwright package changes:
 
 ```sh
-python -m pip install -e ".[browser]"
+python -m pip install -e ".[browser,reports]"
 python -m playwright install chromium
 ```
 
@@ -140,7 +140,7 @@ Version 2.1 adds crawl settings and output fields. Start a fresh output folder f
 | Message or symptom | What to do |
 |---|---|
 | `beyondseo: command not found` | Activate `.venv`, or use `.venv/bin/beyondseo` / `.venv\Scripts\beyondseo.exe` directly |
-| Optional rendering dependency missing | Install `.[browser]` inside the active environment |
+| Optional rendering dependency missing | Install `.[browser,reports]` inside the active environment |
 | Chromium executable missing | Run `python -m playwright install chromium` with that environment's Python |
 | Browser launch fails on Linux | Install Chromium system libraries using the command above |
 | TLS certificate error | Check the system certificate store and network configuration; certificate verification stays enabled |
@@ -154,6 +154,8 @@ Version 2.1 adds crawl settings and output fields. Start a fresh output folder f
 ## Remove the local environment
 
 Close processes using the environment, deactivate it and delete the project's `.venv` directory. The repository and your saved crawl folders remain separate. Removing the browser cache is optional and can affect other local projects that use the same browser installation.
+
+For a designed client deliverable, follow [branded reports](branded-reports.md). `present` exports PDF and HTML locally; it needs no browser or online account. Both normal and HTTP-only setup include the free PDF renderer.
 
 Next: [browser options](browser.md), [command reference](../references/crawler.md), or [local examples](../examples/README.md).
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "beyondseo"
-version = "2.6.0"
+version = "2.7.0"
 description = "A complete SEO house with specialist workflows, a backlink source library and its own local crawler."
 readme = "README.md"
 license = "MIT"
@@ -23,8 +23,9 @@ classifiers = [
 
 [project.optional-dependencies]
 browser = ["playwright>=1.48,<2"]
+reports = ["reportlab>=4.2,<5"]
 sftp = ["paramiko>=3.4,<5"]
-dev = ["ruff>=0.11,<1"]
+dev = ["ruff>=0.11,<1", "reportlab>=4.2,<5", "pypdf>=5,<7"]
 hosting-test = ["paramiko>=3.4,<5", "pyftpdlib>=2,<3", "pyOpenSSL>=24,<27"]
 
 [project.scripts]
@@ -39,6 +40,9 @@ Changelog = "https://github.com/beyondtahir/beyondseo/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+beyondseo = ["report_assets/*.png", "report_assets/*.css"]
 
 [tool.ruff]
 target-version = "py310"

@@ -1,0 +1,436 @@
+{
+  "title": "Search visibility & growth plan",
+  "client": "Example Studio",
+  "website": "https://example.com",
+  "date": "September 2026",
+  "label": "ILLUSTRATIVE REPORT TEMPLATE",
+  "subtitle": "SEO / AI search / reputation",
+  "summary": "A clear view of the business, the evidence that matters and the next actions. This fictional example demonstrates the report layout; it does not describe an inspected client or establish search performance.",
+  "sections": [
+    {
+      "title": "The executive perspective",
+      "lead": "Make the offer easier to understand, the proof easier to check and the next step easier to take.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "A useful search strategy begins with the customer. Establish what the business sells, identify the questions that influence a buying decision, and connect each recommendation to a page and a measurable outcome."
+        },
+        {
+          "type": "metrics",
+          "items": [
+            {
+              "value": "12",
+              "label": "Example pages in scope"
+            },
+            {
+              "value": "4",
+              "label": "Illustrative workstreams"
+            },
+            {
+              "value": "90",
+              "label": "Days in the proposed plan"
+            }
+          ],
+          "source": "Fictional example for the report template. These values are illustrative, not measurements of a real website."
+        },
+        {
+          "type": "callout",
+          "title": "The decision",
+          "text": "Start with the service journey and credible project evidence. Expand publishing after the destination pages give prospective customers a useful next step."
+        },
+        {
+          "type": "bullets",
+          "title": "Three priorities",
+          "items": [
+            "Explain the offer: who it is for, what the engagement includes and how to start.",
+            "Make proof inspectable: connect project claims to attributable sources and clear limitations.",
+            "Measure the same questions and pages again; separate implementation progress from actual search outcomes."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Business & research scope",
+      "lead": "Understand the company before choosing who to compare it with.",
+      "blocks": [
+        {
+          "type": "table",
+          "columns": [
+            "Dimension",
+            "Example brief",
+            "What needs evidence"
+          ],
+          "widths": [
+            1,
+            1.6,
+            2
+          ],
+          "rows": [
+            [
+              "Core offer",
+              "Business automation services",
+              "Inspect main service and implementation pages."
+            ],
+            [
+              "Customers",
+              "Small and midsize service businesses",
+              "Check sales context, case studies and owner instructions."
+            ],
+            [
+              "Market",
+              "User-specified market",
+              "Keep office location, delivery market and website language separate."
+            ],
+            [
+              "Research",
+              "Website + comparable providers",
+              "Record browser, provider, query, date and actual coverage."
+            ]
+          ],
+          "source": "Fictional example for the report template. These values are illustrative, not measurements of a real website."
+        },
+        {
+          "type": "callout",
+          "title": "Read coverage before conclusions",
+          "text": "A failed request does not establish missing content. An incomplete render does not establish missing schema. Record the limitation and continue with the evidence that can be inspected."
+        },
+        {
+          "type": "text",
+          "text": "The final client report should identify the homepage, About, Contact, service and proof pages actually inspected. Keep uninspected areas visible rather than presenting a sampled crawl as a complete inventory."
+        }
+      ]
+    },
+    {
+      "title": "Buyer language & page intent",
+      "lead": "Use the language of a buying decision, then check the results.",
+      "blocks": [
+        {
+          "type": "table",
+          "columns": [
+            "Research phrase or question",
+            "Intent",
+            "Page or section"
+          ],
+          "widths": [
+            2,
+            1,
+            1.5
+          ],
+          "rows": [
+            [
+              "Automation agency in [market]",
+              "Provider selection",
+              "Main service page"
+            ],
+            [
+              "Which agency can automate customer support?",
+              "Problem + solution",
+              "Customer support service section"
+            ],
+            [
+              "How much does a small automation project cost?",
+              "Commercial evaluation",
+              "Cost factors and scope"
+            ],
+            [
+              "How will our team manage the system after launch?",
+              "Risk + ownership",
+              "Handover and support section"
+            ]
+          ],
+          "source": "Illustrative wording. Demand, difficulty and ranking are unmeasured."
+        },
+        {
+          "type": "callout",
+          "title": "Turn a question into a useful answer",
+          "text": "State the short answer first. Explain what changes the answer, give a relevant example, name the evidence and show the next step. Avoid turning every phrase variation into a separate page."
+        },
+        {
+          "type": "text",
+          "text": "A research query helps discover useful pages. A recommended keyword needs a business-fit explanation, an appropriate destination and a verification plan. Search-result presence alone does not establish demand."
+        }
+      ]
+    },
+    {
+      "title": "A fair competitor comparison",
+      "lead": "Compare similar offers and customer needs. Label differences that matter.",
+      "blocks": [
+        {
+          "type": "table",
+          "columns": [
+            "Example business",
+            "Comparison role",
+            "What to inspect"
+          ],
+          "widths": [
+            1.2,
+            1.2,
+            2
+          ],
+          "rows": [
+            [
+              "Provider Alpha / alpha.test",
+              "Direct peer, if verified",
+              "Comparable services, buyers and specific markets"
+            ],
+            [
+              "Provider Beta / beta.test",
+              "Direct peer, if verified",
+              "Offer detail, implementation process and attributable proof"
+            ],
+            [
+              "Benchmark Gamma / gamma.test",
+              "Aspirational benchmark",
+              "Useful customer experience patterns; separate market context"
+            ]
+          ],
+          "source": "Reserved fictional domains. No business identity, rank or authority claim is made."
+        },
+        {
+          "type": "callout",
+          "title": "Fewer strong comparisons are more useful",
+          "text": "Inspect a broader candidate pool and aim for five supported direct competitors. If only two qualify, report two. Directories, publishers and software products do not become agencies because their pages share a keyword."
+        },
+        {
+          "type": "bullets",
+          "title": "The comparison contract",
+          "items": [
+            "Show exact supporting pages and capture dates.",
+            "Explain services, markets, comparability and important differences.",
+            "Retain confidence, evidence gaps and concise rejection reasons."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Reputation built on evidence",
+      "lead": "Discover the leads. Verify the source pages. Compare like-for-like research.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Begin with the browser the agent actually controls. Try permitted Google navigation, then available host search and native discovery fallbacks. Keep the website audit running when search is restricted."
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Stage",
+            "What it establishes",
+            "What it cannot establish"
+          ],
+          "widths": [
+            1,
+            1.8,
+            1.8
+          ],
+          "rows": [
+            [
+              "Search discovery",
+              "Candidate source URLs and query provenance",
+              "A backlink, endorsement or complete index"
+            ],
+            [
+              "Native verification",
+              "Links or mentions in the captured source representation",
+              "Unseen links or a search engine ranking factor"
+            ],
+            [
+              "Source review",
+              "Relevance, independence and evidence limitations",
+              "Current DA/DR without a measurement source"
+            ],
+            [
+              "Cohort comparison",
+              "Supported relative evidence under matched methods",
+              "A general market or AI-search rank"
+            ]
+          ],
+          "source": "BeyondSEO method summary; no live reputation sample is included."
+        },
+        {
+          "type": "callout",
+          "title": "An unknown is not a weak result",
+          "text": "Unread sources remain unknown. Unequal query coverage, dates, providers or source checks can prevent a numerical position. The report should still explain observed strengths, gaps and next actions."
+        }
+      ]
+    },
+    {
+      "title": "Findings with an acceptance check",
+      "lead": "Every recommendation should be something the client can inspect and verify.",
+      "blocks": [
+        {
+          "type": "finding",
+          "title": "Explain the implementation journey",
+          "urls": [
+            "https://example.com/services"
+          ],
+          "observation": "Illustrative finding: the supplied fictional service outline lists capabilities but does not explain the stages of an engagement.",
+          "captured_at": "Illustrative example; no live capture",
+          "claim_type": "hypothesis",
+          "impact": "A prospective buyer needs to understand scope, involvement, delivery and handover before starting a conversation.",
+          "action": "Add a short section covering discovery, scope agreement, build, review, handover and ongoing support. Use the actual delivery process and avoid invented time or cost promises.",
+          "priority": "P2 / Proposed",
+          "rationale": "Addresses a customer decision at the main service destination. Confirm the gap through a complete capture before implementation.",
+          "acceptance": "Inspect the full page, confirm the gap, publish approved factual copy and recrawl. A reader should be able to explain the next step and their role in the project.",
+          "limits": "This is a fictional layout example, not a missing-content claim about a real site.",
+          "source": "Fictional example for the report template. These values are illustrative, not measurements of a real website."
+        }
+      ]
+    },
+    {
+      "title": "Useful answers for AI search",
+      "lead": "Make the business identifiable and its answers clear, specific and attributable.",
+      "blocks": [
+        {
+          "type": "table",
+          "columns": [
+            "Customer question",
+            "Answer structure",
+            "Evidence check"
+          ],
+          "widths": [
+            1.4,
+            1.7,
+            1.5
+          ],
+          "rows": [
+            [
+              "Is this service suitable for us?",
+              "Who it helps, suitable use cases and exclusions",
+              "Match actual capabilities and customer fit."
+            ],
+            [
+              "What changes the project cost?",
+              "Scope, integrations, data readiness and support",
+              "Use verified pricing factors; no invented figures."
+            ],
+            [
+              "What happens to our data?",
+              "Ownership, access, retention and controls",
+              "Use approved policies and implementation facts."
+            ],
+            [
+              "What results can we expect?",
+              "Relevant case context and measurement method",
+              "Support every performance claim."
+            ]
+          ],
+          "source": "Illustrative content brief. Actual AI-answer visibility requires dated engine/prompt/citation observations."
+        },
+        {
+          "type": "callout",
+          "title": "Readiness and visibility are separate",
+          "text": "Readable content, coherent entities, useful answers and appropriate schema improve the quality of the source. They do not prove that an AI engine has cited or will cite the website."
+        }
+      ]
+    },
+    {
+      "title": "The next 90 days",
+      "lead": "Sequence the work so that each stage supports the next.",
+      "blocks": [
+        {
+          "type": "table",
+          "columns": [
+            "When",
+            "Workstream",
+            "Acceptance"
+          ],
+          "widths": [
+            0.8,
+            1.9,
+            1.9
+          ],
+          "rows": [
+            [
+              "Days 1-30",
+              "Verify access, the business profile and priority service journeys. Resolve the evidenced technical blockers.",
+              "Affected URLs can be inspected; approved content answers the buying questions."
+            ],
+            [
+              "Days 31-60",
+              "Develop attributable project proof and useful answer sections. Review suitable publishing sources.",
+              "Claims have sources; selected venues match the audience and current posting rules."
+            ],
+            [
+              "Days 61-90",
+              "Publish useful contributions within authorization and repeat comparable measurements.",
+              "Verify published pages/links and compare dated observations with matching scope."
+            ]
+          ],
+          "source": "Proposed schedule, not completed work or a ranking promise."
+        },
+        {
+          "type": "bars",
+          "title": "Example effort allocation",
+          "items": [
+            {
+              "label": "Service content and customer answers",
+              "value": 40
+            },
+            {
+              "label": "Technical and entity checks",
+              "value": 25
+            },
+            {
+              "label": "Independent proof and publishing",
+              "value": 25
+            },
+            {
+              "label": "Measurement and review",
+              "value": 10
+            }
+          ],
+          "source": "Illustrative allocation in percent of planned effort; adjust to the actual evidence and team capacity."
+        },
+        {
+          "type": "callout",
+          "title": "A publishing plan with a purpose",
+          "text": "Use the BeyondSEO library to qualify 15 or 20 sources for the actual business. For each, specify the venue, article or contribution, target page, posting steps, eligibility, current terms and a realistic date. Do not fill the list with irrelevant websites."
+        }
+      ]
+    },
+    {
+      "title": "Sources & measurement notes",
+      "lead": "Keep the evidence inspectable without overwhelming the main narrative.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "This example contains fictional content only. In a client report, replace this section with the actual inspected URLs, capture dates, representation, source notes and relevant coverage limits. Keep original capture files private and link to them only through an authorized delivery channel."
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Record",
+            "Include"
+          ],
+          "widths": [
+            1,
+            3
+          ],
+          "rows": [
+            [
+              "Website evidence",
+              "Exact URLs, capture dates, usable representations and unresolved access limits"
+            ],
+            [
+              "Search observations",
+              "Query, provider, requested and actual context, date, result order and fallbacks"
+            ],
+            [
+              "Reputation evidence",
+              "Verified source pages, link/mention distinction, review judgments and unchecked candidates"
+            ],
+            [
+              "Measurement",
+              "The same queries, pages and scope before and after implementation; first-party data where supplied"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Built for the next decision",
+          "text": "A strong report explains what was observed, why it matters, what to do and how to check the result. BeyondSEO keeps those decisions connected to their evidence."
+        }
+      ]
+    }
+  ]
+}

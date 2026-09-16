@@ -28,6 +28,8 @@ beyondseo doctor
 
 The suite includes deterministic fixtures for discovery fallbacks, empty/parser failures, permission categories, provenance, business-profile/competitor gates, incomplete evidence and browser setup. It also uses local fixtures for HTTP/browser crawling, extraction, robots and sitemap behavior, reputation calculations, catalog import and selection, planning, installation and file changes. Optional hosting fixtures require their corresponding dependencies. A fixture verifies defined behavior; it does not establish another website's availability or a client's search performance.
 
+Development setup includes ReportLab and the test-only `pypdf` reader for report integration checks. They verify preserved evidence, escaped content, pagination, navigation, the exact logo, partial-output handling and font limitations. Client PDFs and visual QA renders stay outside the repository.
+
 The [repository workflow](https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml) runs across Linux, Windows and macOS with Python 3.10 and 3.12. Keep regressions reproducible and independent of external websites remaining unchanged.
 
 ## Update the posting library
@@ -40,7 +42,7 @@ From reviewed source, run:
 
 ```sh
 python3 scripts/validate_skill.py
-python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.6.0-skill.zip
+python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.7.0-skill.zip
 ```
 
 The builder keeps the complete runtime and resources under one `beyondseo/` folder and emits a SHA-256 sidecar. Developer tests and local environments stay outside the bundle. Existing output archives are preserved. Check that the archive, tag and version fields describe the same source before attaching the ZIP and checksum to a release. Runtime tests, a format check and a host's installation decision establish different things; report their results separately.

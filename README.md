@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.6.0-991B1B?style=flat-square" alt="Version 2.6.0"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.7.0-991B1B?style=flat-square" alt="Version 2.7.0"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
@@ -83,9 +83,9 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 
 [ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw)
 
-**[Download the ready-to-upload skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.6.0/beyondseo-2.6.0-skill.zip)** · [What it installs and accesses](docs/permissions.md)
+**[Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip)** · [Release packages](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
 
-For Claude uploads, use this named release asset: it contains the required `beyondseo/` folder. Windows users can also extract it and follow the local assistant guide without installing Git. ChatGPT Work has its own skill-save workflow; the guide includes a copy-paste installation request and help for save errors and runtime permissions.
+For Claude uploads, use a matching `beyondseo-<version>-skill.zip` release asset when available, or create the correctly structured upload with the single command in the guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. ChatGPT Work has its own skill-save workflow; the guide includes a copy-paste installation request and help for save errors and runtime permissions.
 
 ### Prefer to let your assistant install it?
 
@@ -115,7 +115,7 @@ python3 scripts/setup.py
 python3 scripts/run.py crawl https://example.com --out ../client-runs/example --max-pages 10
 ```
 
-Setup creates an isolated environment, installs the local engine, downloads Chromium and checks that it launches. The launcher automatically uses that environment, so you do not need to activate it each time.
+Setup creates an isolated environment, installs the local engine and free PDF renderer, downloads Chromium and checks that it launches. The launcher automatically uses that environment, so you do not need to activate it each time.
 
 <details>
 <summary><strong>Windows PowerShell</strong></summary>
@@ -271,13 +271,13 @@ A resume keeps semantic settings and does not refresh completed pages. Choose a 
 
 A reputation plan should distinguish a real link from a name in a snippet, a company profile from independent recognition, and an unreadable candidate from verified evidence.
 
-BeyondSEO prepares a **five-page discovery budget**, imports saved search-result HTML or candidate CSVs, then uses the native crawler to inspect source pages. The CLI verifies and scores supplied candidates; live search discovery uses available search/browser access or files you provide.
+BeyondSEO checks the agent's available browser and search tools, uses permitted native discovery fallbacks, and can import saved search results or supplied URLs/CSVs. Its crawler then inspects the source pages before counting links. Discovery serves both reputation research and business comparisons; it never supplies a complete backlink index.
 
 ```sh
-python3 scripts/run.py search-plan --target https://example.com \
-  --brand "Example" --pages 5 --out ../client-runs/discovery
+python3 scripts/run.py discover --target https://example.com \
+  --query '"Example" -site:example.com' --out ../client-runs/discovery
 
-python3 scripts/run.py reputation --sources sources.csv --target https://example.com \
+python3 scripts/run.py reputation --sources ../client-runs/discovery/sources.csv --target https://example.com \
   --brand "Example" --max-sources 50 --out ../client-runs/reputation
 ```
 
@@ -288,7 +288,7 @@ The **BeyondSEO Reputation Score** uses supported source-quality points and expl
 - **Low confidence:** provisional headline and adjusted range stay below **50/100**.
 - **No conclusive checks:** withhold the headline.
 - **Client or competitor:** the same criteria apply; uneven evidence cannot support a numerical winner.
-- **Five pages:** an observed sample, never a whole-web backlink total.
+- **Coverage:** count actual inspected responses and source pages; a requested five-page plan is not five completed pages or a whole-web backlink total.
 
 The score is our own evidence measure. It is not a proprietary provider's authority score, a search-engine ranking factor or an AI-citation prediction.
 
@@ -327,6 +327,15 @@ You receive **Markdown, CSV and JSON**, including writing briefs, posting steps 
 [Browse all sources →](docs/backlink-source-catalog.md) · [Posting guide →](docs/backlink-posting-guide.md) · [Additional reputation routes →](docs/reputation-prospects.md)
 
 ## What a complete audit delivers
+
+BeyondSEO includes a branded **PDF and HTML report exporter**: the existing product logo, white/black/red palette, a strong cover, linked contents, numbered sections, comparison tables, source notes and an action roadmap. PDF generation runs locally with a free renderer; no online design account or browser session is needed.
+
+```sh
+python3 scripts/run.py present --input /path/to/client/report-content.json \
+  --out /path/to/client/deliverable
+```
+
+The assistant fills the report with inspected evidence and reviewed recommendations. For a direct export of native findings, use `present --audit /path/to/client/audit.json`. Long content and tables paginate; unknown measurements stay unknown. [Report design and content format →](docs/branded-reports.md)
 
 | Deliverable | What it should contain |
 |---|---|
@@ -391,9 +400,11 @@ The watch command collects evidence. The skill uses it to recommend subsequent w
 
 ## Project status
 
-BeyondSEO **2.6.0** is available under the **MIT license** and remains in beta. Python 3.10 or newer is required; local Chromium enables JavaScript rendering. Use `scripts/run.py doctor` to check your environment before starting an engagement.
+BeyondSEO **2.7.0** is available under the **MIT license** and remains in beta. Python 3.10 or newer is required; local Chromium enables JavaScript rendering. Use `scripts/run.py doctor` to check your environment before starting an engagement.
 
 The engine reports access restrictions and incomplete observations. Actual rankings, search-engine indexing, AI citations and business outcomes require their own evidence. Share reproducible issues and useful improvements through the repository's contribution process.
+
+Automated regression tests cover crawling, rendering, discovery fallbacks, evidence handling, reputation assessment and installation behavior. Public test fixtures are fictional. Test summaries describe what passed and any limits; client websites, personal information, private reports and live-test captures are kept outside the repository. The test-workflow badge shows published CI results, not a guarantee that every assistant environment has been tested.
 
 [Release notes →](CHANGELOG.md) · [Development guide →](docs/development.md) · [Contribute →](CONTRIBUTING.md)
 
@@ -407,6 +418,7 @@ The engine reports access restrictions and incomplete observations. Actual ranki
 | [Backlink source library](docs/backlink-source-catalog.md) | [Reputation methodology](references/reputation.md) |
 | [Answer and entity workflow](playbooks/core/seo-house-workflow.md) | [Measurement boundaries](references/measurement-boundaries.md) |
 | [Review and improve](docs/operations.md) | [Development guide](docs/development.md) |
+| [Branded PDF and HTML reports](docs/branded-reports.md) | [Deep research and comparisons](docs/deep-research.md) |
 
 [Documentation index](docs/README.md) · [Changelog](CHANGELOG.md) · [Report a bug](https://github.com/beyondtahir/beyondseo/issues/new?template=bug.yml) · [Request a feature](https://github.com/beyondtahir/beyondseo/issues/new?template=feature.yml) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
@@ -437,3 +449,7 @@ BeyondSEO brings that practical approach to search: inspect the real website, ma
 ---
 
 Copyright © 2026 **Muhammad Tahir Ashraf — Beyond Tahir**. Released under the [MIT license](LICENSE). You may use, modify and redistribute the project under its terms. Keep the copyright and license notice. Dependency notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+### Understand your standing, then act
+
+BeyondSEO's [deep research workflow](docs/deep-research.md) starts with your business, checks the browser available to your agent, tries Google through that permitted browser and uses supported fallbacks when needed. It researches a broader pool before recommending up to five comparable businesses, verifies reputation sources and compares equivalent pages. Shared research budgets and evidence checks prevent a thin sample from becoming an inflated competitive ranking. The report connects gaps to keywords, customer answers and a practical publishing plan using the 206-entry directory. Actual search observations, AI readiness and reputation evidence stay distinct.

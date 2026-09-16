@@ -68,7 +68,7 @@ The package validator does not call Work's save service or safety scanner. There
 
 This route also covers Claude Cowork through its Skills controls.
 
-1. Download **beyondseo-2.6.0-skill.zip** from the [release assets](https://github.com/beyondtahir/beyondseo/releases/tag/v2.6.0). Use the named skill asset; GitHub's automatically generated source ZIP uses a different enclosing folder name.
+1. Use the matching `beyondseo-<version>-skill.zip` from the [release assets](https://github.com/beyondtahir/beyondseo/releases/latest), if offered. If the release provides source only, use **Prepare the upload from source** below. GitHub’s automatic source ZIP is not a direct skill upload; its enclosing folder has a different name.
 2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
 3. Open **Customize → Skills → + → Create skill → Upload a skill**, then select the ZIP.
 4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”
@@ -77,9 +77,21 @@ The archive contains one `beyondseo/` folder, matching `name: beyondseo`, with `
 
 Saving the skill does not install Python packages. Ask Claude to follow [crawler setup](#crawler-setup-in-a-hosted-environment) using its available execution environment. The Claude API and Claude Code have separate runtime and installation rules.
 
+### Prepare the upload from source
+
+Download and extract the [complete source](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip). Open a terminal in the extracted `beyondseo-main` folder containing `SKILL.md` and `scripts`. Run:
+
+```sh
+python3 scripts/build_skill.py --out ../beyondseo-skill.zip
+```
+
+On Windows, use `py -3` instead of `python3`. The builder needs Python 3.10+ but no crawler dependencies, Git or API key. Upload the resulting `beyondseo-skill.zip` using steps 2–4 above. An assistant with file and shell tools can perform this preparation for you. Keep the ZIP and its checksum outside the source folder.
+
+The normal setup also installs the free report renderer. After setup, use `present` for [branded PDF/HTML reports](branded-reports.md). PDF export itself needs no browser or search access; HTML remains available if PDF rendering is unavailable.
+
 ## Local assistants: get the folder once
 
-**Without Git:** download the named skill ZIP above, extract it, and open a terminal in the extracted `beyondseo` folder. This works when Windows says Git is missing. Confirm that you can see `SKILL.md` and `scripts` directly inside that folder.
+**Without Git:** download the [complete source ZIP](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip), extract it, and open a terminal in `beyondseo-main`. A named skill ZIP, when offered, extracts as `beyondseo` instead. This works when Windows says Git is missing. Confirm that you can see `SKILL.md` and `scripts` directly inside that folder.
 
 **With Git:**
 
@@ -89,6 +101,8 @@ cd beyondseo
 ```
 
 Run just the command for your assistant below. It copies the complete skill and prepares the crawler. Python **3.10+** is required; **3.12** is recommended. On Windows PowerShell replace `python3` with `py -3`. Activation and execution-policy changes are unnecessary.
+
+After setup, the launcher hands off to the installed runtime before checking the engine's Python requirement. This allows an older default `python3` to start an already prepared compatible runtime; it does not make the engine compatible with old Python. If no compatible runtime exists, run setup with Python 3.10+.
 
 ## Claude Code
 
@@ -175,7 +189,7 @@ There are three separate results: **skill registered**, **HTTP ready**, and **br
 
 ## Updates and existing installations
 
-Running the same local install again is safe: an identical installation is reported as already installed. After obtaining a newer source folder, add `--update` to the original command. The helper verifies the previous receipt, preserves the old folder under `beyondseo-backups` outside the host's skill discovery folder, and installs a fresh copy. Changed skill files are preserved and require review before replacement. Add `--setup` to prepare the new runtime.
+Running the same local install again is safe: an identical installation is reported as already installed. After obtaining a newer source folder, add `--update` to the original command. The helper verifies the previous receipt, preserves the old folder under `beyondseo-backups` outside the host's skill discovery folder, and installs a fresh copy. An existing local `.venv` directory is copied back to its original absolute path so an update does not remove a working runtime; the backup remains intact. External or symlinked runtime directories are not copied. Changed skill files are preserved and require review before replacement. Add `--setup` to install or refresh dependencies, then run doctor; preserving a runtime is not proof that it satisfies new dependencies.
 
 Use `--dry-run` to preview without writing or downloading anything. Use `--dest "/exact/path/beyondseo"` for a custom skill location. This is a filesystem installer; it does not save a ChatGPT workspace skill or change host settings. For web uploads, use the host's supported update controls and avoid leaving two enabled versions.
 
@@ -192,3 +206,11 @@ For an installation issue, include the app name, version, operating system or cl
 ## Search and browser readiness after installation
 
 Run `beyondseo doctor` in the actual task runtime. Reuse an available host browser when appropriate; `beyondseo browser-setup` checks first and installs missing free local Chromium components only when requested. See [browser-assisted Google search](browser-search.md) and [diagnostics by environment](discovery-diagnostics.md). Installing a skill does not itself grant browser control or network permission.
+
+## Check model access separately
+
+Before blaming BeyondSEO for an agent that cannot start, try one short model response without tools. A saved sign-in indicator does not prove the next request will succeed. For example, if Claude Code's actual response says its OAuth token expired, run `claude auth login` and complete sign-in; reinstalling BeyondSEO or Chromium does not repair that login. Keep authentication failures separate from website or search-provider failures.
+
+Hermes can use an already configured subscription or local model. OpenClaw can use a supported subscription login or local Ollama model. These are host choices, not dependencies required by BeyondSEO. Test that the chosen model can call tools and read evidence; a successful text-only reply does not establish a completed audit. Do not copy credential files between agents. Use each host's supported sign-in flow when needed.
+
+When installing OpenClaw itself, check the selected release's Node requirement before installation. BeyondSEO's Python requirement is separate. Follow [OpenClaw installation](https://docs.openclaw.ai/install) and [local Ollama setup](https://docs.openclaw.ai/providers/ollama/setup); retain existing host configuration unless a particular change is needed and authorized.

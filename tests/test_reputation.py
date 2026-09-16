@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from beyondseo.backlinks import source_rows
 from beyondseo.reputation import assess, import_search_html, reputation, search_plan, source_score
 
 TARGET = "https://example.com/"
@@ -54,6 +55,22 @@ def inaccessible(url):
 
 
 class ReputationTests(unittest.TestCase):
+    def test_source_csv_rejects_corrupted_query_quoting_and_preserves_valid_query(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "sources.csv"
+            path.write_text(
+                'URL,query\nhttps://publisher.test,"\\"Example\\" -site:example.com"\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "Malformed source CSV"):
+                source_rows(path)
+            query = '"Example" -site:example.com'
+            with path.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(stream, fieldnames=["URL", "query"])
+                writer.writeheader()
+                writer.writerow({"URL": "https://publisher.test", "query": query})
+            self.assertEqual(source_rows(path)[0]["provenance"][0]["query"], query)
+
     def assess(self, rows, **kwargs):
         return assess({"target": TARGET, "brand": "Example", "results": rows}, **kwargs)
 
@@ -63,6 +80,22 @@ class ReputationTests(unittest.TestCase):
         self.assertEqual(result["quality_estimate"], 70)
         self.assertEqual(result["assessed_weight_percent"], 40)
         self.assertEqual(self.assess([source()])["confidence"], "low")
+
+    def test_strongest_source_list_uses_supported_points_not_unknown_midpoint(self):
+        known = source(
+            "https://reviewed.test/article",
+            review={
+                **REVIEW,
+                "relevance": "low",
+                "relationship": "third_party_profile",
+                "context": "user_generated",
+            },
+        )
+        unknown = source("https://unknown.test/article")
+        result = self.assess([unknown, known])
+        self.assertEqual(result["top_backlinks"][0]["source_url"], known["source_url"])
+        self.assertEqual(result["top_backlinks"][0]["supported_quality_points"], 60)
+        self.assertEqual(result["top_backlinks"][1]["supported_quality_points"], 40)
 
     def test_unattributed_judgment_is_unknown(self):
         row = source(review={"relevance": "high", "relationship": "independent"})

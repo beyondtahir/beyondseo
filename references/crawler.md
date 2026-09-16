@@ -31,6 +31,7 @@ Crawl/scrape/report exit codes: 0 means at least one unique HTML document was ex
 | `--retries` | 2 | Retries after the initial transient failure |
 | `--max-bytes` | 5000000 | Response/decompressed body and rendered HTML size cap |
 | `--allow-host HOST` | none | Add an exact website hostname; repeat as needed |
+| `--include-www` | false | Add only the seed host's exact www/non-www counterpart for a normal site audit; robots/address checks stay active |
 | `--exclude REGEX` | none | Exclude matching full normalized URLs |
 | `--robots respect\|ignore` | respect | Apply robots policy, or record an explicit authorized override |
 | `--allow-private` | false | Permit nonpublic addresses for a deliberate local/staging crawl |
@@ -40,7 +41,7 @@ Crawl/scrape/report exit codes: 0 means at least one unique HTML document was ex
 
 The URL budget is not an HTTP request budget. Robots files, sitemaps, redirects, retries and browser resources make additional requests. Redirect chains are bounded. The transport identifies itself as BeyondSEO, validates TLS, ignores environment proxies and connects to a checked resolved address. Embedded credentials and non-HTTP schemes are rejected. OS-managed DNS resolution can take longer than an application timeout.
 
-Hosts are exact; subdomains do not join the page queue automatically. Configured hosts use the seed port or standard HTTP/HTTPS ports. External links are recorded without being crawled. Known asset extensions are excluded from page discovery; extensionless non-HTML resources may consume a URL slot. Images and fonts are fetched only for screenshot rendering and are not analyzed as media files.
+Hosts are exact; subdomains do not join the page queue automatically. Use `--include-www` for a normal public-site audit that includes the ordinary www/non-www pair, or omit it for an explicitly exact-host brief. This lets a robots/canonical redirect resolve within that pair without overriding a disallow rule. Use a fresh output directory when changing scope. Configured hosts use the seed port or standard HTTP/HTTPS ports. External links are recorded without being crawled. Known asset extensions are excluded from page discovery; extensionless non-HTML resources may consume a URL slot. Images and fonts are fetched only for screenshot rendering and are not analyzed as media files.
 
 Frontier normalization removes fragments and common tracking parameters. Query ordering, repeated parameters, path case and trailing slashes remain distinct. Original link values remain in the page record.
 
@@ -123,3 +124,7 @@ Reports load records into memory. BeyondSEO is designed for bounded local websit
 ## Review and implementation commands
 
 `readiness`, `compare`, `watch`, `backlinks` and `edit` are documented in [operations](../docs/operations.md). `search-plan`, `search-import` and `reputation` are documented in [our reputation reference](reputation.md). Every crawl exports `readiness.json` and `readiness.md` alongside the existing evidence.
+
+## Branded client deliverables
+
+Use `present --audit /path/to/audit.json --out /path/to/deliverable` for saved findings, or `present --input /path/to/report-content.json --out /path/to/deliverable` for a complete reviewed strategy. The default writes local PDF and self-contained HTML with the BeyondSEO logo. See [report design and content format](../docs/branded-reports.md). This presentation step preserves evidence and uncertainty; the existing `report` command still regenerates crawl exports.

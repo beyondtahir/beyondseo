@@ -33,6 +33,9 @@ def validate(source):
         "scripts/setup.py",
         "src/beyondseo/cli.py",
         "src/beyondseo/__init__.py",
+        "src/beyondseo/reports.py",
+        "src/beyondseo/report_assets/beyondseo-logo.png",
+        "src/beyondseo/report_assets/report.css",
         "playbooks/backlink-system/posting-sites.json",
     )
     for name in required:

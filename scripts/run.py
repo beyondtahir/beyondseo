@@ -9,9 +9,6 @@ from pathlib import Path
 
 def main():
     root = Path(__file__).resolve().parents[1]
-    if sys.version_info < (3, 10):
-        print("BeyondSEO needs Python 3.10 or newer.", file=sys.stderr)
-        return 2
     arguments = sys.argv[1:]
     runtime = root / ".venv"
     explicit_runtime = arguments[:1] == ["--runtime"]
@@ -42,6 +39,12 @@ def main():
                 file=sys.stderr,
             )
             return 2
+    if sys.version_info < (3, 10):
+        print(
+            "BeyondSEO needs Python 3.10 or newer. Prepare a compatible runtime with setup.py.",
+            file=sys.stderr,
+        )
+        return 2
     sys.path.insert(0, str(root / "src"))
     try:
         from beyondseo.cli import main as cli_main

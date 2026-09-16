@@ -13,7 +13,7 @@ body:
     id: reproduce
     attributes:
       label: Reproduction
-      description: Give the command and a small public or local fixture. Remove tokens, cookies and private content.
+      description: Give a minimal command using example.com and a fictional local fixture. Do not include client domains, names, captured content, tokens or cookies.
       render: shell
     validations:
       required: true
@@ -21,7 +21,7 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Paste beyondseo doctor output and your operating system.
+      description: Summarize your operating system, Python/BeyondSEO versions and the failing capability. Do not paste raw doctor output; remove usernames, home paths, device details and account identifiers.
       render: json
     validations:
       required: true
@@ -29,4 +29,4 @@ body:
     id: evidence
     attributes:
       label: Relevant evidence
-      description: Include a small redacted excerpt from summary.json or the affected page record.
+      description: Describe the failure using fictional input and a minimal sanitized error. Do not attach live-site reports, screenshots, recordings, browser transcripts or client page records.

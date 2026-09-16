@@ -96,7 +96,7 @@ def prepare_browser():
 
 def environment_report():
     result = {"python": platform.python_version(), "packages": {}, "chromium": "not installed"}
-    for package in ("beautifulsoup4", "colorama", "playwright"):
+    for package in ("beautifulsoup4", "colorama", "playwright", "reportlab"):
         try:
             result["packages"][package] = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
@@ -120,6 +120,7 @@ def environment_report():
             browser_failure = failure_detail(error, context="execution")
     result["http_ready"] = bool(result["packages"]["beautifulsoup4"])
     result["browser_ready"] = result["chromium"] == "ready"
+    result["pdf_ready"] = bool(result["packages"]["reportlab"])
     result["installed_browsers"] = installed_browsers()
     result["checks"] = {
         "skill_installed": {
@@ -135,6 +136,14 @@ def environment_report():
             "failure": browser_failure,
         },
         "target_reachable": {"status": "not_tested"},
+        "report_export": {
+            "html": "ready",
+            "pdf": "dependency_present" if result["pdf_ready"] else "missing_dependency",
+            "evidence": "Package availability only; run present on a fictional input to verify actual rendering.",
+            "remediation": None
+            if result["pdf_ready"]
+            else "Run scripts/setup.py or install reportlab>=4.2,<5 in the selected runtime. HTML export remains available.",
+        },
         "search_discovery": {
             "status": "not_tested",
             "host_tools": "Host search availability is separate from Python/network access.",

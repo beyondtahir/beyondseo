@@ -43,6 +43,14 @@ Customer reviews
 
 If ranking, volume, or traffic data is unavailable, label it as `Not verified`.
 
+## Start with buyer language
+
+Lead with the category or service a customer would name and the relevant location. Preserve the user's useful phrases. Add natural questions about provider selection, cost, outcomes, process and risk. Keep technical service names for supported use cases or a technical buying audience; do not mechanically append “implementation agency for businesses” to every offer.
+
+Separate **research queries** used to find comparable providers from **proposed page keywords**. A search returning results does not establish demand, and an awkward phrase does not prove zero demand. Use customer questions, supplied Search Console data or actual dated search observations when available; label unsupported demand as unmeasured. The assistant reviews [`search_queries`](../../docs/discovery-and-competitors.md#write-searches-the-customer-would-use) before execution and continues without routine wording approvals.
+
+For each proposed keyword or Q&A topic, explain intent, supporting evidence, business fit, target page/section, the answer or content needed and how to verify improvement. Use natural wording in the intended language. Do not create a new page for every phrasing variation.
+
 ## Discovery Sources
 
 ### First-party

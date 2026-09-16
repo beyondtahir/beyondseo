@@ -4,6 +4,19 @@ from pathlib import Path
 
 
 def add_commands(sub):
+    p = sub.add_parser(
+        "research-plan", help="Plan browser-first deep research and equal cohort budgets."
+    )
+    p.add_argument("--profile", type=Path, required=True)
+    p.add_argument("--brand")
+    p.add_argument("--selection", type=Path)
+    p.add_argument("--source-limit", type=int, default=30)
+    p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser(
+        "compare-reputation", help="Compare captured cohort evidence; rank only comparable samples."
+    )
+    p.add_argument("--manifest", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("discover", help="Collect unverified search leads with bounded fallbacks.")
     p.add_argument("--query", action="append", default=[])
     p.add_argument(
@@ -59,6 +72,20 @@ def execute(args):
     from .research import profile, select_competitors
     from .review import read_json
 
+    if args.command == "research-plan":
+        from .deep_research import research_plan
+
+        return research_plan(
+            read_json(args.profile),
+            args.out,
+            args.brand,
+            read_json(args.selection) if args.selection else None,
+            args.source_limit,
+        )
+    if args.command == "compare-reputation":
+        from .deep_research import comparison_from_manifest
+
+        return comparison_from_manifest(args.manifest, args.out)
     if args.command == "discover":
         queries = read_json(args.queries) if args.queries else []
         queries += [

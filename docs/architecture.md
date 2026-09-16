@@ -35,6 +35,8 @@ flowchart LR
 | `src/beyondseo/research.py` | Evidence packets, validated profile reviews, query generation and competitor gates |
 | `src/beyondseo/findings.py` | Evidence, business impact and acceptance contracts for audit findings |
 | `src/beyondseo/doctor.py` | Separate runtime and optional target/search probes |
+| `src/beyondseo/reports.py` | Offline branded HTML/PDF presentation of reviewed content and native audit findings |
+| `src/beyondseo/report_assets/` | Packaged product logo and self-contained report styles |
 | `playbooks/` | SEO methods, templates, examples and industry guidance |
 | `tests/` | Local HTTP/browser fixtures and regression cases |
 

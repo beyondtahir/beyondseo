@@ -167,6 +167,7 @@ class NativeSearch:
             "actual_market": None,
             "actual_language": None,
             "coverage": "One public result response; localization and pagination not verified.",
+            "search_page": 1,
         }
         if r.body and self.snapshots:
             name = hashlib.sha256((url + r.fetched_at).encode()).hexdigest() + ".html"
@@ -360,6 +361,7 @@ def discover(
                 "response_sha256": hashlib.sha256(body).hexdigest(),
                 "failure": None if status in SUCCESS else {"code": status, "evidence": reason},
                 "coverage": "Supplied snapshot; freshness/localization not independently verified.",
+                "search_page": record.get("search_page"),
             },
             spec,
         )
@@ -379,6 +381,21 @@ def discover(
             previous = {"provider": row["provider"], "status": state}
             found |= state == "results"
         if found:
+            continue
+        if spec.get("query_review_status") == "needs_review":
+            add_attempt(
+                {
+                    "provider": "query_preparation",
+                    "origin": "query_review",
+                    "status": "query_review_required",
+                    "captured_at": utcnow(),
+                    "results": [],
+                    "failure": None,
+                    "coverage": "No search executed for this generated seed. Agent: write a natural buyer query from the profile, mark it reviewed and continue. This is not a provider failure.",
+                },
+                spec,
+                previous,
+            )
             continue
         if offline:
             add_attempt(
@@ -442,6 +459,7 @@ def discover(
         "search_available": any(a["status"] in SUCCESS for a in attempts),
         "queries_requested": len(queries),
         "queries_processed": min(len(queries), max_queries),
+        "queries_needing_review": sum(a["status"] == "query_review_required" for a in attempts),
         "attempts": attempts,
         "candidates": merged,
         "candidate_count": len(merged),
@@ -462,8 +480,13 @@ def discover(
                 "engine": first.get("provider"),
                 "query": first.get("query"),
                 "observed_at": first.get("captured_at"),
+                "search_page": first.get("search_page"),
                 "provenance": candidate["provenance"],
             }
         )
-    write_csv(out / "sources.csv", ["URL", "engine", "query", "observed_at", "provenance"], rows)
+    write_csv(
+        out / "sources.csv",
+        ["URL", "engine", "query", "observed_at", "search_page", "provenance"],
+        rows,
+    )
     return result

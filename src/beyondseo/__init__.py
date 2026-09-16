@@ -1,6 +1,6 @@
 """BeyondSEO — website crawling, readable content and SEO evidence."""
 
-__version__ = "2.6.0"
+__version__ = "2.7.0"
 __all__ = ["Config", "Crawler", "__version__"]
 
 

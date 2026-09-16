@@ -9,7 +9,7 @@ The host assistant and native engine are separate. An assistant's search tool ca
 1. Crawl the homepage, then inspect About, Contact, main services and relevant case studies, industry and service-area pages. Use browser capture for JavaScript content. Include explicit customer, market and business context supplied by the owner.
 2. Generate the evidence packet. Read the captured text and `uninspected_relevant_pages`; capture missing relevant pages before a broad comparison.
 3. Review the profile using exact native-capture quotes. Keep office location, served markets, website language and requested search language separate. An English-language business in Pakistan is not automatically targeting only English-speaking countries. A domain suffix never establishes its market.
-4. Generate queries from that reviewed profile, discover a broader pool, capture candidate pages, and review their profiles using the same matching keys. Reject unrelated business models before selecting competitors.
+4. Write natural buyer queries in the profile review: simple category/service phrases first, then useful customer questions. Discover a broader pool, capture candidate pages, and review their profiles using the same matching keys. Reject unrelated business models before selecting competitors.
 
 ```sh
 beyondseo crawl https://example.com --out runs/site --max-pages 25
@@ -20,7 +20,7 @@ beyondseo discover --queries runs/business-reviewed/queries.json --target https:
   --cache runs/search-cache --out runs/discovery
 ```
 
-The native profiler prepares evidence, validates references and generates queries. **The assistant or human reviewer interprets the business.** It does not silently turn keyword matches into business facts. Without a reviewed core offer and business model, the profile remains `needs_review` and generates no competitor queries.
+The native profiler prepares evidence and validates references and query context. **The assistant or human reviewer interprets the business and writes buyer language.** It does not silently turn keyword matches into business facts. Without a reviewed core offer and business model, the profile remains `needs_review` and generates no competitor queries.
 
 A brief retains the owner's words and optional matching categories:
 
@@ -49,6 +49,37 @@ The fields are `business_category`, `business_model`, `core_services`, `secondar
 
 Use the same meaningful keys across candidate reviews. For business models, distinguish `agency`, `directory`, `marketplace`, `publisher`, `training` and `software_product`; a mixed business may have several supported models. Do not label every business an agency to pass the filter. Service and customer keys need comparable specificity: shared words such as “AI” or “business” alone are poor review judgments. Record conflicts instead of rewriting the owner's brief to fit the website.
 
+## Write searches the customer would use
+
+Add `search_queries` to the review object. For the example service claim and country/language brief above:
+
+```json
+{
+  "search_queries": [
+    {
+      "query": "automation agency in Pakistan",
+      "intent": "category",
+      "market": "Pakistan",
+      "language": "English",
+      "basis": [{"field": "core_services", "key": "workflow_automation"}]
+    },
+    {
+      "query": "Which agency in Pakistan can automate my business?",
+      "intent": "question",
+      "market": "Pakistan",
+      "language": "English",
+      "basis": [{"field": "core_services", "key": "workflow_automation"}]
+    }
+  ]
+}
+```
+
+Write the actual requested language; a language label does not translate text. Supported intents are `category`, `service`, `question` and `comparison`. Each basis must reference an existing profile or explicit-brief field/key; market/language must match that context. This validates the context, not the semantic quality of the wording: the assistant must still review it. Keep category, service and question searches separate instead of joining every technical label, audience and agency modifier into one phrase.
+
+These are **discovery hypotheses with unmeasured demand**, not automatically recommended keywords. Inspect result intent, business fit and available customer/search evidence before proposing a primary page target. Technical phrases can be useful for a specific buyer/use case; neither their popularity nor zero demand can be inferred from wording alone. Add question-and-answer content where it answers a relevant customer need, with a useful answer and a suitable existing page.
+
+Legacy reviews without `search_queries` receive seeds marked `query_review_status: needs_review`. The assistant rewrites them, adds `search_queries` to the review and reruns `profile` before browser/native discovery. This is routine agent work, not another user approval step. Native `discover` skips unreviewed seeds with `query_review_required`, preserves imports and other work, and does not label this a search-provider failure. Explicit `--query` input remains available. Query lists are bounded to 20; discovery's normal per-run limit is eight.
+
 ## Browser-assisted Google search
 
 An available host browser can perform ordinary Google navigation and pass its observed results into this workflow. Check the host browser first; use `browser-setup` for missing free local Chromium support when needed. Follow [browser search and setup](browser-search.md). A successful browser session is a separate capability from the host search tool or shell network.
@@ -56,7 +87,7 @@ An available host browser can perform ordinary Google navigation and pass its ob
 ## Actual search methods and fallbacks
 
 ```sh
-beyondseo discover --query 'workflow automation implementation agency Pakistan' \
+beyondseo discover --query 'automation agency in Pakistan' \
   --market Pakistan --language English --target https://example.com --out runs/search
 ```
 
@@ -73,7 +104,7 @@ Inspect the host's actual tool inventory and permissions. If an authorized searc
 ```json
 {"attempts":[{
   "provider":"host-search-tool-name",
-  "query":"workflow automation implementation agency Pakistan",
+  "query":"automation agency in Pakistan",
   "requested_market":"Pakistan",
   "requested_language":"English",
   "actual_market":null,
@@ -104,7 +135,7 @@ beyondseo discover --offline --candidate https://candidate.example/services \
 
 # Saved Google, Bing HTML, DuckDuckGo HTML or Bing RSS responses:
 beyondseo search-import --html saved.html --engine DuckDuckGo --target https://example.com \
-  --query 'workflow automation agency' --captured-at 2026-09-16T09:00:00Z --out runs/import
+  --query 'automation agency in Pakistan' --captured-at 2026-09-16T09:00:00Z --out runs/import
 ```
 
 For multiple providers/dates, pass `--saved-search snapshots.json` to `discover`. The JSON is a list with `path`, `provider` (`google`, `bing`, `duckduckgo-html`, `bing-rss`), `query`, `captured_at`, and optional `market`/`language`. At most 20 files, 5 MB each. Empty recognized results differ from an unrecognized response or parser failure. Duplicate URLs retain every distinct query/provider/capture observation in `provenance`.
@@ -130,6 +161,10 @@ beyondseo competitors --profile runs/business-reviewed/profile.json \
 ```
 
 Selection requires core service, customer and business-model overlap plus demonstrated service sales intent. Direct competitors also need supported market overlap. Comparable agencies without that overlap become aspirational benchmarks. Directories/publishers may be query-specific search competitors after page verification; they do not become direct agencies. Discovery observations remain separately labeled search leads until that comparison is established.
+
+Use evidenced country, region or city keys for geographic comparison. Generic `international`, `global`, `worldwide`, `remote`, `online` or `all` keys remain in the profile but cannot establish direct geographic overlap or earn geographic relevance points. Two companies saying they serve international customers does not establish that they pursue the same market.
+
+Use this structured selection in the final report. Preserve any known conflicting About, Contact or legal-page evidence across retries and sessions; a newly readable sales page does not resolve it. If a small capture supports service overlap but leaves company identity or market coverage uncertain, retain that limit or defer the candidate. A suggested content brief for an uninspected client page is conditional, not evidence that the page lacks those answers.
 
 Weights: service overlap 40, customer overlap 25, market overlap 15, business model 10, language 5, evidence completeness 5. These are transparent review assumptions, not an objective market score, authority score or measured rank. The output keeps supporting pages, exact evidence, differences, confidence, gaps and rejection reasons. It never fills a quota with mismatches. A competitor's feature matters only if it answers a relevant customer need for the client.
 

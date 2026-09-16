@@ -11,7 +11,7 @@ from beyondseo.diagnostics import failure_detail
 from beyondseo.discovery import RequestBudget, consolidate, discover, host_attempts, parse_search
 from beyondseo.extract import extract, page_findings
 from beyondseo.findings import audit_report
-from beyondseo.research import FIELDS, profile, select_competitors
+from beyondseo.research import FIELDS, profile, research_queries, select_competitors
 from beyondseo.review import readiness
 
 DATE = "2026-01-01T00:00:00+00:00"
@@ -174,6 +174,24 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(found["candidate_count"], 1)
         self.assertEqual(found["attempts"][0]["status"], "empty_results")
 
+    def test_unreviewed_query_seed_skips_network_but_keeps_other_work(self):
+        adapter = Mock(return_value=attempt())
+        found = discover(
+            [{"query": "technical seed", "query_review_status": "needs_review"}],
+            self.root / "search",
+            candidates=["https://supplied.test"],
+            adapters={"native": adapter},
+        )
+        adapter.assert_not_called()
+        self.assertEqual(found["queries_needing_review"], 1)
+        self.assertEqual(found["attempts"][0]["status"], "query_review_required")
+        self.assertIsNone(found["attempts"][0]["failure"])
+        self.assertEqual(found["candidate_count"], 1)
+        snapshot(self.root / "site", page())
+        self.assertTrue(
+            audit_report(self.root / "site", self.root / "audit", discovery=found)["findings"]
+        )
+
     def test_saved_html_and_supplied_urls_work_offline(self):
         html = self.root / "saved.html"
         html.write_text(DDG)
@@ -249,6 +267,39 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(found["attempts"][0]["status"], "execution_denied")
         self.assertEqual(found["attempts"][1]["fallback_from"]["provider"], "host-search")
 
+    def test_disabled_host_search_is_unavailable_with_unknown_cause_and_fallback(self):
+        evidence = "web_search is disabled or no provider is available."
+        path = self.root / "host.json"
+        path.write_text(
+            json.dumps(
+                {
+                    "attempts": [
+                        {
+                            "query": "q",
+                            "provider": "host-search",
+                            "captured_at": DATE,
+                            "status": "failed",
+                            "stage": "execution",
+                            "evidence": evidence,
+                        }
+                    ]
+                }
+            )
+        )
+        found = discover(
+            [{"query": "q"}],
+            self.root / "out",
+            host_records=host_attempts(path),
+            adapters={"fallback": lambda _: attempt()},
+        )
+        failed = found["attempts"][0]
+        self.assertEqual(failed["status"], "tool_unavailable")
+        self.assertEqual(failed["failure"]["cause"], "unknown")
+        self.assertEqual(failed["failure"]["evidence"], evidence)
+        self.assertIsNone(failed["failure"]["http_status"])
+        self.assertEqual(found["candidate_count"], 1)
+        self.assertEqual(found["attempts"][1]["fallback_from"]["status"], "tool_unavailable")
+
     def test_snippet_is_not_link_evidence_in_source_checker(self):
         from beyondseo.backlinks import check_sources
         from beyondseo.reputation import assess
@@ -322,6 +373,69 @@ class ResearchTests(unittest.TestCase):
             self.root / name, self.root / (name + "-profile"), review=review(url, **kwargs)
         )
 
+    def buyer_queries(self):
+        return [
+            {
+                "query": wording,
+                "intent": intent,
+                "market": "Pakistan",
+                "language": "English",
+                "basis": [{"field": "core_services", "key": "workflow_automation"}],
+            }
+            for wording, intent in [
+                ("automation agency in Pakistan", "category"),
+                ("Which agency in Pakistan can automate my business?", "question"),
+            ]
+        ]
+
+    def test_reviewed_buyer_phrases_and_questions_preserve_wording_without_demand_claims(self):
+        reviewed = review("https://client.test/")
+        reviewed["search_queries"] = self.buyer_queries()
+        result = profile(self.root / "client", self.root / "wording", review=reviewed)
+        self.assertEqual(
+            [q["query"] for q in result["queries"]],
+            [q["query"] for q in reviewed["search_queries"]],
+        )
+        self.assertEqual({q["query_review_status"] for q in result["queries"]}, {"reviewed"})
+        self.assertEqual({q["demand"] for q in result["queries"]}, {"unmeasured"})
+        self.assertTrue(
+            all(q["purpose"] == "competitor_discovery_hypothesis" for q in result["queries"])
+        )
+        adapter = Mock(return_value=attempt())
+        found = discover(result["queries"], self.root / "search", adapters={"native": adapter})
+        self.assertEqual(adapter.call_count, 2)
+        self.assertEqual(found["queries_needing_review"], 0)
+
+    def test_legacy_profile_yields_seeds_for_agent_review_without_stacked_jargon(self):
+        queries = self.client["queries"]
+        self.assertEqual(queries[0]["query"], "workflow automation in pakistan")
+        self.assertEqual(queries[0]["query_review_status"], "needs_review")
+        self.assertNotIn("implementation agency for", queries[0]["query"])
+        self.client["fields"]["markets"] = []
+        self.assertIsNone(research_queries(self.client)[0]["market"])
+
+    def test_query_basis_and_market_must_belong_to_profile_or_explicit_brief(self):
+        self.client["search_queries"] = self.buyer_queries()
+        self.client["search_queries"][0]["basis"][0]["key"] = "unobserved_service"
+        with self.assertRaisesRegex(ValueError, "basis is absent"):
+            research_queries(self.client)
+        self.client["search_queries"] = self.buyer_queries()
+        self.client["search_queries"][0]["market"] = "Canada"
+        with self.assertRaisesRegex(ValueError, "market is not supported"):
+            research_queries(self.client)
+
+    def test_native_language_question_is_not_rewritten_in_english_and_duplicates_collapse(self):
+        self.client["brief"] = {"fields": {"search_languages": [{"value": "Urdu", "key": "ur"}]}}
+        query = self.buyer_queries()[0]
+        query.update(
+            query="پاکستان میں آٹومیشن ایجنسی کون سی ہے؟", intent="question", language="Urdu"
+        )
+        self.client["search_queries"] = [query, query.copy()]
+        planned = research_queries(self.client)
+        self.assertEqual(len(planned), 1)
+        self.assertEqual(planned[0]["query"], query["query"])
+        self.assertEqual(planned[0]["language"], "Urdu")
+
     def test_english_pakistan_agency_is_direct_not_excluded_by_language(self):
         candidate = self.make_profile("agency")
         result = select_competitors(self.client, [candidate], self.root / "selection")
@@ -354,6 +468,28 @@ class ResearchTests(unittest.TestCase):
         result = select_competitors(self.client, [candidate], self.root / "selection")
         self.assertTrue(result["rejected"])
         self.assertFalse(result["direct_competitors"])
+
+    def test_generic_international_overlap_cannot_make_direct_competitor(self):
+        candidate = self.make_profile("worldwide", market="international")
+        self.client["brief"] = {
+            "fields": {
+                "markets": [
+                    {"value": "Pakistan", "key": "pakistan"},
+                    {"value": "International", "key": "international"},
+                ]
+            }
+        }
+        result = select_competitors(self.client, [candidate], self.root / "selection")
+        self.assertFalse(result["direct_competitors"])
+        benchmark = result["aspirational_benchmarks"][0]
+        self.assertEqual(benchmark["score_components"]["markets"], 0)
+        self.assertTrue(
+            any("specific market evidence" in gap for gap in benchmark["evidence_gaps"])
+        )
+        candidate["fields"]["markets"].append({"value": "Pakistan", "key": "pakistan"})
+        result = select_competitors(self.client, [candidate], self.root / "specific")
+        self.assertEqual(len(result["direct_competitors"]), 1)
+        self.assertEqual(result["direct_competitors"][0]["score_components"]["markets"], 15)
 
     def test_profile_requires_native_quote_and_does_not_infer_market(self):
         unreviewed = profile(self.root / "client", self.root / "unreviewed")
