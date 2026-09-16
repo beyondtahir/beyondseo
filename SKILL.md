@@ -2,7 +2,7 @@
 name: beyondseo
 description: Audit websites and plan SEO, AI-search visibility, content, competitors and backlinks using BeyondSEO's crawler, reputation evidence and specialist playbooks.
 metadata:
-  version: 2.7.0
+  version: 2.7.1
   author: Muhammad Tahir Ashraf — Beyond Tahir
 ---
 

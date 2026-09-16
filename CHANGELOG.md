@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.1
+
+- Fixed the hosted skill upload exceeding the observed 200-file limit. Consolidated reporting and industry references into indexed resources while preserving their full guidance; native code, catalog, templates and report assets remain bundled.
+- Count the installation receipt when validating upload size and reject oversized packages before creating an archive.
+- Added a regression for the exact 200/201-file upload boundary and verified that rejected packages leave no incomplete archive behind.
+- Updated direct-upload steps for Claude Desktop and ChatGPT Work, plus specific guidance for browser-download and DNS failures. Skill registration and successful live crawling remain separate checks.
+- Published a ready-to-upload skill ZIP with a SHA-256 checksum and a dated roundup of the previous 24 hours of improvements.
+
 ## 2.7.0
 
 - Added offline branded PDF and HTML reports with the existing BeyondSEO logo, editorial cover, linked contents, evidence tables, source notes and action roadmaps. Normal setup includes the free PDF renderer; HTML stays available when PDF rendering is unavailable.

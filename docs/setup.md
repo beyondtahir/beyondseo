@@ -142,7 +142,9 @@ Version 2.1 adds crawl settings and output fields. Start a fresh output folder f
 | `beyondseo: command not found` | Activate `.venv`, or use `.venv/bin/beyondseo` / `.venv\Scripts\beyondseo.exe` directly |
 | Optional rendering dependency missing | Install `.[browser,reports]` inside the active environment |
 | Chromium executable missing | Run `python -m playwright install chromium` with that environment's Python |
+| Chromium download times out or returns a gateway error | Keep the download error separate from skill registration. Check the host's permitted network access to the browser download URL; do not repeat downloads indefinitely. Use `--http-only` setup and `--mode http` for reachable pages while browser setup is unavailable. This does not verify JavaScript content. |
 | Browser launch fails on Linux | Install Chromium system libraries using the command above |
+| Target DNS lookup fails | Record the failed hostname and error; check the hostname and the execution environment's DNS/network access. If `robots.txt` cannot be fetched, do not bypass the robots check or describe the page's content as inspected. |
 | TLS certificate error | Check the system certificate store and network configuration; certificate verification stays enabled |
 | Output already contains a crawl | Use `--resume` with matching settings, or choose a fresh output folder |
 | `crawl.lock exists` | Check its recorded process ID; stop an active crawl before removing a stale lock |

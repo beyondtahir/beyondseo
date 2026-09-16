@@ -197,6 +197,8 @@ class PortabilityTests(unittest.TestCase):
             self.assertEqual(result["host_safety_scan"], "not run")
             with zipfile.ZipFile(archive) as bundle:
                 self.assertEqual({n.split("/")[0] for n in bundle.namelist()}, {"beyondseo"})
+                self.assertEqual(len(bundle.namelist()), result["archive_files"])
+                self.assertLessEqual(len(bundle.namelist()), result["max_upload_files"])
                 self.assertIn("beyondseo/src/beyondseo/cli.py", bundle.namelist())
                 self.assertIn(
                     "beyondseo/playbooks/backlink-system/posting-sites.json", bundle.namelist()
@@ -209,6 +211,24 @@ class PortabilityTests(unittest.TestCase):
             self.assertTrue(archive.with_suffix(".zip.sha256").is_file())
             with self.assertRaisesRegex(ValueError, "already exists"):
                 build(ROOT, archive)
+
+    def test_upload_limit_includes_receipt_and_fails_before_writing(self):
+        with patch.object(sys, "path", [str(ROOT / "scripts"), *sys.path]):
+            from build_skill import build
+            from validate_skill import validate
+
+            source = self.root / "complete source"
+            installer.install(ROOT, source)
+            count = len(installer.bundle_files(source))
+            for index in range(199 - count):
+                (source / "docs" / f"extra-{index}.md").write_text("Resource", encoding="utf-8")
+            self.assertEqual(validate(source)["archive_files"], 200)
+            (source / "docs/one-too-many.md").write_text("Resource", encoding="utf-8")
+            output = self.root / "oversized.zip"
+            with self.assertRaisesRegex(ValueError, "201 files.*maximum 200"):
+                build(source, output)
+            self.assertFalse(output.exists())
+            self.assertFalse(output.with_suffix(".zip.sha256").exists())
 
     def test_explicit_missing_runtime_does_not_fall_back_silently(self):
         result = subprocess.run(

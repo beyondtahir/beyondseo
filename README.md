@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.7.0-991B1B?style=flat-square" alt="Version 2.7.0"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.7.1-991B1B?style=flat-square" alt="Version 2.7.1"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
@@ -25,6 +25,20 @@
 </p>
 
 ---
+
+## The last 24 hours: deeper research, better reports, easier installation
+
+**16–17 September 2026 · Updates across 2.6.0, 2.7.0 and 2.7.1**
+
+BeyondSEO now connects a more careful understanding of your business with clearer research, practical next steps and designed client deliverables.
+
+- **Competitors that fit your business.** Establish services, customers and markets first; use buyer phrases and customer questions, then verify candidate pages. Direct competitors and international benchmarks stay separate.
+- **Backlink research you can check.** Use an available permitted host browser, host search or native discovery, with saved-result and supplied-URL options. Verify source pages and compare peers with shared research budgets. Search snippets never become verified backlinks or a complete backlink count.
+- **Reports made for clients.** Export branded PDF and self-contained HTML with the BeyondSEO logo, black/red palette, linked contents, evidence tables and action roadmaps. Long audits retain their business context and findings.
+- **A simpler skill upload.** Version 2.7.1 reduces the package from 211 files to 196, below the observed 200-file upload limit. Every playbook, the crawler, report assets and the 206-entry publishing library remain included. The builder now checks the limit before creating a ZIP.
+- **Clearer setup results.** Updated guides separate a saved skill, a working Python engine, a ready browser and reachable websites. Real upload checks succeeded in Claude Desktop and ChatGPT Work; Work's tested execution environment still encountered browser-download and DNS failures.
+
+**[Download the ready-to-upload skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.7.1/beyondseo-2.7.1-skill.zip)** · [Read the release announcement and validation limits](https://github.com/beyondtahir/beyondseo/releases/tag/v2.7.1) · [Installation guide](docs/agent-installation.md)
 
 ## Research that explains its evidence
 
@@ -83,9 +97,9 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 
 [ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw)
 
-**[Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip)** · [Release packages](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
+**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.7.1/beyondseo-2.7.1-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
 
-For Claude uploads, use a matching `beyondseo-<version>-skill.zip` release asset when available, or create the correctly structured upload with the single command in the guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. ChatGPT Work has its own skill-save workflow; the guide includes a copy-paste installation request and help for save errors and runtime permissions.
+For Claude and ChatGPT Work uploads, use the named `beyondseo-2.7.1-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
 
 ### Prefer to let your assistant install it?
 
@@ -165,7 +179,7 @@ BeyondSEO uses a portable `SKILL.md` with bundled scripts, references and playbo
 | Claude website / desktop / Cowork | Upload the skill ZIP through Customize → Skills; enable BeyondSEO |
 | Claude Code | `python3 scripts/install_skill.py --host claude-code --setup` |
 | Codex | `python3 scripts/install_skill.py --host codex --setup` |
-| ChatGPT Work | Follow the Work install prompt; confirm the saved skill and its runtime separately |
+| ChatGPT Work | Upload through Customize → Skills → Create, or use the Work install prompt; check the saved skill and runtime separately |
 | Hermes Agent | `python3 scripts/install_skill.py --host hermes --setup` |
 | OpenClaw | `python3 scripts/install_skill.py --host openclaw --setup` |
 | Terminal / Python | Run the native engine directly, or import `Config` and `Crawler` |

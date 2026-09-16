@@ -12,7 +12,7 @@ Create a page inventory separating commercial pages, supporting content, trust/p
 
 ## 2. Cover the whole practice
 
-Paths below are relative to `playbooks/`.
+Paths below are relative to `playbooks/`. Use the matching section of [industry guidance](../industry-playbooks/README.md) and [reporting guidance](../reporting/README.md) when relevant.
 
 | Area | Review | Required decision/output | Specialist references |
 |---|---|---|---|
@@ -31,7 +31,7 @@ Paths below are relative to `playbooks/`.
 | Backlinks and digital PR | Supplied links, relevant prospects, the saved source catalog, partnerships and editorial fit | Named source URLs, target pages, proposed assets, outreach/posting actions and validation status | `backlink-system/free-paid-backlink-source-library.md`, `backlink-system/backlink-quality-scoring.md` |
 | Competitors | Comparable page types, topics, proof, answers, links and observed search evidence | Specific gaps and defensible opportunities, with comparator URLs | `competitor-research/competitor-matrix.md`, `competitor-research/content-gap-analysis.md` |
 | Conversion | Offers, calls to action, contact/booking journeys, forms and trust near decisions | Page-specific conversion improvements and a measurement plan | `audit/conversion-seo-audit.md` |
-| Measurement | Supplied search/analytics/profile exports, event definitions and baseline availability | KPI definitions, dated baseline, review cadence and remaining data requests | `integrations/google-search-console.md`, `integrations/google-analytics.md`, `reporting/monthly-progress-report.md` |
+| Measurement | Supplied search/analytics/profile exports, event definitions and baseline availability | KPI definitions, dated baseline, review cadence and remaining data requests | `integrations/google-search-console.md`, `integrations/google-analytics.md`, `reporting/README.md#monthly-progress-report` |
 
 REO here is the project's shorthand for reputation optimization. “Authority AEO” describes credible proof and external recognition that support answers. These are practice labels; do not invent a search-engine metric or proprietary ranking system from them.
 

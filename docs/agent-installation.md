@@ -31,7 +31,18 @@ This asks the assistant to do the setup for you. It can use its supported import
 
 ## ChatGPT Work
 
-Paste this into Work:
+### Upload the bundle directly
+
+1. Get the named skill ZIP from the release, when available, or use **Prepare the upload from source** below.
+2. Open **Customize → Skills → Create → Upload from your computer**.
+3. Choose `beyondseo-<version>-skill.zip`. Wait for BeyondSEO to appear in the Skills list, then open it and confirm the supporting files are present.
+4. Choose **Try in chat**, use the **Work** surface, and ask it to run the installation check below. A saved skill and a working crawler are separate results.
+
+These controls were exercised in the ChatGPT web interface. Labels and availability can vary by account. Use the native file chooser for a manual upload; no browser extension is needed. An automated browser's file-upload permission error is separate from the skill's save or safety-scan result.
+
+### Ask Work to install from GitHub
+
+Alternatively, paste this into Work:
 
 ```text
 Install BeyondSEO from https://github.com/beyondtahir/beyondseo as a reusable
@@ -70,10 +81,12 @@ This route also covers Claude Cowork through its Skills controls.
 
 1. Use the matching `beyondseo-<version>-skill.zip` from the [release assets](https://github.com/beyondtahir/beyondseo/releases/latest), if offered. If the release provides source only, use **Prepare the upload from source** below. GitHub’s automatic source ZIP is not a direct skill upload; its enclosing folder has a different name.
 2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
-3. Open **Customize → Skills → + → Create skill → Upload a skill**, then select the ZIP.
+3. Open **Customize → Skills → Add skill → Upload skill**, then select the ZIP. Some versions label this **+ → Create skill → Upload a skill**.
 4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”
 
-The archive contains one `beyondseo/` folder, matching `name: beyondseo`, with `SKILL.md` and every runtime resource. Its description is under Claude.ai's documented 200-character limit. Creating an account or entering hosting credentials is unnecessary for installation. Organization permissions can affect whether uploads are available. [Create a custom skill](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) · [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
+The archive contains one `beyondseo/` folder, matching `name: beyondseo`, with `SKILL.md` and every runtime resource. Its description is under Claude.ai's documented 200-character limit. The builder also checks a maximum of 200 archive files, including its receipt: Claude Desktop rejected a larger bundle at save time. Reporting and industry guidance is indexed in two consolidated files to stay within this limit without removing capabilities. Creating an account or entering hosting credentials is unnecessary for installation. Organization permissions can affect whether uploads are available. [Create a custom skill](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) · [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
+
+If the upload says **“Zip contains too many files (maximum 200)”**, use a bundle built from version 2.7.1 or later. Do not upload the GitHub source archive, remove arbitrary runtime files, or disable the scan. This observed package-limit error does not establish the cause of a different host's unexplained HTTP 422.
 
 Saving the skill does not install Python packages. Ask Claude to follow [crawler setup](#crawler-setup-in-a-hosted-environment) using its available execution environment. The Claude API and Claude Code have separate runtime and installation rules.
 
