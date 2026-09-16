@@ -151,6 +151,25 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(block["captured_at"], finding["captured_at"])
         self.assertEqual(block["acceptance"], finding["acceptance_check"])
         self.assertNotIn('"score"', json.dumps(report))
+        finding["business_relevance"] = "Customers need to understand the service before buying."
+        large = from_audit(
+            {
+                "target": "https://example.com",
+                "created_at": "2026-01-01",
+                "findings": [{**finding, "observation": f"Observation {i}"} for i in range(101)],
+            }
+        )
+        export_report(large, self.out, "html")
+        retained = [
+            block
+            for section in large["sections"]
+            for block in section["blocks"]
+            if block["type"] == "finding"
+        ]
+        self.assertEqual(len(retained), 101)
+        self.assertEqual(retained[-1]["observation"], "Observation 100")
+        self.assertIn(finding["business_relevance"], retained[-1]["impact"])
+        self.assertIn("Observation 100", (self.out / "report.html").read_text(encoding="utf-8"))
 
     @unittest.skipUnless(PDF_READY, "Install reportlab and pypdf for PDF integration checks.")
     def test_pdf_content_navigation_brand_and_no_blank_pages(self):

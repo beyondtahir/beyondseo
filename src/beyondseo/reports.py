@@ -143,7 +143,11 @@ def from_audit(audit):
                 "observation": row["observation"],
                 "captured_at": row.get("captured_at") or "Not recorded",
                 "claim_type": row["claim_type"],
-                "impact": row["why_it_matters"],
+                "impact": "\n".join(
+                    _string(value)
+                    for value in (row["why_it_matters"], row.get("business_relevance"))
+                    if value
+                ),
                 "action": row["recommended_action"],
                 "priority": row["priority"],
                 "rationale": row["priority_rationale"],
@@ -154,6 +158,25 @@ def from_audit(audit):
             }
         )
     coverage = audit.get("crawl_coverage", {})
+    finding_sections = [
+        {
+            "title": "Findings & actions" if offset == 0 else "Findings & actions continued",
+            "lead": "Resolve the evidenced issues, then check the same pages again.",
+            "blocks": blocks[offset : offset + 100],
+        }
+        for offset in range(0, len(blocks), 100)
+    ] or [
+        {
+            "title": "Findings & actions",
+            "blocks": [
+                {
+                    "type": "callout",
+                    "title": "No material findings supplied",
+                    "text": "This does not establish that the website has no issues. Review the original audit's access and coverage limits.",
+                }
+            ],
+        }
+    ]
     return {
         "title": "Website audit",
         "client": urlsplit(audit["target"]).hostname or audit["target"],
@@ -191,18 +214,7 @@ def from_audit(audit):
                     },
                 ],
             },
-            {
-                "title": "Findings & actions",
-                "lead": "Resolve the evidenced issues, then check the same pages again.",
-                "blocks": blocks
-                or [
-                    {
-                        "type": "callout",
-                        "title": "No material findings supplied",
-                        "text": "This does not establish that the website has no issues. Review the original audit's access and coverage limits.",
-                    }
-                ],
-            },
+            *finding_sections,
         ],
     }
 
