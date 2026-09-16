@@ -13,7 +13,7 @@ PDF_READY = bool(importlib.util.find_spec("reportlab") and importlib.util.find_s
 
 
 def sample():
-    return json.loads((ROOT / "examples/report-content.json").read_text())
+    return json.loads((ROOT / "examples/report-content.json").read_text(encoding="utf-8"))
 
 
 class ReportTests(unittest.TestCase):
@@ -36,7 +36,7 @@ class ReportTests(unittest.TestCase):
             '<img src="https://evil.test/pixel"><b>literal</b>'
         )
         result = export_report(data, self.out, "html")
-        markup = (self.out / "report.html").read_text()
+        markup = (self.out / "report.html").read_text(encoding="utf-8")
         self.assertEqual(result["status"], "complete")
         self.assertIn("Content-Security-Policy", markup)
         self.assertIn("data:image/png;base64,", markup)
@@ -101,10 +101,10 @@ class ReportTests(unittest.TestCase):
 
     def test_existing_output_is_preserved_without_explicit_overwrite(self):
         path = self.out / "report.html"
-        path.write_text("keep me")
+        path.write_text("keep me", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "already exists"):
             export_report(sample(), self.out)
-        self.assertEqual(path.read_text(), "keep me")
+        self.assertEqual(path.read_text(encoding="utf-8"), "keep me")
 
     def test_metrics_require_sources_and_bars_reject_nonfinite_or_negative_values(self):
         data = sample()
@@ -214,5 +214,5 @@ class ReportTests(unittest.TestCase):
         data["client"] = "مثال"
         result = export_report(data, self.out, overwrite=True)
         self.assertEqual(result["status"], "html_only")
-        self.assertIn("مثال", (self.out / "report.html").read_text())
+        self.assertIn("مثال", (self.out / "report.html").read_text(encoding="utf-8"))
         self.assertFalse((self.out / "report.pdf").exists())
