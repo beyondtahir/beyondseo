@@ -1,5 +1,21 @@
 # Changelog
 
+
+## 2.8.0 — Your SEO plan, put into action
+
+19 September 2026
+
+- Ask your agent to carry out approved on-site improvements while protecting your website's design, short copy and business facts.
+- Follow the work through an optional private branded dashboard, with a saved plan, progress, effort estimates and checked results.
+- Keep off-site recommendations alongside website work: relevant posting links, topics, outlines and suggested dates. Publishing remains in your hands.
+- Revisit your website through bounded reviews, with pause/resume and protection against overlapping runs. Automatic scheduling still needs a supported agent or host scheduler.
+- Install into more coding-agent and website-builder workflows while preserving existing project rules, settings and other skills.
+- Prepare reviewed HTML and sitemap changes with the existing backup, verification and rollback workflow.
+- Get clearer browser warnings that identify render deadlines and failed selector waits. Partial evidence stays partial.
+- Fixed progress updates marked “blocked” incorrectly stopping otherwise successful dashboard command sequences.
+
+The complete SEO, AEO/GEO, competitor research, backlink library and branded reporting workflow remains included. The upload bundle contains 200 files including its installation receipt. Automated regression checks passed locally (238 passed, one platform-specific skip); live host coverage varies. See [installation and runtime guidance](docs/agent-installation.md) for prerequisites. No universal compatibility, automatic hosted worker or ranking guarantee is claimed.
+
 ## 2.7.1
 
 - Fixed the hosted skill upload exceeding the observed 200-file limit. Consolidated reporting and industry references into indexed resources while preserving their full guidance; native code, catalog, templates and report assets remain bundled.

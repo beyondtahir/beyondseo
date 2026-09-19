@@ -67,7 +67,12 @@ def host_destination(host, workspace=None, profile_home=None):
     if profile_home and host != "hermes":
         raise ValueError("--profile-home is for Hermes. Use --dest for a custom folder.")
     if workspace:
-        roots = {"claude-code": ".claude/skills", "codex": ".agents/skills", "openclaw": "skills"}
+        roots = {
+            "claude-code": ".claude/skills",
+            "codex": ".agents/skills",
+            "cursor": ".cursor/skills",
+            "openclaw": "skills",
+        }
         if host not in roots:
             raise ValueError("Use --profile-home for a Hermes profile, not --workspace.")
         return Path(workspace).expanduser().absolute() / roots[host] / "beyondseo"
@@ -76,6 +81,8 @@ def host_destination(host, workspace=None, profile_home=None):
         return home / ".claude/skills/beyondseo"
     if host == "codex":
         return home / ".agents/skills/beyondseo"
+    if host == "cursor":
+        return home / ".cursor/skills/beyondseo"
     if host == "openclaw":
         return (
             Path(os.getenv("OPENCLAW_STATE_DIR") or home / ".openclaw").expanduser()
@@ -99,7 +106,7 @@ def host_destination(host, workspace=None, profile_home=None):
                     "directory, or run this command from its terminal with HERMES_HOME set."
                 )
         return base / "skills/beyondseo"
-    raise ValueError("Choose claude-code, codex, hermes or openclaw, or use --dest.")
+    raise ValueError("Choose claude-code, codex, cursor, hermes or openclaw, or use --dest.")
 
 
 def shell_command(arguments):
@@ -211,7 +218,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     target = parser.add_mutually_exclusive_group(required=True)
     target.add_argument("--dest", type=Path, help="Exact skill folder to create.")
-    target.add_argument("--host", choices=["claude-code", "codex", "hermes", "openclaw"])
+    target.add_argument("--host", choices=["claude-code", "codex", "cursor", "hermes", "openclaw"])
     parser.add_argument("--workspace", type=Path, help="Project/workspace root for a local host.")
     parser.add_argument("--profile-home", type=Path, help="Exact Hermes profile directory.")
     parser.add_argument(

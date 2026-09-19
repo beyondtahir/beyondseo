@@ -9,6 +9,7 @@ from unittest.mock import Mock, patch
 from beyondseo.backlinks import source_rows
 from beyondseo.diagnostics import failure_detail
 from beyondseo.discovery import RequestBudget, consolidate, discover, host_attempts, parse_search
+from beyondseo.evidence import capture_quality
 from beyondseo.extract import extract, page_findings
 from beyondseo.findings import audit_report
 from beyondseo.research import FIELDS, profile, research_queries, select_competitors
@@ -530,6 +531,31 @@ class ResearchTests(unittest.TestCase):
             self.assertFalse(
                 codes & {"title_missing", "h1_missing", "schema_review", "main_content_empty"}
             )
+
+    def test_readiness_failure_reports_cause_and_retains_positive_evidence(self):
+        record = page(html="<title>Service</title><main>Observed service text</main>")
+        record["rendered"] = {
+            "data": record["data"],
+            "readiness": {"deadline_reached": True, "selector_error": "Timeout waiting for main"},
+        }
+        quality = capture_quality(record)
+        self.assertTrue(quality["usable"])
+        self.assertFalse(quality["absence_supported"])
+        self.assertEqual(quality["representation"], "rendered")
+        self.assertTrue(any("deadline_reached=true" in item for item in quality["limits"]))
+        self.assertTrue(any("Timeout waiting for main" in item for item in quality["limits"]))
+        finding = next(r for r in page_findings(record) if r["code"] == "capture_incomplete")
+        self.assertIn("deadline_reached=true", finding["evidence"])
+
+    def test_blocked_optional_assets_do_not_invent_readiness_failure(self):
+        record = page(html="<title>Service</title><main>Observed service text</main>")
+        record["rendered"] = {
+            "data": record["data"],
+            "readiness": {"deadline_reached": False, "text_stable_observed": True},
+            "blocked_requests": [{"reason": "resource_type_disabled"}],
+        }
+        self.assertFalse(capture_quality(record)["limits"])
+        self.assertNotIn("capture_incomplete", {r["code"] for r in page_findings(record)})
 
     def test_svg_labels_are_not_document_titles(self):
         record = page(

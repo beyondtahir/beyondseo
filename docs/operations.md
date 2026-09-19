@@ -78,3 +78,8 @@ Remote checks reject symlink content paths. SFTP requires the server's POSIX ren
 These are optimistic single-file updates, not distributed transactions. Avoid concurrent website deployments. If a connection fails during replacement, `receipt.json` marks the outcome as needing inspection and retains the backup. Check the actual remote bytes before retrying or rolling back. Multi-file builds, databases, account creation and backlink publishing need their own supported workflow.
 
 Transport references: [Python FTPS](https://docs.python.org/3/library/ftplib.html), [SFTP client and host-key verification](https://docs.paramiko.org/en/stable/api/client.html).
+
+
+## Project-based website improvements
+
+Use [website work and monitoring](website-work.md) when the user asks to apply a plan. `project` adds persistent jobs and an optional private monitor; `onsite` prepares guarded HTML and sitemap drafts. The older `watch` command remains a foreground evidence loop. `project run` can be invoked by an external scheduler, but it performs read-only HTTP reviews, not automatic content edits or model calls.

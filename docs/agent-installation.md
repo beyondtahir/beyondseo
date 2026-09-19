@@ -10,6 +10,9 @@ Choose the app you actually use. **Claude on the web, Claude Code and ChatGPT Wo
 | Codex | [One local installation command](#codex) |
 | Hermes Agent | [Choose your active profile](#hermes-agent) |
 | OpenClaw | [Choose your agent's workspace](#openclaw) |
+| Cursor | [Install in your coding project](#cursor) |
+| Lovable | [Import a workspace skill](#lovable) |
+| Vercel / v0 project | [Install in the agent managing the project](#vercel-and-v0-projects) |
 | Another assistant | [Check its capabilities](#other-assistants) |
 
 ## Easiest start: paste the GitHub URL
@@ -35,10 +38,12 @@ This asks the assistant to do the setup for you. It can use its supported import
 
 1. Get the named skill ZIP from the release, when available, or use **Prepare the upload from source** below.
 2. Open **Customize → Skills → Create → Upload from your computer**.
-3. Choose `beyondseo-<version>-skill.zip`. Wait for BeyondSEO to appear in the Skills list, then open it and confirm the supporting files are present.
+3. Choose `beyondseo-<version>-skill.zip`. If BeyondSEO is already saved, choose **Replace existing** when prompted. Wait for it to appear in the Skills list, then open it and confirm the supporting files are present, including `docs/website-work.md` and `src/beyondseo/projects.py`.
 4. Choose **Try in chat**, use the **Work** surface, and ask it to run the installation check below. A saved skill and a working crawler are separate results.
 
 These controls were exercised in the ChatGPT web interface. Labels and availability can vary by account. Use the native file chooser for a manual upload; no browser extension is needed. An automated browser's file-upload permission error is separate from the skill's save or safety-scan result.
+
+For a complete bundle update, use the archive importer above. Uploading a ZIP as a chat attachment or as one supporting file in the editor does not replace the skill's contents. After replacement, start a fresh Work task: an already running task may still hold the previous mounted copy.
 
 ### Ask Work to install from GitHub
 
@@ -68,16 +73,21 @@ OpenAI distinguishes workspace skills from local filesystem skills. A copy on yo
 | Error | What the assistant should do |
 |---|---|
 | HTTP 422 during save | Capture the response body, failing operation and submitted file list. Check the skill name, description, complete folder layout and supported file requirements. A 422 alone does not identify a safety finding. |
+| Chat has skill list/read tools but no save tool | Use the native archive importer above, including **Replace existing** for an update. Missing chat tools do not prove the UI cannot save the skill. |
 | An explicit safety-scan rejection | Read the flagged file/rule, explain the finding and correct the actual issue. Use workspace support if the reason is unavailable. Keep scanning and approval controls enabled. |
 | Permission denied launching Python | Identify which path was denied. Use an execution folder supported by that Work environment with `--venv`; do not place a virtualenv inside a read-only or non-executable skill mount. |
 | Saved skill, missing bundled files | Re-import the complete bundle through the supported workflow and verify a playbook, the catalog and `src/beyondseo/cli.py` are accessible. |
 | Browser cannot launch | Inspect `doctor`; install Chromium/system libraries only where the host permits them. HTTP mode can read initial HTML, but does not establish JavaScript coverage. |
+| Chromium download times out | Retain the official download error. Check for an already available permitted host browser; otherwise continue HTTP/supplied-evidence work. Do not disable TLS or repeatedly download without a bound. |
+| DNS fails while fetching robots | Report the name-resolution failure and the withheld page request separately. It is not a robots disallow or proof the website is offline. Use a permitted host fetch or supplied capture if available. |
 
 The package validator does not call Work's save service or safety scanner. There is no BeyondSEO switch that grants workspace permissions or guarantees acceptance. Keep a failed save separate from a failed runtime setup; correcting one does not prove the other is resolved.
 
 ## Claude website and desktop Skills
 
 This route also covers Claude Cowork through its Skills controls.
+
+Check the actual account capabilities separately. Saving a skill and running it in Claude Chat does not establish Cowork access; if Cowork displays an upgrade requirement, report that feature as unavailable on that account. BeyondSEO does not change the subscription or require an upgrade merely to use another available execution route.
 
 1. Use the matching `beyondseo-<version>-skill.zip` from the [release assets](https://github.com/beyondtahir/beyondseo/releases/latest), if offered. If the release provides source only, use **Prepare the upload from source** below. GitHub’s automatic source ZIP is not a direct skill upload; its enclosing folder has a different name.
 2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
@@ -227,3 +237,108 @@ Before blaming BeyondSEO for an agent that cannot start, try one short model res
 Hermes can use an already configured subscription or local model. OpenClaw can use a supported subscription login or local Ollama model. These are host choices, not dependencies required by BeyondSEO. Test that the chosen model can call tools and read evidence; a successful text-only reply does not establish a completed audit. Do not copy credential files between agents. Use each host's supported sign-in flow when needed.
 
 When installing OpenClaw itself, check the selected release's Node requirement before installation. BeyondSEO's Python requirement is separate. Follow [OpenClaw installation](https://docs.openclaw.ai/install) and [local Ollama setup](https://docs.openclaw.ai/providers/ollama/setup); retain existing host configuration unless a particular change is needed and authorized.
+
+
+## Cursor
+
+Cursor supports the standard skill folder and its bundled scripts. From the downloaded BeyondSEO folder, install into the project you actually edit:
+
+```sh
+python3 scripts/install_skill.py --host cursor --workspace "/path/to/website-project" --setup
+```
+
+1. Open that website project in Cursor. On Windows use `py -3` instead of `python3`.
+2. Refresh skills/start a new session and select `/beyondseo` in Agent chat. Confirm it appears under the app's Skills controls.
+3. Ask: “Use BeyondSEO to inspect this website. Apply the agreed on-site improvements while preserving its design. Do not deploy until I authorise it.”
+4. Run the installed `scripts/run.py doctor` in the actual terminal. Registration, native HTTP and browser readiness are separate checks.
+5. For personal installation omit `--workspace`. For a cloud agent, include the project skill in its authorised repository/environment and prepare its runtime there. Unsynced personal skills are not automatically available remotely.
+
+The command is implemented locally. It does not install Cursor itself or grant permissions. A URL-based prompt can ask Cursor to perform these same steps:
+
+```text
+Install BeyondSEO from https://github.com/beyondtahir/beyondseo for this
+Cursor project using scripts/install_skill.py --host cursor --workspace
+with this project's actual path and --setup. Read docs/agent-installation.md.
+Confirm skill discovery and doctor results. Do not modify my website yet.
+```
+
+The installer uses `.cursor/skills/beyondseo` for a project and `~/.cursor/skills/beyondseo` for personal installation. Cursor also discovers `.agents/skills/beyondseo`, which Vercel's Skills CLI uses. Choose one installation method for a project to avoid duplicate copies.
+
+Cursor's **From GitHub Repository** control currently expects a plugin marketplace with `.cursor-plugin/marketplace.json`; it is not a standalone `SKILL.md` importer. For BeyondSEO, use the command or chat prompt above, or the [Skills CLI route](#vercel-and-v0-projects). No existing rules, MCP settings or cloud-sync preferences need to change.
+
+[Official Cursor skills](https://cursor.com/docs/skills) · [Cursor automations](https://cursor.com/docs/cloud-agent/automations).
+
+## Lovable
+
+After import, follow [the dedicated Lovable execution guide](lovable.md). It covers mounted skill execution, private runtime recovery, capture limits and optional monitoring without changing application settings.
+
+Lovable now documents native workspace skills and GitHub imports. A workspace owner/admin can:
+
+1. Open **Settings → Skills → Add → Import from GitHub**.
+2. Paste `https://github.com/beyondtahir/beyondseo`. For a version not yet published, use the local package/manual route; the public URL cannot fetch unpublished local changes.
+3. For a ZIP, choose **Settings → Skills → Add → Upload ZIP**, browse to the prepared bundle, then choose **Import archive**. Expand **Beyondseo** and inspect **Bundled files**: check `docs/website-work.md`, `src/beyondseo/projects.py`, `scripts/run.py`, the logo and backlink catalog. Use the prepared skill bundle, not an arbitrary repository ZIP with tests and private outputs.
+4. Open the website's project chat, type `/beyondseo`, and select **Beyondseo — Workspace skills**. Confirm the skill chip is attached before sending. Ask it to follow `docs/website-work.md` and inspect the current source and preview before editing.
+5. Check the actual tools. Importing Python files does not establish that Python, browser downloads or persistent background workers can run. Use the project's native tools when available and report any missing crawler coverage separately.
+
+You can also ask Lovable's chat:
+
+```text
+Import BeyondSEO from https://github.com/beyondtahir/beyondseo as a workspace
+skill using your supported Skills import. Preserve existing skills and project
+knowledge. Confirm registration and bundled resources. Then use it on this
+project when I request SEO work. Do not publish or create a dashboard yet.
+```
+
+If chat cannot import, use the Settings steps above; reading the URL alone is not installation. Current documented limits: 200 files, 1 MB per file and 10 MB total content. BeyondSEO's validator enforces these limits. The local installer cannot register a Lovable workspace skill. An owner/admin may use the native importer independently of a connector. A connector error mentioning `workspaces:write` or `projects:write` concerns that connector grant; it does not prove the archive is invalid. Use the authorised native UI where available, or correct that connector's permissions through its supported setup. Preserve existing skills and project knowledge.
+
+For implementation, Lovable's agent edits the existing application and checks its preview. For recurring work, a connected worker and durable store are separate setup. Ask before provisioning or exposing a monitor. The existing chat operates the project; dashboard AI is optional and not included automatically in editor credits.
+
+[Official Lovable skills/import guide](https://docs.lovable.dev/features/skills) · [GitHub sync](https://docs.lovable.dev/integrations/github).
+
+## Vercel and v0 projects
+
+Vercel hosts the application; install BeyondSEO into the agent that manages its source (Cursor, Codex, Claude Code or another supported host). For example, use the Cursor command above with the Vercel-connected repository. There is no `--host vercel` that registers a skill in the hosting dashboard.
+
+Vercel's open Skills CLI can install a GitHub skill into supported agents. Run this from the website project and choose the intended agent:
+
+```sh
+npx skills add https://github.com/beyondtahir/beyondseo
+```
+
+For an explicit Cursor project installation:
+
+```sh
+npx skills add https://github.com/beyondtahir/beyondseo --agent cursor --skill beyondseo --copy
+```
+
+For unpublished local changes, replace the URL with the absolute path to the extracted complete `beyondseo` skill folder. The public URL always reads the published version. Skills CLI 1.7.0 was exercised with a local bundle in an isolated project: all source-file hashes matched and existing rules, settings and a separate skill were retained. This checks installation, not a Cursor Agent session or Vercel deployment. The CLI may maintain its own skill lockfile; review any existing BeyondSEO collision before confirming a replacement. Its optional telemetry can be disabled with `DISABLE_TELEMETRY=1`.
+
+After copying, use the installed folder (the tested CLI used `.agents/skills/beyondseo`):
+
+```sh
+python3 .agents/skills/beyondseo/scripts/setup.py
+python3 .agents/skills/beyondseo/scripts/run.py doctor
+```
+
+Use `py -3` on Windows. Confirm BeyondSEO in the agent's skill picker too. Copying the skill does not install dependencies or a background service. Use BeyondSEO's Python installer if a generic importer omits resources, and keep existing installation receipts/configuration intact.
+
+1. Connect/open the website's source using its existing project workflow.
+2. Install BeyondSEO in that coding agent and inspect the site before edits.
+3. Make scoped changes and run the existing build and preview checks.
+4. Keep previews separate from production. Publish only within the user's authorisation.
+5. For scheduled work, prepare a durable worker and a protected trigger. Vercel Cron invokes production HTTP endpoints; it does not keep a browser or Python process running indefinitely. Do not store persistent client state on a Function's temporary filesystem. A preview-only test does not demonstrate cron execution.
+
+In v0, first check the actual available skill and execution controls. If it cannot register/run the complete skill, work through the connected repository in a supported agent; do not report native v0 installation as tested.
+
+[Official Vercel skills](https://vercel.com/docs/agent-resources/skills) · [Skills CLI](https://skills.sh/docs/cli) · [Vercel Cron](https://vercel.com/docs/cron-jobs).
+
+## Website implementation and optional monitor
+
+After installation, [website work](website-work.md) explains design-preserving edits, private project records, optional monitoring, bounded review jobs and off-site planning. These functions use the current agent's chat. Installation alone starts no crawl, schedule, publishing job or dashboard. Runtime/model access and credentials are not inherited across hosts.
+
+
+### Preserve existing settings
+
+Add BeyondSEO as its own skill. Do not replace existing rules, workspace/project knowledge, MCP settings, deployment settings or other skills. The local installer writes only the selected `beyondseo` folder and its receipt; it refuses an unmanaged existing folder and refuses to overwrite modified installed files. A requested update backs up the prior managed installation. Lovable imports must add a new skill; inspect any name collision before replacing it.
+
+The optional project monitor works across all these hosts, including ChatGPT Work, Claude, Hermes and OpenClaw. Use a private HTML artifact where local serving is unavailable. See [monitoring in each execution environment](website-work.md#offer-monitoring-once).

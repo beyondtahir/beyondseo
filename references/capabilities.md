@@ -117,3 +117,10 @@ They adapt page strategy, proof, local relevance and conversion focus. They are 
 No hosted scraping provider, plugin or external skill is needed to run the native crawler. BeautifulSoup and Colorama are ordinary local Python libraries; Playwright and Chromium are optional local rendering components. A website's own externally hosted scripts or public content API are website dependencies, not outsourced scraping services.
 
 Deep reputation research now has two native helpers: `research-plan` generates matching query families and bounded cohort budgets after profile review; `compare-reputation` recalculates verified evidence and checks method/date/coverage comparability before assigning a within-sample position. Browser actions and semantic source review remain the host assistant's work. See [deep research](../docs/deep-research.md).
+
+
+## Authorised website work and private monitoring
+
+`project` records business context, idempotent jobs, effort ranges, activity and evidence-backed completion outside the skill. The optional branded HTML/localhost monitor is read-only and requires consent. `project schedule` stores a cadence; `project run` executes at most one due bounded HTTP review with persistent claims and evidence. A host scheduler must invoke it. No model, OS cron, notification service, CMS connector or hosted dashboard is provisioned automatically.
+
+`onsite plan` stages conservative edits to existing static HTML with short-copy guards, duplicate-metadata checks and the existing reviewed-hash/backup/readback workflow. `onsite sitemap` drafts canonical indexable URLs from reviewed captures. Neither command deploys automatically or verifies visual equivalence. Framework/CMS edits, semantic schema review, responsive checks and deployment use the actual host tools. Off-site publishing remains manual; jobs can track the advice and posting plan. See [website work](../docs/website-work.md) and [installation](../docs/agent-installation.md).

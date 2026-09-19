@@ -15,8 +15,13 @@ def capture_quality(page):
     for key in ("error", "content_warning", "javascript_errors"):
         if rendered.get(key):
             limits.append("Browser " + key + ": " + str(rendered[key]))
-    if readiness.get("selector_error") or readiness.get("deadline_reached"):
-        limits.append("Browser readiness was incomplete.")
+    if readiness.get("selector_error"):
+        limits.append("Browser selector wait failed: " + str(readiness["selector_error"]))
+    if readiness.get("deadline_reached"):
+        limits.append(
+            "Browser render deadline reached (readiness.deadline_reached=true); "
+            "captured content may be partial."
+        )
     if representation == "http" and data.get("script_count") and data.get("word_count", 0) < 80:
         limits.append("Possible JavaScript shell; rendered content has not been established.")
     return {

@@ -139,6 +139,45 @@ class PortabilityTests(unittest.TestCase):
                 installer.install(self.source, self.dest, update=True)
         self.assertEqual((self.dest / "src/module.py").read_text(), "# fixture")
 
+    def test_cursor_project_and_personal_installation(self):
+        destination = installer.host_destination("cursor", workspace=self.root)
+        self.assertEqual(destination, self.root / ".cursor/skills/beyondseo")
+        result = installer.install(self.source, destination)
+        self.assertEqual(result["status"], "installed")
+        self.assertEqual((destination / "src/module.py").read_text(), "# fixture")
+        with patch.object(installer.Path, "home", return_value=self.root):
+            self.assertEqual(
+                installer.host_destination("cursor"), self.root / ".cursor/skills/beyondseo"
+            )
+        with self.assertRaises(ValueError):
+            installer.host_destination("vercel")
+        with self.assertRaises(ValueError):
+            installer.host_destination("lovable")
+
+    def test_project_install_and_update_preserve_other_skills_and_settings(self):
+        for host in ("cursor", "codex", "claude-code", "openclaw"):
+            with self.subTest(host=host):
+                workspace = self.root / host
+                destination = installer.host_destination(host, workspace=workspace)
+                existing = {
+                    workspace / "AGENTS.md": "Existing project instructions\n",
+                    workspace / "vercel.json": '{"framework":"nextjs"}\n',
+                    workspace / ".cursor/rules/existing.mdc": "Keep existing rules\n",
+                    workspace / ".cursor/mcp.json": '{"mcpServers":{}}\n',
+                    destination.parent / "other-skill/SKILL.md": "Keep this skill\n",
+                }
+                for path, content in existing.items():
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(content, encoding="utf-8")
+                installer.install(self.source, destination)
+                module = self.source / "src/module.py"
+                module.write_text(module.read_text() + "\n# updated", encoding="utf-8")
+                result = installer.install(self.source, destination, update=True)
+                self.assertEqual(result["status"], "updated")
+                for path, content in existing.items():
+                    self.assertEqual(path.read_text(), content)
+                self.assertEqual((destination / "src/module.py").read_bytes(), module.read_bytes())
+
     def test_host_roots_and_explicit_profiles(self):
         settings = {
             "HERMES_HOME": str(self.root / "profile"),
@@ -229,6 +268,17 @@ class PortabilityTests(unittest.TestCase):
                 build(source, output)
             self.assertFalse(output.exists())
             self.assertFalse(output.with_suffix(".zip.sha256").exists())
+
+    def test_lovable_file_size_limit_fails_before_installation(self):
+        with patch.object(sys, "path", [str(ROOT / "scripts"), *sys.path]):
+            from validate_skill import validate
+
+            source = self.root / "large-file-source"
+            installer.install(ROOT, source)
+            # Keep file count unchanged so this isolates the per-file size guard.
+            (source / "docs/setup.md").write_bytes(b"x" * 1_000_001)
+            with self.assertRaisesRegex(ValueError, "1 MB"):
+                validate(source)
 
     def test_explicit_missing_runtime_does_not_fall_back_silently(self):
         result = subprocess.run(

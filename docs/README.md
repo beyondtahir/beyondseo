@@ -7,7 +7,7 @@ Start with the task you want to complete. Each guide connects the commands, evid
 | I want to… | Read this |
 |---|---|
 | Install the engine and run my first crawl | [Setup and troubleshooting](setup.md) |
-| Use Claude, Claude Code, Codex, ChatGPT Work, Hermes or OpenClaw | [Assistant installation](agent-installation.md) |
+| Use an AI assistant, coding agent or website builder | [Assistant installation](agent-installation.md) |
 | Review package permissions or diagnose an installation rejection | [Package permissions](permissions.md) |
 | Understand what the complete SEO house can do | [Capabilities and example questions](questions.md) |
 | Practice without touching a live website | [Local examples](../examples/README.md) |
@@ -45,6 +45,7 @@ Start with the task you want to complete. Each guide connects the commands, evid
 | [Audit delivery standard](../references/audit-delivery.md) | Friendly reports, required audit areas, competitors and actionable plans |
 | [Friendly advisor](../playbooks/core/friendly-advisor.md) | How to explain findings and write useful client advice |
 | [Complete plan template](../playbooks/templates/complete-seo-plan.md) | Priorities, responsibilities, dependencies and acceptance checks |
+| [Apply website improvements and follow progress](website-work.md) | Design protection, approved edits, optional private monitoring and off-site plans |
 | [Review and improve](operations.md) | Comparisons, bounded loops, hosting access, reviewed edits and rollback |
 | [Measurement boundaries](../references/measurement-boundaries.md) | What a crawl establishes and which claims need separate measurements |
 

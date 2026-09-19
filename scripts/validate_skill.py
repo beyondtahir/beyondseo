@@ -23,6 +23,10 @@ def validate(source):
             "including the installation receipt). Consolidate supporting references "
             "before packaging; keep the runtime and linked resources intact."
         )
+    if any(p.stat().st_size > 1_000_000 for p in files):
+        raise ValueError("A bundled file exceeds Lovable's 1 MB per-file limit.")
+    if sum(p.stat().st_size for p in files) > 10_000_000:
+        raise ValueError("The skill exceeds Lovable's 10 MB uncompressed package limit.")
     included = {p.resolve() for p in files}
     text = (source / "SKILL.md").read_text(encoding="utf-8")
     match = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", text, re.S)

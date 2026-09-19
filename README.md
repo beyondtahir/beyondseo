@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.7.1-991B1B?style=flat-square" alt="Version 2.7.1"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.8.0-991B1B?style=flat-square" alt="Version 2.8.0"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
@@ -26,19 +26,22 @@
 
 ---
 
-## The last 24 hours: deeper research, better reports, easier installation
+## What's New
 
-**16–17 September 2026 · Updates across 2.6.0, 2.7.0 and 2.7.1**
+**BeyondSEO 2.8.0 · From a clear plan to work you can follow**
 
-BeyondSEO now connects a more careful understanding of your business with clearer research, practical next steps and designed client deliverables.
+BeyondSEO can now help carry out the improvements you approve, keep the work organised and show you what has actually changed—all through the AI agent you already use.
 
-- **Competitors that fit your business.** Establish services, customers and markets first; use buyer phrases and customer questions, then verify candidate pages. Direct competitors and international benchmarks stay separate.
-- **Backlink research you can check.** Use an available permitted host browser, host search or native discovery, with saved-result and supplied-URL options. Verify source pages and compare peers with shared research budgets. Search snippets never become verified backlinks or a complete backlink count.
-- **Reports made for clients.** Export branded PDF and self-contained HTML with the BeyondSEO logo, black/red palette, linked contents, evidence tables and action roadmaps. Long audits retain their business context and findings.
-- **A simpler skill upload.** Version 2.7.1 reduces the package from 211 files to 196, below the observed 200-file upload limit. Every playbook, the crawler, report assets and the 206-entry publishing library remain included. The builder now checks the limit before creating a ZIP.
-- **Clearer setup results.** Updated guides separate a saved skill, a working Python engine, a ready browser and reachable websites. Real upload checks succeeded in Claude Desktop and ChatGPT Work; Work's tested execution environment still encountered browser-download and DNS failures.
+- **Improve your website without redesigning it.** Ask your agent to apply the plan. BeyondSEO guides changes to page titles, descriptions, useful answers, internal links, schema and sitemaps while protecting your layout, business facts and concise copy. New pages need your approval.
+- **See the work when you want to.** An optional private dashboard shows planned jobs, progress, completed checks and anything waiting for attention. Keep giving instructions in your usual chat; no separate AI subscription is needed just to view progress.
+- **Get an off-site plan you can actually follow.** Receive relevant publishing and profile links, article ideas, outlines, target pages and suggested dates from the 206-entry source library. Free and paid options are distinguished when checked. You choose where to sign up and publish.
+- **Keep improving over time.** Save the plan and review fresh website evidence on an agreed schedule when your agent has a supported scheduler. The dashboard shows the work; the agent or configured worker runs it.
+- **Use your existing coding agent or website builder.** Expanded setup guides cover local projects and workspace skill imports without replacing your existing rules or settings. Available editing, browsing and scheduling tools determine what can run in each environment.
+- **Understand the evidence more easily.** Clearer browser warnings explain when a capture is incomplete. Relevant competitor research, verified backlink leads and branded PDF/HTML reports remain part of the same SEO house.
 
-**[Download the ready-to-upload skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.7.1/beyondseo-2.7.1-skill.zip)** · [Read the release announcement and validation limits](https://github.com/beyondtahir/beyondseo/releases/tag/v2.7.1) · [Installation guide](docs/agent-installation.md)
+Start with an audit, ask for a plan, or say **“Apply the approved improvements while preserving my website's design.”** BeyondSEO checks the available access and keeps the next steps clear. Rankings and AI citations are outcomes to measure, not promises.
+
+**[Download BeyondSEO 2.8.0](https://github.com/beyondtahir/beyondseo/releases/download/v2.8.0/beyondseo-2.8.0-skill.zip)** · [What's included and what was tested](https://github.com/beyondtahir/beyondseo/releases/tag/v2.8.0) · [Installation guide](docs/agent-installation.md)
 
 ## Research that explains its evidence
 
@@ -91,15 +94,26 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 
 [Explore every capability →](references/capabilities.md)
 
+## Understand your standing, then act
+
+BeyondSEO's [deep research workflow](docs/deep-research.md) starts with your business, checks the browser available to your agent, tries Google through that permitted browser and uses supported fallbacks when needed. It researches a broader pool before recommending up to five comparable businesses, verifies reputation sources and compares equivalent pages. Shared research budgets and evidence checks prevent a thin sample from becoming an inflated competitive ranking. The report connects gaps to keywords, customer answers and a practical publishing plan using the 206-entry directory. Actual search observations, AI readiness and reputation evidence stay distinct.
+
+
+## Ask BeyondSEO to do the work
+
+BeyondSEO can guide authorised on-site changes while preserving the existing design and concise copy. It records a private project plan, implementation estimates, activity and acceptance evidence. An optional branded monitor shows progress across capable AI assistants, coding agents and website-builder workflows; your existing agent chat remains the place to request work. Local runtimes can serve the monitor privately; hosted environments can return a dated HTML artifact when supported. New pages need authorisation, and off-site recommendations remain a practical manual posting plan.
+
+The native helpers stage conservative static HTML edits and sitemap drafts, retain reviewed changes/backups, and run bounded read-only reviews. Framework editing and visual verification use the host's actual tools. Scheduling requires a working host scheduler; a dashboard is not an always-on worker. See [website work](docs/website-work.md) and the [coding-agent and website-builder installation routes](docs/agent-installation.md#cursor). No ranking, universal-host or zero-error guarantee is implied.
+
 ## Install in your assistant
 
 **Choose your app and follow its short guide.** The skill includes the SEO workflows, backlink library and native crawler.
 
-[ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw)
+[ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw) · [Coding agents and website builders](docs/agent-installation.md#cursor)
 
-**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.7.1/beyondseo-2.7.1-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
+**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.8.0/beyondseo-2.8.0-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
 
-For Claude and ChatGPT Work uploads, use the named `beyondseo-2.7.1-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
+For Claude and ChatGPT Work uploads, use the named `beyondseo-2.8.0-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
 
 ### Prefer to let your assistant install it?
 
@@ -463,7 +477,3 @@ BeyondSEO brings that practical approach to search: inspect the real website, ma
 ---
 
 Copyright © 2026 **Muhammad Tahir Ashraf — Beyond Tahir**. Released under the [MIT license](LICENSE). You may use, modify and redistribute the project under its terms. Keep the copyright and license notice. Dependency notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
-### Understand your standing, then act
-
-BeyondSEO's [deep research workflow](docs/deep-research.md) starts with your business, checks the browser available to your agent, tries Google through that permitted browser and uses supported fallbacks when needed. It researches a broader pool before recommending up to five comparable businesses, verifies reputation sources and compares equivalent pages. Shared research budgets and evidence checks prevent a thin sample from becoming an inflated competitive ranking. The report connects gaps to keywords, customer answers and a practical publishing plan using the 206-entry directory. Actual search observations, AI readiness and reputation evidence stay distinct.

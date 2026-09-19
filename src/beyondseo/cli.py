@@ -232,6 +232,10 @@ def parser():
             p.add_argument(
                 "--expect-plan", required=True, help="SHA-256 of the reviewed plan.json."
             )
+    from . import onsite, projects
+
+    onsite.register(sub)
+    projects.register(sub)
     return root
 
 
@@ -257,6 +261,19 @@ class OutputLock:
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.command in {"project", "onsite"}:
+        from . import onsite, projects
+
+        try:
+            result = (projects if args.command == "project" else onsite).execute(args)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print("Project operation failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        if args.command == "project" and args.project_action == "update":
+            # Recording a blocked/failed job is a successful ledger operation.
+            return 0
+        return 1 if result.get("status") in {"failed", "blocked", "needs_inspection"} else 0
     if args.command == "browser-setup":
         from .doctor import prepare_browser
 
