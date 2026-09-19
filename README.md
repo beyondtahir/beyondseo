@@ -53,11 +53,11 @@ Read the [step-by-step research guide](docs/discovery-and-competitors.md) and [h
 
 ## Your complete SEO house
 
-BeyondSEO connects the work that normally gets scattered across separate audits, content briefs, backlink spreadsheets and follow-up reports. Give it a website and a business goal. It helps you inspect the site, understand the gaps, compare relevant competitors, write useful content and build a practical improvement plan.
+BeyondSEO connects the work that normally gets scattered across separate audits, content briefs, backlink spreadsheets and follow-up reports. Give it a website and a business goal. It helps you inspect the site, understand the gaps, compare relevant competitors, write useful content and build a practical improvement plan. When you ask it to do the work, your agent can apply approved changes and keep progress visible through an optional private dashboard.
 
 **SEO · AEO · GEO · Entity · Authority · Reputation · Local visibility · Backlinks · Conversion**
 
-The native Python engine gathers evidence. The reusable skill brings specialist methods and business context. Together, they support the work from the first crawl to the next review.
+The native Python engine gathers evidence. The reusable skill brings specialist methods and business context. Your existing AI agent brings the available editing and project tools. Together, they support the work from the first crawl through approved improvements and follow-up reviews.
 
 <table>
 <tr>
@@ -83,11 +83,21 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 <tr>
 <td width="50%" valign="top">
 <h3>05 · Make the plan actionable</h3>
-<p>Compare named competitors and create a 30/60/90-day roadmap with priorities, dependencies and acceptance checks.</p>
+<p>Create a 30/60/90-day roadmap with priorities and clear checks. Include relevant publishing links, article topics, outlines and suggested dates for off-site work.</p>
 </td>
 <td width="50%" valign="top">
-<h3>06 · Improve and review</h3>
-<p>Compare fresh snapshots, run bounded review loops and apply reviewed text-file changes with backups on compatible hosting.</p>
+<h3>06 · Improve without redesigning</h3>
+<p>Apply approved on-site changes through your agent’s available tools. Preserve the layout, business facts and concise copy, then check the result.</p>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<h3>07 · Follow the work</h3>
+<p>Choose a private branded dashboard to see the plan, progress, checked results and anything waiting for attention. Keep giving instructions in your usual chat.</p>
+</td>
+<td width="50%" valign="top">
+<h3>08 · Return and improve</h3>
+<p>Pick up unfinished work and compare fresh evidence. Run agreed reviews when a supported scheduler is configured; installing the skill starts no background job.</p>
 </td>
 </tr>
 </table>
@@ -109,7 +119,7 @@ The native helpers stage conservative static HTML edits and sitemap drafts, reta
 
 **Choose your app and follow its short guide.** The skill includes the SEO workflows, backlink library and native crawler.
 
-[ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw) · [Coding agents and website builders](docs/agent-installation.md#cursor)
+[ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw) · [Cursor](docs/agent-installation.md#cursor) · [Lovable](docs/agent-installation.md#lovable) · [Vercel / v0 projects](docs/agent-installation.md#vercel-and-v0-projects)
 
 **[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.8.0/beyondseo-2.8.0-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
 
@@ -196,7 +206,12 @@ BeyondSEO uses a portable `SKILL.md` with bundled scripts, references and playbo
 | ChatGPT Work | Upload through Customize → Skills → Create, or use the Work install prompt; check the saved skill and runtime separately |
 | Hermes Agent | `python3 scripts/install_skill.py --host hermes --setup` |
 | OpenClaw | `python3 scripts/install_skill.py --host openclaw --setup` |
+| [Cursor](docs/agent-installation.md#cursor) | Install into the website project: `python3 scripts/install_skill.py --host cursor --workspace /path/to/project --setup` |
+| [Lovable](docs/agent-installation.md#lovable) | Import the complete skill in Settings → Skills, then select `/beyondseo` in the project chat |
+| [Vercel / v0 projects](docs/agent-installation.md#vercel-and-v0-projects) | Install into the agent managing the website repository; use that agent for edits and the existing deployment workflow |
 | Terminal / Python | Run the native engine directly, or import `Config` and `Crawler` |
+
+These are installation routes, not a claim that every host has identical access. Browser, editing and scheduling support depend on the actual environment. Vercel hosting itself does not register or run a skill. Other agents, including Antigravity, need their own supported skill-import and runtime checks before compatibility can be confirmed.
 
 For example, from this checkout, install a personal Claude Code skill:
 
@@ -233,9 +248,42 @@ A general website audit includes reputation evidence, named competitor compariso
 | Useful content, not just recommendations | The skill can draft titles, answer sections, FAQs, schema and supporting copy using verified facts |
 | Reputation with evidence | Actual links, mentions, ownership and unreadable candidates remain distinguishable |
 | Conservative scoring | Unknown evidence cannot quietly become a high authority claim; clients and competitors use identical rules |
-| Work you can continue | Saved snapshots, source lists, review plans and guarded edits support the next round of improvement |
+| Approved improvements, with the design protected | Your agent can act on the plan while preserving layout, business facts and short copy, with backups and checks where supported |
+| Progress you can see | An optional private branded dashboard records planned work, verified results and blockers; your usual chat stays in control |
+| A practical off-site plan | Relevant links from the 206-entry library come with topics, outlines, posting guidance and suggested dates |
+| Fits your existing workflow | Setup routes cover AI assistants, coding agents and website builders without replacing their existing rules or settings |
+| Work you can continue | Saved project context and unfinished jobs support the next session; scheduled reviews use a separately configured host scheduler |
 
 BeyondSEO is a strong fit for evidence-based SEO engagements. It makes no unmeasured speed, ranking or accuracy claim against another crawler.
+
+## From your website to work you can follow
+
+Start with a domain and a goal. An audit gives you findings and a plan; implementation begins when you ask your agent to act. Monitoring is optional.
+
+```mermaid
+flowchart TD
+    A["Your website and goal"] --> B["Understand the business and inspect the pages"]
+    B --> C["Research comparable competitors and reputation"]
+    C --> D["Clear findings and a practical plan"]
+    D --> E["Branded report and off-site posting plan"]
+    D --> F{"Ask the agent to apply improvements?"}
+    F -->|No| G["Keep the audit and next steps"]
+    F -->|Yes| H["Confirm scope, access and a baseline"]
+    H --> I["Improve the site while protecting the design"]
+    I --> J["Check the changes and record the result"]
+    J --> K{"Want a private progress dashboard?"}
+    K -->|Yes| L["View progress; give instructions in your usual chat"]
+    K -->|No| M["Receive progress in your usual chat"]
+    L --> N["Review again on request or through an agreed host schedule"]
+    M --> N
+    N --> B
+    classDef brand fill:#991B1B,color:#fff,stroke:#991B1B
+    classDef dark fill:#171717,color:#fff,stroke:#171717
+    class A,D,J,L brand
+    class B,C,E,G,H,I,M,N dark
+```
+
+You control publication and new pages. Off-site recommendations include where, what and when to post; the skill does not automatically submit articles or forum posts. A dashboard displays progress—it does not create an always-on worker.
 
 ## How our crawler works
 
