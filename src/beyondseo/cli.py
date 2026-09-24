@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 import sys
+from contextlib import closing
 from pathlib import Path
 
 
@@ -419,7 +420,7 @@ def main(argv=None):
 
             if not (args.out / "crawl.sqlite3").exists():
                 raise ValueError("No crawl database in that directory.")
-            with sqlite3.connect(str(args.out / "crawl.sqlite3")) as db:
+            with closing(sqlite3.connect(str(args.out / "crawl.sqlite3"))) as db:
                 row = db.execute("SELECT value FROM meta WHERE key='config'").fetchone()
             if not row:
                 raise ValueError("Missing crawl configuration")
@@ -437,7 +438,7 @@ def main(argv=None):
                 database = args.out / "crawl.sqlite3"
                 if not database.is_file():
                     raise ValueError("No saved crawl to continue.")
-                with sqlite3.connect(database) as saved_db:
+                with closing(sqlite3.connect(database)) as saved_db:
                     args.max_pages = (
                         saved_db.execute("SELECT COUNT(*) FROM pages").fetchone()[0]
                         + args.next_pages

@@ -2,7 +2,7 @@
 
 Start with the task you want to complete. Each guide connects the commands, evidence and decisions needed for that job.
 
-New in 2.9.0: choose how much of your site to check, continue saved audits and see clearer coverage and readiness results. Read [what changed](../CHANGELOG.md) or go straight to [audit-depth options](../references/crawler.md#choose-the-audit-depth).
+New in 2.9.1: choose how much of your site to check, continue saved audits and see clearer coverage and readiness results. Read [what changed](../CHANGELOG.md) or go straight to [audit-depth options](../references/crawler.md#choose-the-audit-depth).
 
 ## Start using BeyondSEO
 

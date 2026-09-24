@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If BeyondSEO supports your work, please cite this repository."
 title: "BeyondSEO: Your complete SEO house"
 type: software
-version: 2.9.0
+version: 2.9.1
 authors:
   - family-names: Ashraf
     given-names: Muhammad Tahir

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.9.1 — Saved audits, without leftover file locks
+
+25 September 2026
+
+- Close database connections immediately after reading saved audit counts and report configuration. This fixes the Windows file-lock failure found in the 2.9.0 release tests.
+- Strengthen the continuation regression to verify that database connections are closed on every platform, without relying on garbage collection.
+- All 2.9.0 audit, coverage and verification improvements remain included.
+
+
 
 ## 2.9.0 — Know your website better. Fix it with confidence.
 

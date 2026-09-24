@@ -3,6 +3,7 @@
 import contextlib
 import io
 import json
+import sqlite3
 import subprocess
 import tempfile
 import unittest
@@ -111,7 +112,16 @@ class DepthValidationTests(unittest.TestCase):
             "0",
             "--quiet",
         ]
+        connections = []
+        connect = sqlite3.connect
+
+        def tracked_connect(*args, **kwargs):
+            connection = connect(*args, **kwargs)
+            connections.append(connection)
+            return connection
+
         with (
+            patch("sqlite3.connect", side_effect=tracked_connect),
             patch.object(Transport, "once", side_effect=self.response),
             contextlib.redirect_stdout(io.StringIO()),
         ):
@@ -124,6 +134,10 @@ class DepthValidationTests(unittest.TestCase):
         self.assertEqual(self.hits.count("https://example.test/contact"), 1)
         self.assertEqual(self.hits.count("https://example.test/about"), 1)
         self.assertNotIn("https://example.test/", self.hits)
+        self.assertGreaterEqual(len(connections), 3)
+        for connection in connections:
+            with self.assertRaises(sqlite3.ProgrammingError):
+                connection.execute("SELECT 1")
 
     def test_failures_consume_budget_and_sitemap_members_stay_unverified(self):
         config = Config(

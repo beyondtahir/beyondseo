@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.9.0-991B1B?style=flat-square" alt="Version 2.9.0"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.9.1-991B1B?style=flat-square" alt="Version 2.9.1"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
@@ -28,7 +28,9 @@
 
 ## What's New
 
-**BeyondSEO 2.9.0 · Know your website better. Fix it with confidence.**
+**BeyondSEO 2.9.1 · Know your website better. Fix it with confidence.**
+
+**Windows reliability fix:** 2.9.1 closes saved-audit database connections promptly, fixing a file-lock error found by the Windows test suite.
 
 A useful audit should tell you what was checked, what needs attention and what to do next. This update makes those answers clearer—and helps you check the results when changes are made.
 
@@ -43,7 +45,7 @@ Your competitor research, backlink planning, SEO/AEO/GEO guidance, branded repor
 
 Try **“Audit my 15 most important pages and explain what to fix first”** or **“Continue my saved audit with 10 more pages.”** Page selection uses URL patterns, so your agent should review the selection and use exact URLs when needed.
 
-**[Download BeyondSEO 2.9.0](https://github.com/beyondtahir/beyondseo/releases/download/v2.9.0/beyondseo-2.9.0-skill.zip)** · [Release notes and validation](https://github.com/beyondtahir/beyondseo/releases/tag/v2.9.0) · [Installation guide](docs/agent-installation.md) · [All updates](CHANGELOG.md)
+**[Download BeyondSEO 2.9.1](https://github.com/beyondtahir/beyondseo/releases/download/v2.9.1/beyondseo-2.9.1-skill.zip)** · [Release notes and validation](https://github.com/beyondtahir/beyondseo/releases/tag/v2.9.1) · [Installation guide](docs/agent-installation.md) · [All updates](CHANGELOG.md)
 
 ## Choose how much of your website to check
 
@@ -129,9 +131,9 @@ The native helpers stage conservative static HTML edits and sitemap drafts, reta
 
 [ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw) · [Cursor](docs/agent-installation.md#cursor) · [Lovable](docs/agent-installation.md#lovable) · [Vercel / v0 projects](docs/agent-installation.md#vercel-and-v0-projects)
 
-**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.9.0/beyondseo-2.9.0-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
+**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.9.1/beyondseo-2.9.1-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
 
-For Claude and ChatGPT Work uploads, use the named `beyondseo-2.9.0-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
+For Claude and ChatGPT Work uploads, use the named `beyondseo-2.9.1-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
 
 ### Prefer to let your assistant install it?
 
