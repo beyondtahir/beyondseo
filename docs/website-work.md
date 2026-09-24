@@ -24,6 +24,16 @@ A request to apply on-site improvements authorises the relevant work within the 
 
 Before editing, retain the diff/base revision or backup. After editing, run relevant build/content/link checks, inspect rendered layouts and test key interactions. Verify the deployment separately if publishing is authorised. Report checks and coverage limits; never promise a universally error-free website. A passed content hash verifies the uploaded bytes, not appearance, indexing or business outcomes.
 
+## Verify the result, including PHP sites
+
+Identify the actual framework, templates, routing and deployment mechanism from authorised source evidence. A PHP URL is not proof of WordPress. For PHP projects, inspect relevant templates/controllers/views, route definitions and available sitemap/product/country generation logic. Database-driven routes require authorised source or exports; a public crawler cannot enumerate private database records.
+
+The native single-file editor now runs `php -n -l` on a private copy before staging a PHP change and again before applying it. Missing PHP, a timeout or a syntax error blocks application; no website bytes are changed. Use a compatible runtime. This proves syntax only, not correct dependencies, production behavior or SEO. Framework changes still need the project's normal checks. Server configuration such as `.htaccess` remains outside the guarded content-file editor: inspect and propose changes through the appropriate authorised hosting workflow rather than relaxing its protections.
+
+For shared hosting, inspect accessible PHP/runtime versions, redirects, canonical host, trailing slash behavior, compression/cache headers, and robots/sitemap responses. Check LiteSpeed or other cache configuration only if actually present. Do not assume a specific provider, remove language routes, purge unrelated caches or expose configuration secrets. [PHP CLI options](https://www.php.net/manual/en/features.commandline.options.php).
+
+After an authorised edit, capture the affected URL(s) in a fresh crawl with comparable scope and rendering settings. Use `compare` for a before/after summary. Record the original observation, file/diff, syntax/build result, fresh evidence and remaining limitations; check desktop/mobile wrapping and interactions separately. A failed recrawl means verification is blocked, not that the issue was fixed. Keep the job applied rather than verified until the acceptance checks pass. Ask before new pages or deployment beyond the existing authorisation.
+
 ## Choose the execution route
 
 **Cursor / local coding agents:** install the complete skill in the actual execution environment. Use native repository editing and the existing preview/build workflow. Prepare a branch or working copy, preserve unrelated edits, then deploy only within authorisation. Use `project` below for private state. A cloud agent needs the skill and runtime there; a local installation is not automatically copied.

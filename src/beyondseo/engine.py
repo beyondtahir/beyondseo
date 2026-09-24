@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import re
 import sqlite3
 import sys
 import xml.etree.ElementTree as ET
@@ -85,6 +86,10 @@ class Crawler:
             semantic = asdict(config)
             for key in ("max_pages", "workers", "delay", "timeout", "retries"):
                 semantic.pop(key)
+            if old:
+                # New defaults preserve the semantics of pre-depth-control snapshots.
+                old["config"].setdefault("selection", "breadth")
+                old["config"].setdefault("selected_urls", [])
             signature = {"config": semantic, "selectors": self.selectors, "schema_version": 1}
             if old and old != signature:
                 raise ValueError(
@@ -116,6 +121,9 @@ class Crawler:
             reason = "depth_limit"
         if reason:
             self.skips[reason] += 1
+            return
+        if self.config.selected_urls and url not in self.config.selected_urls:
+            self.skips["not_selected"] += 1
             return
         old = self.db.execute("SELECT depth FROM urls WHERE url=?", (url,)).fetchone()
         if old:
@@ -244,19 +252,57 @@ class Crawler:
                 )
         return page
 
+    def page_priority(self, url, depth):
+        """Transparent URL-role heuristic; no claimed traffic or business understanding."""
+        if url == self.config.url:
+            return (-1, 0, 0)
+        path = urlsplit(url).path.lower()
+        roles = (
+            r"about|company|contact",
+            r"services?|products?|solutions?|categories",
+            r"case-stud|portfolio|industr",
+            r"blog|articles?|resources",
+        )
+        role = next((i for i, pattern in enumerate(roles) if re.search(pattern, path)), 4)
+        if re.search(r"/(?:tag|author|archive|page)/|privacy|terms|login|cart", path):
+            role = 6
+        # Spread the sample across roles instead of allowing one huge category to dominate.
+        captured = self.db.execute("SELECT url FROM pages").fetchall()
+        used = sum(
+            next(
+                (
+                    i
+                    for i, pattern in enumerate(roles)
+                    if re.search(pattern, urlsplit(u).path.lower())
+                ),
+                4,
+            )
+            == role
+            for (u,) in captured
+            if u != self.config.url
+        )
+        return (used * 5 + role, path.count("/"), depth)
+
     def run(self):
         self.setmeta("last_configuration", asdict(self.config))
-        self.enqueue(self.config.url, 0, "seed")
+        for seed in self.config.selected_urls or [self.config.url]:
+            self.enqueue(seed, 0, "selected" if self.config.selected_urls else "seed")
         self.db.commit()
         self.discover_sitemaps()
         count = self.db.execute("SELECT COUNT(*) FROM pages").fetchone()[0]
         try:
             with ThreadPoolExecutor(max_workers=self.config.workers) as pool:
                 while count < self.config.max_pages:
-                    rows = self.db.execute(
-                        "SELECT url,depth FROM urls WHERE state='pending' ORDER BY depth,rowid LIMIT ?",
-                        (min(self.config.workers, self.config.max_pages - count),),
+                    candidates = self.db.execute(
+                        "SELECT url,depth FROM urls WHERE state='pending' ORDER BY depth,rowid"
                     ).fetchall()
+                    if self.config.selection == "priority":
+                        candidates.sort(key=lambda row: self.page_priority(row[0], row[1]))
+                        # Fetch the seed first so its navigation can inform the next batch.
+                        batch_size = 1 if count == 0 else self.config.workers
+                    else:
+                        batch_size = self.config.workers
+                    rows = candidates[: min(batch_size, self.config.max_pages - count)]
                     if not rows:
                         break
                     for url, _ in rows:
@@ -462,6 +508,76 @@ class Crawler:
             for row in self.db.execute("SELECT * FROM sitemap_urls")
         ]
         sm_urls = {s["url"] for s in sitemap_rows}
+        from .evidence import capture_quality
+
+        requested_pages = {p["url"]: p for p in pages}
+        for row in sitemap_rows:
+            target = requested_pages.get(row["url"])
+            row["verification"] = "not_inspected"
+            row["http_status"] = target.get("status") if target else None
+            row["captured_at"] = target.get("fetched_at") if target else None
+            if target:
+                row["verification"] = "blocked" if target.get("error") else "response_received"
+                if not target.get("error"):
+                    signals = combined_index_signals(target)
+                    if (
+                        target["status"] >= 400
+                        or target.get("redirects")
+                        or signals["googlebot_noindex_observed"]
+                        or signals["canonical_elsewhere"]
+                    ):
+                        issues.append(
+                            {
+                                "url": row["url"],
+                                "code": "sitemap_url_conflict",
+                                "severity": "medium",
+                                "confidence": "review",
+                                "evidence": json.dumps(
+                                    {
+                                        "sitemap": row["sitemap"],
+                                        "status": target["status"],
+                                        "redirects": target.get("redirects"),
+                                        "noindex": signals["googlebot_noindex_observed"],
+                                        "canonical_elsewhere": signals["canonical_elsewhere"],
+                                    }
+                                ),
+                                "action": "Compare the captured response with the intended sitemap URL; retain only intended canonical indexable pages and verify in a fresh crawl.",
+                            }
+                        )
+        for final, page in documents.items():
+            data, _ = selected_data(page)
+            for alternate in data.get("hreflang", []):
+                destination = lookup.get(alternate.get("url"))
+                if not destination or destination.get("error"):
+                    continue  # No response is not proof of a missing return link.
+                target_data, _ = selected_data(destination)
+                problem = None
+                if (
+                    destination["status"] >= 400
+                    or combined_index_signals(destination)["googlebot_noindex_observed"]
+                ):
+                    problem = "Alternate returned an error response or declares noindex."
+                elif capture_quality(destination)["absence_supported"] and not any(
+                    a.get("url") in {page["url"], final} for a in target_data.get("hreflang", [])
+                ):
+                    problem = "No reciprocal alternate to the source observed in the successful target capture."
+                if problem:
+                    issues.append(
+                        {
+                            "url": page["url"],
+                            "code": "hreflang_relationship_review",
+                            "severity": "medium",
+                            "confidence": "review",
+                            "evidence": json.dumps(
+                                {
+                                    "target": alternate["url"],
+                                    "observation": problem,
+                                    "target_captured_at": destination.get("fetched_at"),
+                                }
+                            ),
+                            "action": "Inspect both intended language pages, canonical relationships and return annotations. Correct the relationship without removing genuine languages; HTTP Link and XML sitemap hreflang annotations are not inspected.",
+                        }
+                    )
         # Reachability and click depth use the observed anchor graph, not sitemap discovery depth.
         graph = defaultdict(set)
         for item in links:
@@ -630,6 +746,31 @@ class Crawler:
                 ],
             },
         )
+        from .evidence import capture_quality
+
+        checked = [p for p in pages if capture_quality(p)["usable"]]
+        summary["coverage"] = {
+            "page_attempt_limit": self.config.max_pages,
+            "selection": self.config.selection,
+            "selected_urls": self.config.selected_urls,
+            "discovered_in_scope": len({u["url"] for u in urls} | sm_urls),
+            "queued_urls": len(urls),
+            "discovered_not_attempted": len(
+                ({u["url"] for u in urls} | sm_urls) - {p["url"] for p in pages}
+            ),
+            "attempted": len(pages),
+            "inspected": len(checked),
+            "partial_captures": sum(not capture_quality(p)["absence_supported"] for p in checked),
+            "blocked_or_failed": sum(
+                bool(p.get("error")) or p.get("status", 0) >= 400 for p in pages
+            ),
+            "not_inspected": len(pages) - len(checked),
+            "pending": pending,
+            "excluded_events": skips,
+            "sitemap_urls_unchecked": len(sm_urls - {p["url"] for p in pages}),
+            "note": "Page slots count attempts, including failures. Robots/sitemaps and browser subrequests are separate; excluded counts are events, not unique URLs. Priority is a URL-role heuristic; review business relevance. No complete-site claim.",
+        }
+        write_json(self.out / "coverage.json", summary["coverage"])
         write_json(self.out / "summary.json", summary)
         write_json(self.out / "robots.json", self.meta("robots") or {})
         write_json(
@@ -749,6 +890,8 @@ class Crawler:
             "Stop reasons: " + ", ".join(summary["access_diagnostics"]["stop_reasons"]),
             "",
             "Fetch elapsed time includes waits/retries and transfer. It is not TTFB or Core Web Vitals.",
+            "",
+            f"Coverage: {summary['coverage']['attempted']} page attempts; {summary['coverage']['inspected']} usable inspections ({summary['coverage']['partial_captures']} partial); {summary['coverage']['blocked_or_failed']} blocked/failed; {pending} pending. See coverage.json for scope and separate request counts.",
             "",
             "## Findings",
             "",

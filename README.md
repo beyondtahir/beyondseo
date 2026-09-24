@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Test workflow status"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.8.0-991B1B?style=flat-square" alt="Version 2.8.0"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.9.0-991B1B?style=flat-square" alt="Version 2.9.0"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/Python-3.10%2B-050505?style=flat-square" alt="Python 3.10 or newer"></a>
   <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/engine-0_API_keys-050505?style=flat-square" alt="Native engine needs zero API keys"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/status-beta-991B1B?style=flat-square" alt="Beta release"></a>
@@ -28,20 +28,28 @@
 
 ## What's New
 
-**BeyondSEO 2.8.0 · From a clear plan to work you can follow**
+**BeyondSEO 2.9.0 · Know your website better. Fix it with confidence.**
 
-BeyondSEO can now help carry out the improvements you approve, keep the work organised and show you what has actually changed—all through the AI agent you already use.
+A useful audit should tell you what was checked, what needs attention and what to do next. This update makes those answers clearer—and helps you check the results when changes are made.
 
-- **Improve your website without redesigning it.** Ask your agent to apply the plan. BeyondSEO guides changes to page titles, descriptions, useful answers, internal links, schema and sitemaps while protecting your layout, business facts and concise copy. New pages need your approval.
-- **See the work when you want to.** An optional private dashboard shows planned jobs, progress, completed checks and anything waiting for attention. Keep giving instructions in your usual chat; no separate AI subscription is needed just to view progress.
-- **Get an off-site plan you can actually follow.** Receive relevant publishing and profile links, article ideas, outlines, target pages and suggested dates from the 206-entry source library. Free and paid options are distinguished when checked. You choose where to sign up and publish.
-- **Keep improving over time.** Save the plan and review fresh website evidence on an agreed schedule when your agent has a supported scheduler. The dashboard shows the work; the agent or configured worker runs it.
-- **Use your existing coding agent or website builder.** Expanded setup guides cover local projects and workspace skill imports without replacing your existing rules or settings. Available editing, browsing and scheduling tools determine what can run in each environment.
-- **Understand the evidence more easily.** Clearer browser warnings explain when a capture is incomplete. Relevant competitor research, verified backlink leads and branded PDF/HTML reports remain part of the same SEO house.
+- **Start with the pages that matter.** A normal audit checks up to 15 priority pages, starting with your homepage and favouring about, contact and service pages. Choose a homepage check, specific URLs or a deeper review when you need it.
+- **Pick up where you left off.** Continue a saved audit with another batch of pages instead of checking the same pages again.
+- **Know what the report covers.** See which pages were inspected, only partly captured, blocked or still waiting. A page that could not be read is not treated as proof of missing content.
+- **Catch more overlooked issues.** Get clearer checks for problem sitemap links, conflicting structured data, language-page connections, duplicate descriptions and image settings—with the affected pages and practical next steps.
+- **Understand what is stopping a check.** Readiness checks now test browser JavaScript and file access, with optional checks for your website's connection, robots rules and sitemaps. Installed software alone is not reported as a successful website check.
+- **Check changes more carefully.** Updated guidance separates making a change from verifying it. Supported PHP edits require a syntax check before staging and applying; layout checks, fresh page checks and rollback remain part of the website-work workflow.
 
-Start with an audit, ask for a plan, or say **“Apply the approved improvements while preserving my website's design.”** BeyondSEO checks the available access and keeps the next steps clear. Rankings and AI citations are outcomes to measure, not promises.
+Your competitor research, backlink planning, SEO/AEO/GEO guidance, branded reports and optional monitoring remain included. No required paid SEO API has been added.
 
-**[Download BeyondSEO 2.8.0](https://github.com/beyondtahir/beyondseo/releases/download/v2.8.0/beyondseo-2.8.0-skill.zip)** · [What's included and what was tested](https://github.com/beyondtahir/beyondseo/releases/tag/v2.8.0) · [Installation guide](docs/agent-installation.md)
+Try **“Audit my 15 most important pages and explain what to fix first”** or **“Continue my saved audit with 10 more pages.”** Page selection uses URL patterns, so your agent should review the selection and use exact URLs when needed.
+
+**[Download BeyondSEO 2.9.0](https://github.com/beyondtahir/beyondseo/releases/download/v2.9.0/beyondseo-2.9.0-skill.zip)** · [Release notes and validation](https://github.com/beyondtahir/beyondseo/releases/tag/v2.9.0) · [Installation guide](docs/agent-installation.md) · [All updates](CHANGELOG.md)
+
+## Choose how much of your website to check
+
+Start small or go deeper: choose the homepage, a standard **15-page priority sample**, a custom page limit or a list of exact URLs. The report shows what was inspected and what remains, and a saved audit can continue with another batch. A sample is not a complete-site audit.
+
+See [audit-depth commands](references/crawler.md#choose-the-audit-depth), [readiness checks](docs/setup.md) and [safe website changes](docs/website-work.md).
 
 ## Research that explains its evidence
 
@@ -63,7 +71,7 @@ The native Python engine gathers evidence. The reusable skill brings specialist 
 <tr>
 <td width="50%" valign="top">
 <h3>01 · Inspect the website</h3>
-<p>Read sitemaps, raw HTML and JavaScript content. Keep page text, metadata, schema observations, links and access evidence.</p>
+<p>Choose a focused 15-page sample or a deeper review. Read sitemaps, HTML and JavaScript content, and see exactly which pages were inspected or remain unchecked.</p>
 </td>
 <td width="50%" valign="top">
 <h3>02 · Explain what matters</h3>
@@ -121,9 +129,9 @@ The native helpers stage conservative static HTML edits and sitemap drafts, reta
 
 [ChatGPT Work](docs/agent-installation.md#chatgpt-work) · [Claude](docs/agent-installation.md#claude-website-and-desktop-skills) · [Claude Code](docs/agent-installation.md#claude-code) · [Codex](docs/agent-installation.md#codex) · [Hermes](docs/agent-installation.md#hermes-agent) · [OpenClaw](docs/agent-installation.md#openclaw) · [Cursor](docs/agent-installation.md#cursor) · [Lovable](docs/agent-installation.md#lovable) · [Vercel / v0 projects](docs/agent-installation.md#vercel-and-v0-projects)
 
-**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.8.0/beyondseo-2.8.0-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
+**[Download the skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.9.0/beyondseo-2.9.0-skill.zip)** · [Download the complete source folder](https://github.com/beyondtahir/beyondseo/archive/refs/heads/main.zip) · [Release packages and checksum](https://github.com/beyondtahir/beyondseo/releases/latest) · [What it installs and accesses](docs/permissions.md)
 
-For Claude and ChatGPT Work uploads, use the named `beyondseo-2.8.0-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
+For Claude and ChatGPT Work uploads, use the named `beyondseo-2.9.0-skill.zip` asset and follow your app's guide. GitHub’s source ZIP is for extracting, not direct skill upload. Windows users can extract the source and follow the local assistant guide without installing Git. The guide includes direct upload steps, a copy-paste GitHub installation request and help for save errors and runtime permissions.
 
 ### Prefer to let your assistant install it?
 

@@ -119,6 +119,8 @@ class Config:
     screenshot: bool = False
     headless: bool = True
     include_www: bool = False
+    selection: str = "breadth"
+    selected_urls: list = field(default_factory=list)
 
     def __post_init__(self):
         self.url = normalize_url(self.url, drop_tracking=self.drop_tracking)
@@ -168,6 +170,12 @@ class Config:
                 if "." in hostname:
                     alternate = hostname[4:] if hostname.startswith("www.") else "www." + hostname
                     self.allow_hosts = sorted({*self.allow_hosts, alternate})
+        if self.selection not in ("breadth", "priority"):
+            raise ValueError("selection must be breadth or priority")
+        supplied = [normalize_url(u, self.url, self.drop_tracking) for u in self.selected_urls]
+        if any(not u or self.exclusion(u) for u in supplied):
+            raise ValueError("Selected URLs must be valid, in scope and not excluded assets.")
+        self.selected_urls = list(dict.fromkeys(supplied))
         for pattern in self.exclude:
             re.compile(pattern)
 

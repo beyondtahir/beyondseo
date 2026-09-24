@@ -63,7 +63,7 @@ python3 scripts/run.py --version
 python3 scripts/run.py doctor
 ```
 
-`doctor` checks package versions and launches Chromium locally. Look for `http_ready: true` and `browser_ready: true`. Its exit code is 0 when both are ready and 1 when either is missing. An HTTP-only installation can still crawl with `--mode http` when the browser check is unavailable. `pdf_ready` reports the PDF dependency separately; use a fictional `present` run to verify actual export. Skill registration, target reachability and search access are separate checks; see [diagnostics](discovery-diagnostics.md).
+`doctor` executes a private filesystem write/readback and launches Chromium with a local JavaScript DOM probe. With `--target https://example.com --out ../doctor-run`, it separately checks DNS/address policy, robots, bounded sitemap discovery, one HTTP page and automatic rendering where needed. Results use PASS, WARN, FAIL, BLOCKED and NOT_TESTED, with commands and recorded evidence. Missing dependencies or a blocked target affect the exit status. A successful local runtime does not prove website/network access. The legacy `http_ready` flag means parser dependency availability only; use `runtime_checks` and `checks.target_reachable` for executed checks. An HTTP-only audit can still use `--mode http` without Chromium. PDF package availability is not a rendered PDF test.
 
 ## 4. Run a small crawl
 

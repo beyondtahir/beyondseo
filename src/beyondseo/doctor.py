@@ -111,7 +111,15 @@ def environment_report():
 
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True)
-                browser.close()
+                try:
+                    page = browser.new_page()
+                    page.set_content(
+                        "<main id='probe'>initial</main><script>document.querySelector('#probe').textContent='rendered'</script>"
+                    )
+                    if page.locator("#probe").inner_text() != "rendered":
+                        raise RuntimeError("Local JavaScript probe did not execute")
+                finally:
+                    browser.close()
             result["chromium"] = "ready"
             browser_failure = None
         except Exception as exc:
@@ -119,6 +127,29 @@ def environment_report():
             result["chromium"] = "unavailable"
             browser_failure = failure_detail(error, context="execution")
     result["http_ready"] = bool(result["packages"]["beautifulsoup4"])
+    result["http_ready_meaning"] = (
+        "Legacy dependency-availability flag only; see checks.target_reachable for actual access."
+    )
+    result["runtime_checks"] = {
+        "python": {
+            "status": "PASS" if sys.version_info >= (3, 10) else "FAIL",
+            "evidence": sys.version,
+            "blocks_crawling": sys.version_info < (3, 10),
+        },
+        "html_parser": {
+            "status": "PASS" if result["http_ready"] else "FAIL",
+            "evidence": result["packages"]["beautifulsoup4"],
+            "blocks_crawling": not result["http_ready"],
+        },
+        "javascript_probe": {
+            "status": "PASS" if result["chromium"] == "ready" else "BLOCKED",
+            "evidence": "Local inline-script DOM mutation verified."
+            if result["chromium"] == "ready"
+            else browser_failure,
+            "blocks_crawling": False,
+            "blocks": "JavaScript rendering only",
+        },
+    }
     result["browser_ready"] = result["chromium"] == "ready"
     result["pdf_ready"] = bool(result["packages"]["reportlab"])
     result["installed_browsers"] = installed_browsers()
@@ -128,7 +159,7 @@ def environment_report():
             "evidence": "Python cannot confirm registration in the host skill list. Ask the host to list its installed skills.",
         },
         "native_engine": {
-            "status": "ready" if result["http_ready"] else "missing_dependency",
+            "status": "dependencies_present" if result["http_ready"] else "missing_dependency",
             "evidence": "Python executed; beautifulsoup4 package availability checked.",
         },
         "browser_runtime": {
@@ -168,52 +199,191 @@ def environment_report():
 
 
 def check_environment(target=None, query=None, out=None):
+    """Only explicit target/query probes make network requests; preserve legacy fields."""
     result = environment_report()
-    if result["http_ready"] and (target or query):
-        from .discovery import discover
-        from .engine import Crawler
-        from .network import Config
-        from .review import read_pages
+    launcher = Path(__file__).resolve().parents[2] / "scripts/run.py"
+    command = (
+        [sys.executable, str(launcher), "doctor"]
+        if launcher.is_file()
+        else [sys.executable, "-m", "beyondseo", "doctor"]
+    )
+    if target:
+        command.extend(["--target", target])
+    if query:
+        command.extend(["--query", query])
+    if out:
+        command.extend(["--out", str(out)])
+    result["command"] = command
+    probes = result.setdefault("runtime_checks", {})
+    for name in ("dns", "robots", "sitemap", "target_http", "target_render"):
+        probes[name] = {
+            "status": "NOT_TESTED",
+            "blocks_crawling": False,
+            "evidence": "Supply --target for a bounded live probe.",
+        }
+    probes["filesystem"] = {
+        "status": "NOT_TESTED",
+        "evidence": "Write/readback not yet attempted.",
+        "blocks_crawling": False,
+    }
+    try:
+        parent = Path(out) if out else Path(tempfile.gettempdir())
+        parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="beyondseo-doctor-", dir=parent) as temporary:
+            folder = Path(temporary)
+            probe_file = folder / "write-probe"
+            probe_file.write_text("probe", encoding="utf-8")
+            if probe_file.read_text(encoding="utf-8") != "probe":
+                raise OSError("Filesystem readback mismatch")
+            probes["filesystem"] = {
+                "status": "PASS",
+                "evidence": "Private write/readback succeeded in " + str(parent),
+                "blocks_crawling": False,
+            }
+            if target and result["http_ready"]:
+                from .engine import Crawler
+                from .evidence import capture_quality
+                from .network import Config, addresses
+                from .review import read_pages
 
-        with tempfile.TemporaryDirectory(prefix="beyondseo-doctor-") as temporary:
-            folder = Path(out or temporary)
-            if target:
-                crawler = Crawler(
-                    Config(
-                        target,
-                        max_pages=1,
-                        workers=1,
-                        sitemaps=False,
-                        render_mode="http",
-                        timeout=12,
-                        retries=0,
-                    ),
-                    folder / "target",
+                config = Config(
+                    target,
+                    max_pages=1,
+                    max_sitemaps=3,
+                    workers=1,
+                    include_www=True,
+                    render_mode="auto",
+                    timeout=12,
+                    retries=0,
                 )
                 try:
-                    crawler.log = lambda _: None
-                    crawler.run()
-                finally:
-                    crawler.close()
-                page = read_pages(folder / "target")[0]
-                detail = failure_detail(page.get("error"), status=page["status"])
-                result["checks"]["target_reachable"] = {
-                    "status": "response_received" if not detail else detail["code"],
-                    "url": page["url"],
-                    "http_status": page["status"],
-                    "failure": detail,
-                    "access": page.get("access"),
-                    "robots_decision": page.get("robots_decision"),
-                }
-            if query:
+                    addresses(config.url)
+                    probes["dns"] = {
+                        "status": "PASS",
+                        "evidence": "DNS resolved and public address validation passed.",
+                        "blocks_crawling": False,
+                    }
+                except (OSError, ValueError) as exc:
+                    probes["dns"] = {
+                        "status": "BLOCKED",
+                        "failure": failure_detail(str(exc)),
+                        "evidence": str(exc),
+                        "blocks_crawling": True,
+                        "remediation": "Check this host's DNS/network access; do not alter security controls.",
+                    }
+                if probes["dns"]["status"] == "PASS":
+                    crawler = Crawler(config, folder / "target")
+                    try:
+                        crawler.log = lambda _: None
+                        summary = crawler.run()
+                        decision = crawler.robots.decision(config.url)
+                    finally:
+                        crawler.close()
+                    pages = read_pages(folder / "target")
+                    page = pages[0] if pages else {}
+                    detail = failure_detail(page.get("error"), status=page.get("status", 0))
+                    result["checks"]["target_reachable"] = {
+                        "status": "response_received" if not detail else detail["code"],
+                        "url": config.url,
+                        "http_status": page.get("status"),
+                        "failure": detail,
+                        "robots_decision": page.get("robots_decision"),
+                    }
+                    probes["target_http"] = {
+                        "status": "PASS"
+                        if not detail and 200 <= page.get("status", 0) < 300
+                        else "BLOCKED",
+                        "evidence": result["checks"]["target_reachable"],
+                        "blocks_crawling": bool(detail),
+                    }
+                    robots = json.loads((folder / "target/robots.json").read_text())
+                    probes["robots"] = {
+                        "status": "PASS" if decision.get("allowed") else "BLOCKED",
+                        "evidence": robots,
+                        "decision": decision,
+                        "blocks_crawling": not decision.get("allowed"),
+                    }
+                    maps = json.loads((folder / "target/sitemaps.json").read_text())
+                    probes["sitemap"] = {
+                        "status": "PASS" if any(m.get("kind") for m in maps["fetches"]) else "WARN",
+                        "evidence": maps["fetches"],
+                        "blocks_crawling": False,
+                        "note": "Discovery only; sitemap member responses require the audit page budget.",
+                    }
+                    quality = capture_quality(page)
+                    render = page.get("rendered") or {}
+                    probes["target_render"] = {
+                        "status": ("PASS" if quality["absence_supported"] else "WARN")
+                        if render.get("data")
+                        else ("BLOCKED" if render.get("error") else "NOT_TESTED"),
+                        "evidence": {
+                            "readiness": render.get("readiness"),
+                            "error": render.get("error"),
+                            "limits": quality["limits"],
+                        },
+                        "blocks_crawling": False,
+                        "note": "Auto mode renders only when needed; HTTP evidence remains available.",
+                    }
+                    result["target_coverage"] = summary.get("coverage")
+                else:
+                    result["checks"]["target_reachable"] = {
+                        "status": "blocked",
+                        "failure": probes["dns"],
+                    }
+            if query and result["http_ready"]:
+                from .discovery import discover
+
                 found = discover([{"query": query}], folder / "search", max_requests=6, seconds=40)
                 result["checks"]["search_discovery"] = {
                     "status": "available" if found["search_available"] else "unavailable",
                     "attempts": found["attempts"],
                     "native_requests": found["native_requests"],
                 }
+    except (OSError, ValueError) as exc:
+        if probes["filesystem"]["status"] == "NOT_TESTED":
+            probes["filesystem"] = {
+                "status": "BLOCKED",
+                "evidence": str(exc),
+                "blocks_crawling": True,
+            }
+        probes["execution"] = {
+            "status": "BLOCKED",
+            "evidence": type(exc).__name__ + ": " + str(exc),
+            "failure": failure_detail(str(exc), context="execution"),
+            "blocks_crawling": True,
+            "remediation": "Use a writable host-approved output folder and inspect the recorded error. Do not disable permission checks.",
+        }
+    for check in probes.values():
+        check["command"] = command
+        if check["status"] in ("FAIL", "BLOCKED", "WARN"):
+            check.setdefault(
+                "remediation",
+                "Inspect the recorded evidence and retry only the affected check after resolving its cause; unknown causes remain unknown.",
+            )
+    failed = any(
+        c.get("blocks_crawling") and c["status"] in ("FAIL", "BLOCKED") for c in probes.values()
+    )
+    result["status"] = (
+        "BLOCKED"
+        if failed
+        else (
+            "WARN"
+            if any(c["status"] in ("WARN", "BLOCKED", "FAIL") for c in probes.values())
+            else "PASS"
+        )
+    )
+    result["scope_note"] = (
+        "PASS applies only to executed checks. NOT_TESTED is neither passing nor blocked. No target means no website/network readiness claim."
+    )
     if out:
-        Path(out).mkdir(parents=True, exist_ok=True)
-        (Path(out) / "doctor.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+        try:
+            (Path(out) / "doctor.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+        except OSError as exc:
+            result["output_error"] = str(exc)
+            result["status"] = "BLOCKED"
     print(json.dumps(result, indent=2))
-    return 0 if result["http_ready"] and result["browser_ready"] else 1
+    return (
+        1
+        if result["status"] == "BLOCKED" or not result["http_ready"] or not result["browser_ready"]
+        else 0
+    )

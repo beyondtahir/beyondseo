@@ -9,18 +9,22 @@ Run `beyondseo --help` or `beyondseo crawl --help` for the installed command. Fr
 | `crawl URL --out DIRECTORY` | Discover and process a bounded website queue |
 | `scrape URL --out DIRECTORY` | Process one URL; sitemap discovery is disabled |
 | `report --out DIRECTORY` | Regenerate exports from the local database without network access |
-| `doctor` | Check installed packages and local Chromium |
+| `doctor` | Execute runtime, file read/write and local JavaScript probes; use `--target` for separate DNS, robots, sitemap and page-access checks |
 | `--version` | Print the installed project version |
 
 The output directory is required. A nonempty crawl database requires `--resume`. The output lock prevents concurrent commands from writing the same run. If a process is killed, check the PID in `crawl.lock` before removing that stale file.
 
-Crawl/scrape/report exit codes: 0 means at least one unique HTML document was extracted, 1 means no HTML was extracted, and 2 means setup/configuration failed. A zero exit code does not guarantee complete coverage or a successful render. `doctor` returns 0 when HTTP and browser checks pass, otherwise 1.
+Crawl/scrape/report exit codes: 0 means at least one unique HTML document was extracted, 1 means no HTML was extracted, and 2 means setup/configuration failed. A zero exit code does not guarantee complete coverage or a successful render. `doctor` returns 1 for a blocking runtime/target failure or unavailable required runtime/browser support. Its PASS/WARN/FAIL/BLOCKED/NOT_TESTED checks describe the tested scope; a zero exit is not proof that unrequested live checks passed.
 
 ## Scope and HTTP options
 
 | Option | CLI default | Meaning |
 |---|---:|---|
-| `--max-pages` | 100 | Total processed URL records, including failed or withheld attempts; scrape fixes this at 1 |
+| `--max-pages` | 15 for standard; 50 for deep; 1 for quick | Total processed URL records, including failed or withheld attempts; scrape fixes this at 1 |
+| `--audit-depth quick\|standard\|deep` | standard | One, 15 or 50 page attempts unless a valid custom cap is supplied |
+| `--only-url URL` | none | Repeat for exact in-scope pages; defaults to supplied unique URL count and does not crawl other content pages |
+| `--selection priority\|breadth` | priority | URL-role priority with role diversity, or original breadth-first order |
+| `--next-pages N` | none | With `--resume`, add N attempts to the saved attempted count; retain the same scope/selection options |
 | `--max-depth` | 6 | Discovery depth from the seed or sitemap URLs |
 | `--max-discovered` | 10000 | Queue and sitemap membership cap |
 | `--max-sitemaps` | 25 | Unique sitemap fetch cap |
@@ -128,3 +132,21 @@ Reports load records into memory. BeyondSEO is designed for bounded local websit
 ## Branded client deliverables
 
 Use `present --audit /path/to/audit.json --out /path/to/deliverable` for saved findings, or `present --input /path/to/report-content.json --out /path/to/deliverable` for a complete reviewed strategy. The default writes local PDF and self-contained HTML with the BeyondSEO logo. See [report design and content format](../docs/branded-reports.md). This presentation step preserves evidence and uncertainty; the existing `report` command still regenerates crawl exports.
+
+## Choose the audit depth
+
+```sh
+beyondseo crawl https://example.com --include-www --audit-depth quick --out ../runs/home
+beyondseo crawl https://example.com --include-www --out ../runs/standard
+beyondseo crawl https://example.com --include-www --audit-depth deep --max-pages 30 --out ../runs/deep
+beyondseo crawl https://example.com --only-url /services --only-url /contact --out ../runs/selected
+beyondseo crawl https://example.com --include-www --resume --next-pages 15 --out ../runs/standard
+```
+
+Quick mode still discovers robots/sitemap evidence, but inspects one content URL. `scrape` remains the minimal one-page command without sitemap discovery. Standard selection favours the seed, About/Contact, offers and cases before archives using URL-role heuristics and role diversity. The agent should review business relevance or supply exact URLs; no traffic or search volume is inferred. Non-English/opaque route names may require supplied priorities. Python `Config` retains its legacy 100-page/breadth defaults for existing integrations; the user-facing CLI defaults to standard priority mode.
+
+`coverage.json` separates attempts, usable inspections, partial captures, blocked/failed URLs, pending URLs and sitemap members not inspected. Counts of exclusions are events, not unique excluded pages. A discovered sitemap URL is not verified until captured. Redirects can produce duplicate URL records for one document; the summary separately reports unique HTML documents. Never call a 15-page sample a complete website audit. Old snapshots need their original `--selection breadth` and other semantic options when resuming.
+
+Deeper findings inspect sitemap/response conflicts, duplicate description tags, conflicting JSON-LD identity values, duplicate blocks, type shapes, image attributes and HTML hreflang relationships. They are bounded structural checks, not complete Schema.org/rich-result validation, layout-shift measurement or indexing proof. HTTP-header and sitemap hreflang methods remain outside the HTML relationship checker. Preserve multilingual support and review alternate implementations before changing annotations.
+
+Sources: [Google hreflang methods](https://developers.google.com/search/docs/specialty/international/localized-versions) and [sitemap guidance](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap).

@@ -1,6 +1,21 @@
 # Changelog
 
 
+## 2.9.0 — Know your website better. Fix it with confidence.
+
+25 September 2026
+
+Get a more focused audit, understand what was actually checked and continue the review without starting again. This release strengthens the checks behind your existing SEO workflows.
+
+- Choose a homepage check, a standard 15-page priority sample, a deeper/custom cap or exact URLs. Continue a saved sample with an explicit additional budget.
+- See inspected, partial, blocked and pending coverage; sitemap discovery does not pretend every listed URL was checked.
+- Inspect sitemap/HTTP conflicts, HTML hreflang relationships, duplicate description tags, JSON-LD duplicates/identity conflicts and image attributes with evidence and clear limits.
+- Execute filesystem and local JavaScript readiness probes; optionally check target DNS, robots, sitemaps and live page access separately. A dependency flag no longer stands alone as proof of networking.
+- Require a passing PHP syntax check before staging/applying supported PHP content edits. Keep framework checks and post-change crawl/visual verification separate.
+- Fixed JSON-LD-only pages being treated as possible executable JavaScript shells.
+
+Validation: 249 automated tests passed locally, with one platform-specific skip. A separate local end-to-end trial checked page selection, a website edit, desktop/mobile layout preservation and rollback. Private trial data is not included. Real PHP lint execution and fresh imports on every assistant were not tested for this release; PHP checks require an available PHP runtime. See [setup](docs/setup.md) and [website work](docs/website-work.md) for the limits and verification steps.
+
 ## 2.8.0 — Your SEO plan, put into action
 
 19 September 2026

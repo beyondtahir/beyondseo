@@ -12,6 +12,7 @@ The backlink catalog preserves 241 PDF rows and groups them into 206 website/com
 |---|---|
 | Website discovery | Starts from a URL, reads robots/sitemaps, follows in-scope page links, and records discovered URLs |
 | Sitemap processing | Handles XML URL sets, sitemap indexes, namespaces and gzip content, retaining URL membership and lastmod |
+| Audit depth and coverage | CLI defaults to 15 priority attempts; quick/deep/exact URLs, explicit continuation, and coverage.json separate inspected, partial, blocked and pending evidence |
 | Crawl controls | Page/depth/discovery/query limits, host allowlists, exclusion patterns, concurrency and request spacing |
 | HTTP handling | Records status codes, redirects, loops, errors, response headers, timestamps, byte counts and hashes |
 | Access diagnostics | Separates server denials, rate limits, recognizable challenge responses, robots decisions and local crawl limits |
@@ -27,6 +28,7 @@ The backlink catalog preserves 241 PDF rows and groups them into 206 website/com
 | Website dependencies | Public dependency loading or explicit asset/API host allowlists; supported public GET and CORS OPTIONS requests preserve needed origin-bound headers without logging their values |
 | Rendering diagnostics | Records locally blocked resources, request failures, JavaScript errors and empty-content warnings |
 | Internal link graph | Observed inbound/outbound links, anchors/rel attributes, checked target status and observed click depth |
+| Structural validation | Sitemap response conflicts, HTML hreflang relationship reviews, duplicate JSON-LD/conflicting identity fields, description duplication and image attribute reviews; not full semantic/CWV validation |
 | Technical findings | Uses successful rendered content for metadata/duplicate checks; preserves raw noindex; flags missing-content screens behind HTTP 200 and links pointing to them, alongside other technical candidates |
 | Resume | SQLite persists processed pages and the pending queue; a resumed run can raise the page budget without refetching completed pages |
 | Evidence/reporting | Raw HTML, sitemap XML, JSONL, CSV inventories, issue tables, access diagnostics and Markdown reports |
@@ -124,3 +126,5 @@ Deep reputation research now has two native helpers: `research-plan` generates m
 `project` records business context, idempotent jobs, effort ranges, activity and evidence-backed completion outside the skill. The optional branded HTML/localhost monitor is read-only and requires consent. `project schedule` stores a cadence; `project run` executes at most one due bounded HTTP review with persistent claims and evidence. A host scheduler must invoke it. No model, OS cron, notification service, CMS connector or hosted dashboard is provisioned automatically.
 
 `onsite plan` stages conservative edits to existing static HTML with short-copy guards, duplicate-metadata checks and the existing reviewed-hash/backup/readback workflow. `onsite sitemap` drafts canonical indexable URLs from reviewed captures. Neither command deploys automatically or verifies visual equivalence. Framework/CMS edits, semantic schema review, responsive checks and deployment use the actual host tools. Off-site publishing remains manual; jobs can track the advice and posting plan. See [website work](../docs/website-work.md) and [installation](../docs/agent-installation.md).
+
+PHP content edits require an available compatible PHP CLI and passing `php -n -l` at staging and application. The doctor executes filesystem and local JavaScript probes, with optional bounded target/DNS/robots/sitemap checks; NOT_TESTED remains distinct from success.

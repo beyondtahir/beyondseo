@@ -78,3 +78,7 @@ The `watch` command runs a bounded number of foreground checks. Ongoing schedule
 ## What will a good report contain?
 
 Three clear priorities, observed page evidence, coverage limits, named competitor comparisons, verified reputation sources, practical copy and a plan you can execute. Every area is labeled assessed, partial, not assessed or not applicable. Rankings, traffic, conversion and AI-citation claims need separate dated evidence. No tool can guarantee first place.
+
+## Can I choose how many pages to audit?
+
+Yes. Ask for a homepage check, the standard 15-page priority sample, a deeper audit with a limit such as 30/50/100, or an exact list of URLs. Failed page attempts count toward the limit so blocked sites do not trigger uncontrolled retries. Robots and sitemap discovery are separate. The report shows what was inspected and what remains; ask to continue with the next batch. A sample is not a complete website audit.

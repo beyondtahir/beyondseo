@@ -8,8 +8,10 @@ import io
 import json
 import os
 import posixpath
+import shutil
 import ssl
 import stat
+import subprocess
 import tempfile
 import uuid
 from pathlib import Path, PurePosixPath
@@ -307,6 +309,35 @@ def open_store(site=None, connection=None):
     )
 
 
+def validate_php(name, data):
+    """Lint a private copy without executing PHP or loading php.ini."""
+    if Path(name).suffix.lower() != ".php":
+        return None
+    executable = shutil.which("php")
+    if not executable:
+        raise ValueError(
+            "PHP verification blocked: php is unavailable. Use a compatible authorised PHP runtime and php -n -l before applying this file."
+        )
+    with tempfile.TemporaryDirectory(prefix="beyondseo-php-") as temporary:
+        source = Path(temporary) / "review.php"
+        source.write_bytes(data)
+        command = [executable, "-n", "-l", str(source)]
+        try:
+            run = subprocess.run(command, capture_output=True, text=True, timeout=20)
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise ValueError("PHP verification blocked: " + str(exc)) from exc
+        evidence = {
+            "command": command,
+            "exit_code": run.returncode,
+            "output": (run.stdout + run.stderr)[-4000:],
+            "captured_at": utcnow(),
+            "scope": "Syntax only in this PHP runtime; deployment/runtime behavior and rendered SEO need separate checks.",
+        }
+        if run.returncode:
+            raise ValueError("PHP syntax check failed: " + evidence["output"])
+        return evidence
+
+
 def stage(store, name, replacement, out):
     name = relative_file(name)
     out = Path(out).resolve()
@@ -319,7 +350,9 @@ def stage(store, name, replacement, out):
         after = text_bytes(f.read(LIMIT + 1))
     if before == after:
         raise ValueError("Draft and current content are identical.")
+    syntax = validate_php(name, after)
     plan = {
+        "syntax_check": syntax,
         "schema_version": 1,
         "created_at": utcnow(),
         "target": store.identity,
@@ -387,6 +420,8 @@ def apply_change(store, folder, expected_plan, rollback=False):
             raise ValueError(
                 "Current content differs from the expected version; review before overwriting."
             )
+        if not rollback:
+            receipt["syntax_check"] = validate_php(name, replacement)
         receipt["status"] = "writing"
         state_write(folder, receipt)
         try:

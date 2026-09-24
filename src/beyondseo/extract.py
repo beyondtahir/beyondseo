@@ -116,6 +116,8 @@ def extract(html, url, headers=None, selectors=None):
             "width": n.get("width"),
             "height": n.get("height"),
             "loading": n.get("loading"),
+            "fetchpriority": n.get("fetchpriority"),
+            "sizes": n.get("sizes"),
         }
         for n in soup.find_all("img")
     ]
@@ -127,7 +129,11 @@ def extract(html, url, headers=None, selectors=None):
         nodes = soup.select(spec["selector"])
         values = [(n.get(attr) if attr else content(n)) for n in nodes]
         custom[key] = values if spec.get("all", True) else (values[0] if values else None)
-    script_count = len(soup.find_all("script"))
+    script_count = sum(
+        str(tag.get("type", "")).lower().strip()
+        in ("", "module", "text/javascript", "application/javascript")
+        for tag in soup.find_all("script")
+    )
     forms = [
         {
             "action": absolute(f.get("action") or url),
@@ -412,4 +418,124 @@ def page_findings(page):
     for c in d["canonical"]:
         if c["url"] is None:
             add("invalid_canonical_url", "medium", str(c["raw"]), "Supply a valid canonical URL.")
+    for item in deeper_page_findings(page, d, quality):
+        add(**item)
     return issues
+
+
+def deeper_page_findings(page, data, quality):
+    """Small structural checks, not a Schema.org/rich-result or CWV validator."""
+    result = []
+
+    def add(code, evidence, action, severity="medium", confidence="review"):
+        result.append(
+            dict(
+                code=code,
+                severity=severity,
+                evidence=json.dumps(evidence, ensure_ascii=False),
+                action=action,
+                confidence=confidence,
+            )
+        )
+
+    if len(data.get("meta_descriptions", [])) > 1:
+        add(
+            "multiple_meta_descriptions",
+            data["meta_descriptions"],
+            "Keep one intended page description and remove duplicate template output.",
+            confidence="observed",
+        )
+    blocks = data.get("jsonld", [])
+    seen = set()
+    entities = {}
+    for block in blocks:
+        fingerprint = json.dumps(block, sort_keys=True)
+        if fingerprint in seen:
+            add(
+                "jsonld_duplicate_block",
+                block,
+                "Consolidate duplicate JSON-LD blocks without removing distinct entities.",
+                confidence="observed",
+            )
+        seen.add(fingerprint)
+        stack = [block]
+        while stack:
+            entity = stack.pop()
+            if isinstance(entity, list):
+                stack.extend(entity)
+                continue
+            if not isinstance(entity, dict):
+                continue
+            stack.extend(v for v in entity.values() if isinstance(v, (dict, list)))
+            types = entity.get("@type", [])
+            if isinstance(types, str):
+                types = [types]
+            if not isinstance(types, list) or any(not isinstance(t, str) for t in types):
+                add(
+                    "jsonld_invalid_type_shape",
+                    entity.get("@type"),
+                    "Use a type name or array of type names; verify the vocabulary separately.",
+                    confidence="observed",
+                )
+            identity = entity.get("@id")
+            if isinstance(identity, str):
+                prior = entities.setdefault(identity, {})
+                # Differing lists/descriptions can be legitimate merging; flag identity scalars only.
+                for key in ("name", "url", "sku", "gtin"):
+                    value = entity.get(key)
+                    if isinstance(value, (str, int, float)):
+                        if key in prior and prior[key] != value:
+                            add(
+                                "jsonld_entity_conflict",
+                                {"@id": identity, "property": key, "values": [prior[key], value]},
+                                "Review the conflicting identity values against visible facts; merge deliberately.",
+                            )
+                        prior[key] = value
+    if quality["absence_supported"]:
+        for image in data.get("images", []):
+            if not image.get("width") or not image.get("height"):
+                add(
+                    "image_dimensions_review",
+                    {
+                        "src": image.get("src"),
+                        "width": image.get("width"),
+                        "height": image.get("height"),
+                    },
+                    "Inspect CSS aspect-ratio and rendered layout. Reserve image space where absent; missing HTML dimensions alone do not prove CLS.",
+                    severity="low",
+                )
+            if image.get("loading") == "lazy" and image.get("fetchpriority") == "high":
+                add(
+                    "image_loading_conflict",
+                    image.get("src"),
+                    "Check whether this image is above the fold; align lazy loading and fetch priority with its actual role.",
+                    severity="low",
+                )
+    langs = {}
+    for alternate in data.get("hreflang", []):
+        language = str(alternate.get("language", "")).lower()
+        if language != "x-default" and not re.fullmatch(
+            r"[a-z]{2,3}(?:-[a-z]{4})?(?:-[a-z]{2}|-\d{3})?", language
+        ):
+            add(
+                "hreflang_format_review",
+                alternate,
+                "Verify the language/script/region combination against supported hreflang codes. Preserve genuine language support.",
+            )
+        target = alternate.get("url")
+        if not target:
+            add(
+                "hreflang_invalid_target",
+                alternate,
+                "Use a valid absolute URL for the intended language page.",
+                confidence="observed",
+            )
+        if language in langs and langs[language] != target:
+            add(
+                "hreflang_conflicting_target",
+                {"language": language, "targets": [langs[language], target]},
+                "Use one intended alternate per language-region value on this page.",
+                confidence="observed",
+            )
+        langs[language] = target
+    return result

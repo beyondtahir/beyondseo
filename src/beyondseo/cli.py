@@ -21,7 +21,22 @@ def parser():
         p = sub.add_parser(name)
         p.add_argument("url")
         p.add_argument("--out", required=True, type=Path)
-        p.add_argument("--max-pages", type=int, default=1 if name == "scrape" else 100)
+        p.add_argument(
+            "--max-pages", type=int, help="Total page-attempt cap, including failed pages."
+        )
+        p.add_argument("--audit-depth", choices=["quick", "standard", "deep"], default="standard")
+        p.add_argument(
+            "--only-url",
+            action="append",
+            default=[],
+            help="Inspect only these exact in-scope URLs; repeat for a list.",
+        )
+        p.add_argument("--selection", choices=["priority", "breadth"], default="priority")
+        p.add_argument(
+            "--next-pages",
+            type=int,
+            help="With --resume, add this many page attempts to the saved count.",
+        )
         if name == "watch":
             p.add_argument("--cycles", type=int, default=3)
             p.add_argument(
@@ -412,11 +427,38 @@ def main(argv=None):
             config = Config(**saved["config"])
             selectors = saved["selectors"]
         else:
+            if args.next_pages is not None:
+                if not args.resume or args.next_pages < 1 or args.max_pages is not None:
+                    raise ValueError(
+                        "Use --next-pages with --resume, a positive count and no --max-pages."
+                    )
+                import sqlite3
+
+                database = args.out / "crawl.sqlite3"
+                if not database.is_file():
+                    raise ValueError("No saved crawl to continue.")
+                with sqlite3.connect(database) as saved_db:
+                    args.max_pages = (
+                        saved_db.execute("SELECT COUNT(*) FROM pages").fetchone()[0]
+                        + args.next_pages
+                    )
+            if args.max_pages is None:
+                args.max_pages = (
+                    len(set(args.only_url))
+                    if args.only_url
+                    else {"quick": 1, "standard": 15, "deep": 50}[args.audit_depth]
+                )
+            if args.audit_depth == "quick" and args.max_pages != 1:
+                raise ValueError(
+                    "Quick mode permits one page attempt; use standard/deep for a larger limit."
+                )
             if args.command == "scrape":
                 args.max_pages = 1
                 args.no_sitemaps = True
             config = Config(
                 url=args.url,
+                selection=args.selection,
+                selected_urls=args.only_url,
                 max_pages=args.max_pages,
                 max_depth=args.max_depth,
                 workers=args.workers,
