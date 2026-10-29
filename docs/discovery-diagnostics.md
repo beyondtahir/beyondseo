@@ -28,6 +28,8 @@ The report separates skill registration (unknown to Python; confirm in the host)
 | Response received, parser failed | Retain the response snapshot and SHA-256; inspect its structure. Do not report zero backlinks. |
 | Cause unknown | Preserve the operation, timestamp, provider, status and error. Do not assign blame without additional evidence. |
 
+For an individually failed source-page request, an independently permitted host browser can provide a separate observation: see [source-page browser recovery](browser-search.md#recover-a-source-page-check-through-the-host-browser). Preserve both outcomes. Do not label this a repaired network, invent a 200 response, or promote authenticated content into public backlink proof. A broad host prohibition still applies; browser availability is not an exception to it. Continue other in-scope work and report the remaining limitation once, with the exact step needed if user action is essential.
+
 ## Claude Code
 
 Confirm `/skills` or the installed skill invocation and run `doctor` using the selected Python runtime. Check the actual tools: `WebSearch` and `WebFetch` are distinct from Bash and native Chromium. If WebSearch is denied, use `/permissions` to inspect its specific rule and request that tool when appropriate. A shell or network denial needs the specific command/domain authorization. Do not enable a blanket bypass. Claude's documented WebSearch uses Anthropic's backend; a reported failure is not automatically a Google browser block. Keep its raw tool error.

@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If BeyondSEO supports your work, please cite this repository."
-title: "BeyondSEO: Your complete SEO house"
+title: "BeyondSEO: AI SEO skill for website audits, content and backlinks"
 type: software
-version: 2.9.2
+version: 2.10.0
 authors:
   - family-names: Ashraf
     given-names: Muhammad Tahir
@@ -12,7 +12,11 @@ url: https://github.com/beyondtahir/beyondseo
 license: MIT
 keywords:
   - SEO
+  - AI SEO skill
   - answer engine optimization
+  - generative engine optimization
+  - website audits
+  - content strategy
   - web crawling
   - reputation
   - backlinks

@@ -209,7 +209,7 @@ This guarantees an AI assistant will mention you.
 Say:
 
 ```text
-This improves the probability that search engines and AI-answer systems can understand, trust, summarize, mention, or cite the brand.
+These changes improve the site's observed clarity, access and supporting evidence. Search rankings and AI mentions or citations require separate dated measurement; the audit does not establish an inclusion probability.
 ```
 
 ---

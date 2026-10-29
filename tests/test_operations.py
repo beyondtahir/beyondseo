@@ -59,6 +59,52 @@ class ReviewTests(unittest.TestCase):
         self.assertTrue(result["pages"][0]["in_observed_sitemap"])
         self.assertFalse(result["pages"][0]["robots_path_permissions"]["Googlebot"])
 
+    def test_ai_search_and_training_robots_choices_are_separate(self):
+        text = "User-agent: *\nAllow: /\nUser-agent: OAI-SearchBot\nAllow: /\nUser-agent: GPTBot\nDisallow: /\nUser-agent: Google-Extended\nDisallow: /\n"
+        robots = {
+            self.url.rstrip("/"): {
+                "text": text,
+                "status": 200,
+                "url": self.url + "robots.txt",
+                "fetched_at": "2026-01-01",
+                "blocked": False,
+            }
+        }
+        result = readiness([self.page()], {}, robots, {})
+        policy = result["pages"][0]["ai_robots_policy"]
+        self.assertEqual(policy["OAI-SearchBot"]["observed_robots_rule"], "permitted")
+        self.assertEqual(policy["GPTBot"]["observed_robots_rule"], "restricted")
+        self.assertEqual(policy["Google-Extended"]["observed_robots_rule"], "restricted")
+        self.assertIn("not Google Search ranking", policy["Google-Extended"]["purpose"])
+        self.assertIn("not an actual crawler request", policy["GPTBot"]["limit"])
+        self.assertEqual(policy["GPTBot"]["robots_fetched_at"], "2026-01-01")
+
+    def test_ai_policy_with_unavailable_robots_is_unknown(self):
+        for status in (404, 403, 500):
+            robots = {
+                self.url.rstrip("/"): {"text": "", "status": status, "blocked": status >= 500}
+            }
+            result = readiness([self.page()], {}, robots, {})
+            self.assertEqual(
+                result["pages"][0]["ai_robots_policy"]["OAI-SearchBot"]["observed_robots_rule"],
+                "unknown",
+            )
+
+    def test_truncated_robots_cannot_establish_ai_permission(self):
+        robots = {
+            self.url.rstrip("/"): {
+                "text": "User-agent: *\nAllow: /",
+                "status": 200,
+                "blocked": False,
+                "text_truncated": True,
+            }
+        }
+        result = readiness([self.page()], {}, robots, {})
+        self.assertEqual(
+            result["pages"][0]["ai_robots_policy"]["OAI-SearchBot"]["observed_robots_rule"],
+            "unknown",
+        )
+
     def test_unknown_robots_remains_unknown(self):
         result = readiness([self.page()], {}, {}, {})
         self.assertIsNone(result["pages"][0]["robots_path_permissions"]["Googlebot"])

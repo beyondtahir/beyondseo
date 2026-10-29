@@ -338,6 +338,14 @@ In v0, first check the actual available skill and execution controls. If it cann
 
 After installation, [website work](website-work.md) explains design-preserving edits, private project records, optional monitoring, bounded review jobs and off-site planning. These functions use the current agent's chat. Installation alone starts no crawl, schedule, publishing job or dashboard. Runtime/model access and credentials are not inherited across hosts.
 
+### Optional Google connection and specialist agents
+
+Ask **“Check Google access and set up BeyondSEO's specialists for this project.”** The assistant should inspect actual available connectors, browser and delegation first. For a local Codex or Claude Code project, [agent-setup](operations.md#install-specialist-definitions) writes namespaced role definitions without replacing unrelated settings. The actual host must load them and perform permitted delegation. Hermes and OpenClaw use their exposed native delegation tools; other hosts fall back to sequential specialist responsibilities when needed.
+
+For private search/analytics data, follow [Google account access](operations.md#google-account-access). Existing suitable connections and browser exports remain options; native consent needs the optional Google libraries and a configured OAuth client. The base crawler remains independent. A saved skill, installed roles, saved credentials and successful property access are different readiness checks.
+
+The optional [Publishing Agent](backlink-posting-guide.md#write-and-publish-original-articles) writes complete original SEO/AEO articles and uses the host's permitted browser within an approved campaign. It can reuse a signed-in account or guide signup. Five/week is a proposed target subject to platform rules; a real host scheduler is required for recurring publication. Installation never authorises posting or creates that scheduler.
+
 
 ### Preserve existing settings
 

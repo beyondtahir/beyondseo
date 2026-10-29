@@ -5,10 +5,12 @@ AEO means Answer Engine Optimization.
 The job:
 
 ```text
-Make the content become the answer.
+Help the reader find and understand a supported answer.
 ```
 
 This file tells the AI agent how to write or rewrite any page, blog, FAQ, service page, course page, or article in an answer-engine-friendly style.
+
+Adapt the structure to the page's actual purpose and customer questions. Clear answers can improve usefulness; they do not guarantee an AI citation, featured snippet or ranking. For existing pages, preserve the approved design, short-copy layout and business facts. Put extra detail in an appropriate existing expandable section or propose a separately authorised addition instead of enlarging every paragraph.
 
 ---
 
@@ -51,10 +53,10 @@ Easy for AI to extract
 
 ## 3. AEO Writing Formula
 
-Use this order:
+Use the relevant parts of this sequence when they help the reader:
 
 ```text
-1. Direct answer in 40-80 words
+1. Direct answer, as concise as accuracy and the existing layout allow
 2. Context
 3. Step-by-step explanation
 4. Examples
@@ -83,9 +85,9 @@ A practical AI course is one that teaches you to build real workflows, agents, a
 
 ---
 
-## 5. Required AEO Blocks
+## 5. Choose useful answer formats
 
-For any important page, add:
+Choose formats that answer demonstrated questions on this page; do not add every block by default:
 
 ```text
 Short answer block
@@ -120,7 +122,7 @@ CTA:
 
 ## 7. Research Inputs
 
-Use extracted competitor FAQs and supplied customer/review questions. PAA, related queries, SERP snippets and AI-answer observations require dated external evidence supplied by the user; this package does not scrape search-engine products.
+Use inspected page content, relevant competitor FAQs, customer questions and supplied search/account evidence. When permitted, the host's browser/search tools and BeyondSEO's supported native discovery methods can collect dated search leads; saved results and user-supplied evidence are fallbacks. Record the actual query, provider, date and observed locale/coverage. A snippet is a lead, not proof of a backlink, keyword demand, business claim or AI citation. Do not invent People Also Ask questions or claim observed AI-answer visibility without the actual dated answer and sources.
 
 ## 8. Quality Gate
 
@@ -131,7 +133,7 @@ The answer appears early.
 The page answers related questions.
 The proof is visible.
 The structure is easy to extract.
-The page has schema where valid.
+Any proposed schema matches inspected, visible facts and an appropriate type; its absence alone is not an AEO failure.
 The CTA is clear.
 ```
 

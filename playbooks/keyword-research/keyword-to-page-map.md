@@ -47,6 +47,8 @@ If rank/volume is unavailable:
 Not verified
 ```
 
+Use natural buyer wording and distinguish unmeasured research hypotheses from keywords supported by actual customer/search evidence. Map each useful intent to a suitable existing page before proposing a new one. Do not create pages, force repeated exact-match wording or expand copy to a word-count target just to fill this table. Preserve the user's design, paragraph size and authorised scope.
+
 ## Page Type Options
 
 ```text
@@ -166,8 +168,8 @@ Build niche/local/PR links to page or cluster.
 
 ```text
 Top 1-3: defend + conversion + CTR.
-Top 4-10: optimize to push top 3.
-Top 11-20: fastest-win sprint.
+Top 4-10: review relevance, snippet and page evidence; an improvement does not guarantee top-three placement.
+Top 11-20: investigate the opportunity and effort; position alone does not prove a fast win.
 ```
 
 ## Missing Money Page Handling
@@ -202,7 +204,7 @@ CTA: Book family appointment
 Cluster: AI Automation Course
 Intent: Course/enrollment
 Recommended URL: /ai-automation-course/
-Action: Create 1,500+ word course landing page
+Action: Improve a suitable existing course page, or propose a dedicated page if evidence supports distinct intent; answer the buyer's questions without a fixed word count
 Schema: Course, Organization, Person, FAQPage
 CTA: Join AI Automation Class
 ```
@@ -214,7 +216,7 @@ Each money page should have:
 ```text
 Homepage link
 Navigation/service/category hub link
-2-5 support article links pointing in
+Relevant supporting article links where they help the reader
 Related page links
 Breadcrumbs
 ```
@@ -236,6 +238,8 @@ best dentist arlington heights best dentist arlington heights
 ```
 
 ## Schema Mapping
+
+The types below are candidates, not a requirement to apply every type. Use only appropriate factual markup that matches the visible content. FAQPage applies only to genuine suitable FAQ content; schema validity and search-feature eligibility are separate checks. Do not invent courses, credentials, ratings or local offices to populate schema.
 
 ```text
 Service page → Service + Organization/LocalBusiness + FAQPage + Breadcrumb

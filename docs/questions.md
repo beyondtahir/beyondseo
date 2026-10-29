@@ -2,6 +2,8 @@
 
 BeyondSEO helps you understand what your website says, what search systems can read, what customers still need answered and what would make your business more credible. It brings the evidence, specialist methods, writing and follow-up work into one reusable workflow.
 
+For short answers about installation, costs, capabilities, privacy and updates, open the [common questions in the README](../README.md#common-questions).
+
 ## What makes this a complete SEO house?
 
 A complete audit follows the work from discovery to improvement: crawl the website, inspect its content and technical signals, compare named competitors, verify reputation sources, draft useful changes and produce a plan with clear priorities. Later reviews compare saved evidence to see what changed.
@@ -43,6 +45,8 @@ Yes. The [free-posting catalog](backlink-source-catalog.md) includes 206 website
 
 Ask for 15 or 20 sources suited to your website. You should receive direct routes, a specific topic and outline for each, a relevant page to support, posting steps, current restrictions, a realistic calendar and authority limits. The assistant can also write the first drafts. It researches missing suitable sources instead of padding the count. [See the posting workflow](backlink-posting-guide.md).
 
+For actual publication, ask **“Write complete original SEO/AEO articles and help me publish five a week.”** The optional Publishing Agent proposes suitable article destinations and gets campaign authority, reuses a permitted signed-in browser or guides signup, writes distinct complete articles, checks exact drafts and current platform rules, submits through available host tools and verifies actual links. Five/week is a proposed target across approved destinations, not a guarantee against restrictions or a reason to post unsuitable content. User-only authentication and moderation can pause a job; recurring work needs a real host scheduler. See [the complete workflow](backlink-posting-guide.md#write-and-publish-original-articles).
+
 The PDF's numbers are unverified DR values, not DA. An open account, a high sheet rating or a self-published post does not establish independent authority, indexing or ranking gains.
 
 ## Can it score backlinks like a large SEO platform?
@@ -78,6 +82,10 @@ The `watch` command runs a bounded number of foreground checks. Ongoing schedule
 ## What will a good report contain?
 
 Three clear priorities, observed page evidence, coverage limits, named competitor comparisons, verified reputation sources, practical copy and a plan you can execute. Every area is labeled assessed, partial, not assessed or not applicable. Rankings, traffic, conversion and AI-citation claims need separate dated evidence. No tool can guarantee first place.
+
+## Does BeyondSEO work as a team?
+
+For a full engagement, the lead coordinates specialists such as **SEO/AEO**, **SEO/GEO**, entity, authority, reputation and backlinks. When the host offers permitted agent delegation, independent specialists can work in parallel on a shared, bounded evidence set. Otherwise the assistant performs the same responsibilities sequentially. `swarm-plan` prepares assignments; it does not launch agents. BeyondSEO reports which work actually ran and never promises a fixed agent count or parallel speed.
 
 ## Can I choose how many pages to audit?
 

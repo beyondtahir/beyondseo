@@ -1,0 +1,40 @@
+{
+  "status": "description_and_topics_applied",
+  "repository": "beyondtahir/beyondseo",
+  "description": "Your AI SEO house. Audit your website, write useful content, compare competitors and plan backlinks inside your AI assistant. Free and open source.",
+  "homepage": "https://beyondtahir.com",
+  "topics": [
+    "aeo",
+    "agent-skills",
+    "backlinks",
+    "content-strategy",
+    "entity-seo",
+    "geo",
+    "local-seo",
+    "playwright",
+    "python",
+    "reputation",
+    "seo",
+    "technical-seo",
+    "web-crawler",
+    "ai-seo",
+    "chatgpt",
+    "claude-code",
+    "codex",
+    "hermes-agent",
+    "openclaw",
+    "website-audit"
+  ],
+  "social_preview": "media/repository-social-preview.png",
+  "notes": [
+    "Records repository presentation settings; this file does not execute settings changes.",
+    "Description and topics were applied with the owner’s 2.10.0 publication approval. The social preview image is prepared but has not been uploaded to GitHub settings.",
+    "Native crawling requires no API key. Optional Google native OAuth requires a configured client and property permission.",
+    "Installation guides exist for the listed hosts; topics do not certify identical tool access or tested compatibility."
+  ],
+  "references": {
+    "topics": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics",
+    "social_preview": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview"
+  },
+  "social_preview_applied": false
+}

@@ -15,6 +15,10 @@ python3 scripts/run.py present --input /path/to/client/report-content.json \
 
 Windows uses `py -3` in place of `python3`. Outputs are `report.pdf`, self-contained `report.html`, and `report.manifest.json` with export status and checksums. Files stay local. Choose a fresh folder; `--overwrite` deliberately replaces an earlier export.
 
+For a private Search Console CSV review, first use [search-performance](operations.md#review-search-console-exports), then run `present --performance /path/to/search-performance.json --out /path/to/client/deliverable`. The report presents supplied table rows and coverage limits; it does not establish causation or complete site totals.
+
+For supplied Lighthouse evidence, first run [lighthouse-review](operations.md#review-a-saved-lighthouse-report), then use `present --lighthouse /path/to/lighthouse-review.json --out /path/to/client/deliverable`. It presents lab measurements and limits without claiming field data.
+
 For a direct presentation of native audit findings:
 
 ```sh

@@ -144,7 +144,10 @@ def meta(db):
 
 
 def set_meta(db, key, value):
-    db.execute("UPDATE meta SET value=? WHERE key=?", (json.dumps(value), key))
+    db.execute(
+        "INSERT INTO meta(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+        (key, json.dumps(value)),
+    )
 
 
 def event(db, job, message):
@@ -170,7 +173,87 @@ def snapshot(folder):
         if not result["schedule"]
         else "external scheduler required; see last worker check"
     )
+    campaign = result.pop("publishing_campaign", None)
+    result["publishing"] = campaign_summary(campaign, result["url"]) if campaign else None
     return result
+
+
+def campaign_summary(folder, website):
+    """Read only the explicitly linked campaign; never expose article bodies or paths."""
+    from .offsite import STATES as POST_STATES
+    from .offsite import private_folder, read
+
+    try:
+        campaign = read(private_folder(folder) / "campaign.json")
+        if (
+            campaign.get("schema_version") != 1
+            or urlsplit(safe_url(campaign.get("website"))).netloc.removeprefix("www.")
+            != urlsplit(website).netloc.removeprefix("www.")
+            or not isinstance(campaign.get("tasks"), list)
+            or not 1 <= len(campaign["tasks"]) <= 100
+        ):
+            raise ValueError("Campaign does not match this project.")
+        tasks = []
+        for task in campaign["tasks"]:
+            if task.get("status") not in POST_STATES:
+                raise ValueError("Invalid publishing status.")
+            public = safe_url(task["public_url"]) if task.get("public_url") else None
+            tasks.append(
+                {
+                    "id": text(task["id"], "Article id", 100),
+                    "title": text(
+                        (task.get("draft") or {}).get("title")
+                        or task.get("brief", {}).get("suggested_title_or_action")
+                        or "Article not drafted",
+                        "Article title",
+                        500,
+                    ),
+                    "status": task["status"],
+                    "proposed_date": task.get("proposed_date"),
+                    "public_url": public,
+                    "site": urlsplit(safe_url(task["posting_url"])).netloc,
+                    "issue": str(task.get("last_issue", ""))[:1000],
+                }
+            )
+        return {
+            "status": "observed",
+            "checked_at": utcnow(),
+            "weekly_target": campaign.get("weekly_target"),
+            "schedule_status": str(campaign.get("schedule_status", "unknown"))[:500],
+            "paused": bool(campaign.get("paused")),
+            "tasks": tasks,
+            "counts": {
+                state: sum(t["status"] == state for t in tasks) for state in sorted(POST_STATES)
+            },
+            "limits": "Recorded campaign progress. A verified article link is not indexing, authority transfer or ranking improvement; scheduler state must be checked in the host.",
+        }
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        return {
+            "status": "unavailable",
+            "reason": "The explicitly linked campaign could not be read or no longer matches the project. No article status was inferred.",
+        }
+
+
+def link_campaign(folder, campaign_folder):
+    from .offsite import private_folder
+
+    campaign_folder = private_folder(campaign_folder)
+    with connection(folder) as db:
+        summary = campaign_summary(campaign_folder, meta(db)["url"])
+        if summary["status"] != "observed":
+            raise ValueError(summary["reason"])
+        set_meta(db, "publishing_campaign", str(campaign_folder))
+        event(
+            db,
+            None,
+            "Publishing campaign linked; future monitor refreshes read recorded article progress. No scheduler or publishing action started.",
+        )
+    refresh(folder)
+    return {
+        "status": "linked",
+        "articles": len(summary["tasks"]),
+        "dashboard": "Only shown if the user enabled the optional private dashboard.",
+    }
 
 
 def save_profile(folder, profile):
@@ -525,6 +608,16 @@ def dashboard_html(state):
         values = job.get("estimate_minutes")
         return f"{values[0]}–{values[1]} min" if values else "Not estimated"
 
+    def publication_row(task):
+        link = "No public URL recorded"
+        if task["public_url"]:
+            link = f"<a href='{esc(task['public_url'])}' rel='noreferrer'>View recorded article</a>"
+        return (
+            f"<tr><td><strong>{esc(task['title'])}</strong><p>{esc(task['site'])}</p></td>"
+            f"<td>{esc(task['status'].replace('_', ' '))}<p>{esc(task['issue'])}</p></td>"
+            f"<td>{esc(task['proposed_date'] or 'Not scheduled')}</td><td>{link}</td></tr>"
+        )
+
     rows = "".join(
         f"<tr><td><strong>{esc(j['title'])}</strong><p><a href='{esc(j['url'])}' rel='noreferrer'>{esc(j['url'])}</a></p><small>{esc(j['kind'].replace('_', ' '))}</small></td><td><span class='status'>{esc(j['status'].replace('_', ' '))}</span><p>{esc(j['note'])}</p></td><td>{esc(j['action'])}<details><summary>Acceptance and evidence</summary><p>{esc(j['acceptance'])}</p><p>{esc(j['evidence'])}</p>{verification_html(j)}</details></td><td>{estimate(j)}<p>{esc(j.get('due_at') or 'Not scheduled')}</p></td></tr>"
         for j in state["jobs"]
@@ -539,6 +632,16 @@ def dashboard_html(state):
     verified = sum(j["status"] == "verified" for j in state["jobs"])
     blocked = sum(j["status"] == "blocked" for j in state["jobs"])
     due = state["schedule"]
+    publishing = state.get("publishing")
+    publication_html = ""
+    if publishing:
+        if publishing["status"] == "observed":
+            posts = "".join(publication_row(t) for t in publishing["tasks"])
+            publication_html = f"<section><h2>Article publishing</h2><p>Proposed weekly target: {esc(publishing['weekly_target'])}. {'Paused.' if publishing['paused'] else ''} {esc(publishing['schedule_status'])}</p><div class='scroll'><table><thead><tr><th>Article / destination</th><th>Recorded status</th><th>Proposed date</th><th>Publication</th></tr></thead><tbody>{posts}</tbody></table></div><p>{esc(publishing['limits'])}</p></section>"
+        else:
+            publication_html = (
+                f"<section><h2>Article publishing</h2><p>{esc(publishing['reason'])}</p></section>"
+            )
     cadence = (
         (
             "Next eligible review: "
@@ -549,7 +652,7 @@ def dashboard_html(state):
     )
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta http-equiv="refresh" content="{state["refresh_seconds"]}"><title>BeyondSEO · Project monitor</title><style>
     :root{{--red:#991b1b;--ink:#151515;--muted:#666;--paper:#f5f3f1}}*{{box-sizing:border-box}}body{{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 system-ui,sans-serif}}main{{max-width:1220px;margin:auto;padding:36px}}header{{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--ink)}}img{{width:230px;max-width:55vw}}.label{{text-transform:uppercase;letter-spacing:.15em;font-size:11px;color:var(--red)}}h1{{font-size:clamp(28px,4vw,48px);letter-spacing:-.04em;line-height:1.15}}h2{{font-size:23px}}p,h1{{overflow-wrap:anywhere}}a{{color:var(--red)}}.stats{{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}}.stats article{{background:white;border-top:3px solid var(--red);padding:20px}}.stats b{{display:block;font-size:34px}}section{{background:white;padding:24px;margin:24px 0;border:1px solid #ddd}}table{{border-collapse:collapse;width:100%;min-width:720px}}th,td{{text-align:left;vertical-align:top;padding:16px 10px;border-bottom:1px solid #ddd}}th{{font-size:12px;text-transform:uppercase}}td p{{margin:6px 0;font-size:13px;color:var(--muted)}}.scroll{{overflow:auto}}.status{{font-size:12px;border:1px solid #ddd;border-radius:20px;padding:4px 9px;white-space:nowrap}}ul{{list-style:none;padding:0}}li{{padding:12px 0;border-bottom:1px solid #eee}}time,small{{color:var(--muted);font-size:12px}}summary{{cursor:pointer;color:var(--red)}}.notice{{border-left:4px solid var(--red);padding:12px 20px;background:white}}footer{{font-size:12px;color:var(--muted)}}@media(max-width:600px){{main{{padding:16px}}.stats{{gap:8px}}.stats article{{padding:12px}}}}
-    </style></head><body><main><header><img src="data:image/png;base64,{logo}" alt="BeyondSEO"><span class="label">Private project monitor</span></header><p class="label">{"Paused" if state["paused"] else "Project activity"}</p><h1>{esc(state["url"])}</h1><p>{esc(state["goal"])}</p><div class="stats"><article><b>{len(state["jobs"])}</b>Total jobs</article><article><b>{verified}</b>Verified jobs</article><article><b>{blocked}</b>Blocked jobs</article></div><div class="notice">Operate through your existing agent chat. This monitor does not run an AI or a scheduler.<br>{esc(cadence)}<br>Last worker check: {esc(state["last_worker_check"] or "Never")} · {esc(state["worker_status"])}</div><section><h2>Your work plan</h2><div class="scroll"><table><thead><tr><th>Job / page</th><th>Status</th><th>Work and checks</th><th>Estimate (minutes) / due</th></tr></thead><tbody>{rows or '<tr><td colspan="4">No jobs recorded yet.</td></tr>'}</tbody></table></div></section><section><h2>Review runs</h2><ul>{runs or "<li>No reviews executed.</li>"}</ul></section><section><h2>Activity</h2><ul>{events}</ul></section><footer>Updated {esc(utcnow())}. Implementation estimates are not ranking forecasts. Verification reflects the recorded evidence and its limits. Keep this monitor private.</footer></main></body></html>'''
+    </style></head><body><main><header><img src="data:image/png;base64,{logo}" alt="BeyondSEO"><span class="label">Private project monitor</span></header><p class="label">{"Paused" if state["paused"] else "Project activity"}</p><h1>{esc(state["url"])}</h1><p>{esc(state["goal"])}</p><div class="stats"><article><b>{len(state["jobs"])}</b>Total jobs</article><article><b>{verified}</b>Verified jobs</article><article><b>{blocked}</b>Blocked jobs</article></div><div class="notice">Operate through your existing agent chat. This monitor does not run an AI or a scheduler.<br>{esc(cadence)}<br>Last worker check: {esc(state["last_worker_check"] or "Never")} · {esc(state["worker_status"])}</div><section><h2>Your work plan</h2><div class="scroll"><table><thead><tr><th>Job / page</th><th>Status</th><th>Work and checks</th><th>Estimate (minutes) / due</th></tr></thead><tbody>{rows or '<tr><td colspan="4">No jobs recorded yet.</td></tr>'}</tbody></table></div></section>{publication_html}<section><h2>Review runs</h2><ul>{runs or "<li>No reviews executed.</li>"}</ul></section><section><h2>Activity</h2><ul>{events}</ul></section><footer>Updated {esc(utcnow())}. Implementation estimates are not ranking forecasts. Verification reflects the recorded evidence and its limits. Keep this monitor private.</footer></main></body></html>'''
 
 
 def refresh(folder):
@@ -609,9 +712,12 @@ def register(sub):
         "schedule",
         "run",
         "recover",
+        "link-campaign",
     ):
         cmd = actions.add_parser(name)
         cmd.add_argument("--project", type=Path, required=True)
+        if name == "link-campaign":
+            cmd.add_argument("--campaign", type=Path, required=True)
         if name == "init":
             cmd.add_argument("--url", required=True)
             cmd.add_argument("--goal", required=True)
@@ -645,6 +751,8 @@ def register(sub):
 
 def execute(args):
     folder, action = args.project, args.project_action
+    if action == "link-campaign":
+        return link_campaign(folder, args.campaign)
     if action == "init":
         return init_project(folder, args.url, args.goal)
     if action == "profile":

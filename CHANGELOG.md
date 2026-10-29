@@ -1,5 +1,39 @@
 # Changelog
 
+## 2.10.0 — Your SEO house, ready for the next step
+
+30 October 2026
+
+Understand your website, turn evidence into useful content and follow an agreed plan through to checked work. This release keeps the native crawler, backlink library, design protection and branded reports, with a clearer introduction, original animated explanations, copyable prompts and a complete plain-language FAQ.
+
+- Refresh the main repository README with original Paperworks characters, responsive artwork, three animated workflow scenes and reduced-motion stills.
+- Add seven copyable task prompts, 28 common questions and the creator’s owner-authorised Academy Search Console example, shared after using BeyondSEO.
+
+- Keep failed native requests and permitted host-browser source observations separately, with actual capture dates, duplicate provenance and explicit public/authenticated/unknown access. The new `browser-evidence` adapter never turns search snippets, login walls or missing HTTP status into backlink proof.
+- Add saved-crawl entity declaration review with source-linked identity/publisher questions and conservative limits for partial captures.
+- Add an optional one-request public PageSpeed check, retain provider quota/runtime errors, and document free local Lighthouse/export fallbacks without requiring a subscription or weakening browser controls.
+- Preserve partial Google consent by distinguishing requested scopes from provider-observed grants and actual property access.
+- Restrict article campaigns to suitable publishing formats, invalidate pending approvals after a changed authorisation scope, and retain known stricter publisher limits across tasks.
+- Link same-domain campaigns to the optional existing project monitor with current recorded progress, while withholding article bodies and private paths. Linking does not create a dashboard or scheduled worker.
+- Replace rigid content-length and mandatory-FAQ templates with customer-question, intent and factual-evidence checks that preserve useful concise copy.
+- Add an original specialist map and a real branded report preview using explicitly fictional data. No client captures or search-performance claims are included in the preview.
+
+- Add optional native read-only Google browser consent, separate service/property checks, bounded Search Console CSV/JSON and Organic Search GA4 reports. Google OAuth client setup remains necessary; no shared app registration or live account verification is claimed.
+- Add project-scoped namespaced specialist definitions for Codex and Claude Code without replacing unrelated settings. Document actual host delegation and sequential fallback separately from planning/installation.
+- Add the optional Publishing Agent: complete distinct SEO/AEO articles, permitted signed-in browser reuse or signup guidance, scoped campaign permission and a proposed five-article weekly target subject to actual platform rules.
+- Add a private publishing ledger with exact-draft review, current platform-policy checks, duplicate wording screening, pre-submission checks, observed receipts, warning pauses and native exact-target backlink verification. Actual browser submissions and real schedules are performed through available host tools, not this CLI.
+- Consolidate the two brief Google playbooks into the operations guide so the portable upload remains within its file-count limit while retaining runtime resources.
+
+- Coordinate named SEO/AEO, SEO/GEO, entity, authority, reputation and backlink specialists through supported host agent tools; use the same scoped work sequentially when delegation is unavailable.
+- Generate a private `swarm-plan` with explicit specialist assignments and shared evidence and budget rules. The plan does not itself start agents or perform an audit.
+
+- Import private English Search Console CSV exports offline, screen page/query rows for review and compare matching rows with explicit coverage and user-supplied filters.
+- Optionally match page rows to exact captured URLs and show available crawl evidence without inferring missing content from failed or partial captures.
+- Import a saved Lighthouse JSON report offline, distinguish lab data from field metrics and preserve unmeasured/error states.
+- Report observed AI-related robots policies separately by search and model-training purpose, with unavailable policies marked unknown.
+- Present these observations and limits in the existing BeyondSEO branded HTML/PDF format. No Google account or paid API is required.
+
+
 ## 2.9.2 — Easier connections, clearer next steps
 
 27 October 2026

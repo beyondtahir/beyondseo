@@ -219,6 +219,207 @@ def from_audit(audit):
     }
 
 
+def from_performance(performance):
+    """Present supplied Search Console table evidence without adding claims."""
+    if (
+        not isinstance(performance, dict)
+        or performance.get("source") != "User-supplied Google Search Console CSV"
+    ):
+        raise ValueError("Expected a BeyondSEO search-performance.json file.")
+    rows = performance["highest_impression_rows"]
+    table = [
+        [
+            str(row["dimension_value"]),
+            str(row["clicks"]),
+            str(row["impressions"]),
+            "Unknown" if row.get("ctr_percent") is None else f"{row['ctr_percent']}%",
+        ]
+        for row in rows
+    ]
+    blocks = [
+        {
+            "type": "text",
+            "text": "Property: "
+            + str(performance.get("property_label") or "Not provided")
+            + ". Data period: "
+            + str(performance.get("period_label") or "Not provided")
+            + ". Rows in supplied table: "
+            + str(performance["input_rows"])
+            + ".",
+        },
+        {"type": "text", "text": performance["coverage_limit"]},
+    ]
+    if table:
+        blocks.append(
+            {
+                "type": "table",
+                "columns": [performance["dimension"].title(), "Clicks", "Impressions", "CTR"],
+                "widths": [3, 1, 1.3, 1],
+                "rows": table,
+                "source": "User-supplied Search Console table export; rows are not necessarily a complete property total.",
+            }
+        )
+    candidates = []
+    for row in performance["review_candidates"]:
+        capture = row.get("crawl_evidence")
+        extra = ""
+        if capture and capture.get("usable"):
+            extra = f" Captured on {capture.get('captured_at') or 'date not recorded'}: title {capture.get('observed_title') or 'not observed'}; description {capture.get('observed_description') or 'not observed'}. Check capture limits before treating absence as a finding."
+        elif capture:
+            extra = " Page capture unavailable or ambiguous; no conclusion about its contents can be made."
+        candidates.append(
+            {
+                "type": "callout",
+                "title": str(row["dimension_value"]),
+                "text": f"Observed: {row['clicks']} clicks, {row['impressions']} impressions, {row['ctr_percent']}% CTR. {row['rationale']}{extra} Next: {row['action']} Verify: {row['verify']}",
+            }
+        )
+    if not candidates:
+        candidates.append(
+            {
+                "type": "text",
+                "text": "No rows matched the selected screening rule, or this dimension is not a query/page. This does not prove performance is healthy.",
+            }
+        )
+    sections = [
+        {"title": "Search evidence", "lead": "What the supplied table shows", "blocks": blocks},
+        {
+            "title": "Pages and questions to review",
+            "lead": "Screening candidates require human review",
+            "blocks": candidates,
+        },
+    ]
+    if performance.get("comparison_context_user_provided"):
+        compare_blocks = [
+            {"type": "text", "text": performance["comparison_note"]},
+            {
+                "type": "text",
+                "text": "Previous period: "
+                + str(performance.get("previous_period_label") or "Not provided")
+                + ". Matched rows: "
+                + str(performance.get("matched_rows"))
+                + "; current-only rows: "
+                + str(performance.get("current_only_rows"))
+                + "; previous-only rows: "
+                + str(performance.get("previous_only_rows"))
+                + ".",
+            },
+            {
+                "type": "text",
+                "text": "User-provided context: " + performance["comparison_context_user_provided"],
+            },
+        ]
+        changes = performance.get("matched_changes", [])
+        if changes:
+            compare_blocks.append(
+                {
+                    "type": "table",
+                    "columns": [
+                        performance["dimension"].title(),
+                        "Previous clicks",
+                        "Current clicks",
+                        "Change",
+                    ],
+                    "rows": [
+                        [
+                            row["dimension_value"],
+                            str(row["previous"]["clicks"]),
+                            str(row["current"]["clicks"]),
+                            str(row["clicks_change"]),
+                        ]
+                        for row in changes
+                    ],
+                    "source": "Matched exported rows only. Matching filters and periods were not independently verified.",
+                }
+            )
+        sections.append({"title": "What changed", "blocks": compare_blocks})
+    return {
+        "title": "Search performance review",
+        "client": performance.get("property_label") or "Search Console property",
+        "date": performance["generated_at"][:10],
+        "subtitle": "Evidence, review priorities and practical next steps",
+        "summary": "A review of user-supplied Search Console table rows. Review coverage and filters before drawing conclusions. Recommendations are candidates, not guaranteed outcomes.",
+        "sections": sections,
+    }
+
+
+def from_lighthouse(report):
+    """Present supplied Lighthouse lab measurements with their limitations."""
+    if not isinstance(report, dict) or report.get("source") != "User-supplied Lighthouse JSON":
+        raise ValueError("Expected a BeyondSEO lighthouse-review.json file.")
+    rows = []
+    findings = []
+    for metric in report["metrics"]:
+        value = metric.get("display_value") or (
+            f"{metric['value']} {metric['unit']}"
+            if metric.get("value") is not None
+            else metric["status"]
+        )
+        rows.append([metric["label"], value, metric["status"]])
+        if metric["status"] == "observed":
+            findings.append(metric["label"] + ": " + metric["action"])
+    blocks = [
+        {
+            "type": "text",
+            "text": "Requested URL: "
+            + str(report.get("requested_url") or "Not recorded")
+            + ". Final URL: "
+            + str(report.get("final_url") or "Not recorded")
+            + ". Captured: "
+            + str(report.get("report_time") or "Not recorded")
+            + ". Device: "
+            + str(report.get("form_factor") or "Not recorded")
+            + ".",
+        },
+        {"type": "text", "text": report["limits"]},
+        {
+            "type": "table",
+            "columns": ["Metric", "Lab result", "Status"],
+            "rows": rows,
+            "source": "User-supplied Lighthouse report. Inspect the original report for details.",
+        },
+    ]
+    if report.get("performance_score_0_to_100") is not None:
+        blocks.insert(
+            1,
+            {
+                "type": "text",
+                "text": "Lighthouse performance score: "
+                + str(report["performance_score_0_to_100"])
+                + "/100 in the supplied lab run.",
+            },
+        )
+    if report.get("run_warnings") or report.get("runtime_error"):
+        blocks.append(
+            {
+                "type": "callout",
+                "title": "Run has limitations",
+                "text": "The supplied Lighthouse run contains warnings or a runtime error. Inspect the original report before drawing conclusions.",
+            }
+        )
+    actions = (
+        [{"type": "bullets", "items": findings}]
+        if findings
+        else [
+            {
+                "type": "text",
+                "text": "No usable lab metrics were supplied. Inspect the original run; no performance outcome is established.",
+            }
+        ]
+    )
+    return {
+        "title": "Website performance review",
+        "client": "Supplied Lighthouse report",
+        "date": report["generated_at"][:10],
+        "subtitle": "Lab evidence and practical next checks",
+        "summary": "A review of user-supplied Lighthouse lab evidence. Lab results are not real-user field data. Inspect the original report before making changes.",
+        "sections": [
+            {"title": "Lab measurements", "blocks": blocks},
+            {"title": "What to review", "blocks": actions},
+        ],
+    }
+
+
 def _string(value):
     if isinstance(value, list):
         return "; ".join(_string(v) for v in value)

@@ -2,7 +2,7 @@
 
 Start with the task you want to complete. Each guide connects the commands, evidence and decisions needed for that job.
 
-New in 2.9.2: choose how much of your site to check, continue saved audits and see clearer coverage and readiness results. Read [what changed](../CHANGELOG.md) or go straight to [audit-depth options](../references/crawler.md#choose-the-audit-depth).
+New in 2.10.0: coordinated SEO specialists, optional read-only Google data, original article campaigns and clearer evidence-backed reports. The native crawler, backlink library and guarded website work remain included. Read [what changed](../CHANGELOG.md) or [start with a question](../README.md#common-questions).
 
 ## Start using BeyondSEO
 

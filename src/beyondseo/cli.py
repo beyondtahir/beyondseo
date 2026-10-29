@@ -145,6 +145,42 @@ def parser():
         p.add_argument("--no-color", action="store_true")
     p = sub.add_parser("report", help="Regenerate reports from an existing local crawl database.")
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("search-performance", help="Review a private Search Console CSV offline.")
+    p.add_argument("--input", type=Path, required=True, help="English Search Console table CSV.")
+    p.add_argument(
+        "--dimension", choices=["query", "page", "country", "device", "date"], required=True
+    )
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument(
+        "--crawl-out",
+        type=Path,
+        help="Optional saved crawl folder for exact page evidence (page dimension only).",
+    )
+    p.add_argument("--property", default="", help="Optional label for the exported property.")
+    p.add_argument("--period", default="", help="Optional date-range label.")
+    p.add_argument("--previous", type=Path, help="Optional separate CSV for an earlier period.")
+    p.add_argument("--previous-period", default="")
+    p.add_argument(
+        "--comparison-context",
+        default="",
+        help="Describe matching property, search type and filters for both exports.",
+    )
+    p.add_argument("--min-impressions", type=int, default=100)
+    p.add_argument(
+        "--max-ctr",
+        type=float,
+        default=2.0,
+        help="Configurable screening threshold, not a benchmark.",
+    )
+    p = sub.add_parser("lighthouse-review", help="Review a saved Lighthouse JSON report offline.")
+    p.add_argument("--input", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser(
+        "entity-review",
+        help="Review saved JSON-LD identities; candidates are not schema defects or authority scores.",
+    )
+    p.add_argument("--crawl", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser(
         "present", help="Export an offline BeyondSEO-branded HTML/PDF client report."
     )
@@ -153,6 +189,10 @@ def parser():
     source.add_argument(
         "--audit", type=Path, help="Existing audit.json; preserve its findings and limits."
     )
+    source.add_argument(
+        "--performance", type=Path, help="Private search-performance.json evidence."
+    )
+    source.add_argument("--lighthouse", type=Path, help="Private lighthouse-review.json evidence.")
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--format", choices=["both", "html", "pdf"], default="both")
     p.add_argument("--overwrite", action="store_true")
@@ -248,10 +288,21 @@ def parser():
             p.add_argument(
                 "--expect-plan", required=True, help="SHA-256 of the reviewed plan.json."
             )
-    from . import onsite, projects
+    from . import google_access, offsite, onsite, projects
 
     onsite.register(sub)
     projects.register(sub)
+    google_access.register(sub)
+    offsite.register(sub)
+    p = sub.add_parser(
+        "browser-evidence",
+        help="Import actual permitted source-page browser observations; no browser is launched.",
+    )
+    p.add_argument("--input", type=Path, required=True)
+    p.add_argument("--target", required=True)
+    p.add_argument("--brand", default="")
+    p.add_argument("--alias", action="append", default=[])
+    p.add_argument("--out", type=Path, required=True)
     return root
 
 
@@ -277,6 +328,103 @@ class OutputLock:
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.command == "browser-evidence":
+        from .backlinks import import_browser_evidence
+
+        try:
+            result = import_browser_evidence(
+                args.input, args.target, args.out, args.brand, args.alias
+            )
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            print("Browser evidence import failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "entity-review":
+        from .review import entity_review
+
+        try:
+            result = entity_review(args.crawl, args.out)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
+            print("Entity review failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": result["status"],
+                    "observed_definitions": len(result["entities"]),
+                    "review_candidates": len(result["review_candidates"]),
+                    "out": str(args.out),
+                },
+                indent=2,
+            )
+        )
+        return 0
+    if args.command in {"google", "publish"}:
+        from . import google_access, offsite
+
+        try:
+            result = (google_access if args.command == "google" else offsite).execute(args)
+        except google_access.GoogleFailure as exc:
+            print(json.dumps(exc.result(), indent=2))
+            return 1
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            print("Account/publishing operation failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 1 if result.get("status") in {"unavailable", "partial"} else 0
+    if args.command == "lighthouse-review":
+        from .review import lighthouse_review
+
+        try:
+            result = lighthouse_review(args.input, args.out)
+        except (OSError, ValueError, TypeError, AttributeError) as exc:
+            print("Lighthouse review failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": result["status"],
+                    "observed_metrics": sum(m["status"] == "observed" for m in result["metrics"]),
+                    "out": str(args.out),
+                },
+                indent=2,
+            )
+        )
+        return 1 if result["status"] == "failed" else 0
+    if args.command == "search-performance":
+        from .review import search_performance
+
+        try:
+            result = search_performance(
+                args.input,
+                args.out,
+                args.dimension,
+                args.previous,
+                args.property,
+                args.period,
+                args.previous_period,
+                args.comparison_context,
+                args.min_impressions,
+                args.max_ctr,
+                args.crawl_out,
+            )
+        except (OSError, ValueError, TypeError) as exc:
+            print("Search performance review failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(
+            json.dumps(
+                {
+                    "status": "complete",
+                    "dimension": result["dimension"],
+                    "input_rows": result["input_rows"],
+                    "review_candidates": len(result["review_candidates"]),
+                    "out": str(args.out),
+                },
+                indent=2,
+            )
+        )
+        return 0
     if args.command in {"project", "onsite"}:
         from . import onsite, projects
 
@@ -301,10 +449,10 @@ def main(argv=None):
 
         return check_environment(args.target, args.query, args.out)
     if args.command == "present":
-        from .reports import export_report, from_audit
+        from .reports import export_report, from_audit, from_lighthouse, from_performance
 
         try:
-            source = args.input or args.audit
+            source = args.input or args.audit or args.performance or args.lighthouse
             if source.stat().st_size > 5_000_000:
                 raise ValueError(
                     "Report input exceeds 5 MB; split the report or keep raw evidence in a separate appendix."
@@ -312,6 +460,10 @@ def main(argv=None):
             data = json.loads(source.read_text(encoding="utf-8"))
             if args.audit:
                 data = from_audit(data)
+            elif args.performance:
+                data = from_performance(data)
+            elif args.lighthouse:
+                data = from_lighthouse(data)
             result = export_report(data, args.out, args.format, args.overwrite)
         except (OSError, ValueError, KeyError, TypeError) as exc:
             print("Report export failed: " + str(exc), file=sys.stderr)
@@ -336,6 +488,8 @@ def main(argv=None):
             "audit",
             "research-plan",
             "compare-reputation",
+            "swarm-plan",
+            "agent-setup",
         ):
             from .research_cli import execute
 

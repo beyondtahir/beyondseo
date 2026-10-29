@@ -36,6 +36,24 @@ The backlink catalog preserves 241 PDF rows and groups them into 206 website/com
 
 The command-line interface is documented in `crawler.md`. The crawler does not submit forms or perform publishing actions. Resume continues the same snapshot; a fresh run is needed to refresh completed pages.
 
+`entity-review` reads saved JSON-LD to inventory declarations and flag source-linked identity/publisher variations for human/agent review. It preserves document-scoped nodes and coverage limits; it does not certify schema semantics or knowledge-graph recognition. See [entity review](../docs/operations.md#review-entity-declarations).
+
+For an individual failed source request, actual permitted host-browser DOM observations can be imported with `browser-evidence`. Public logged-out observations, authenticated views and unknown visibility remain distinct, and the failed native attempt is retained separately. This adapter does not control a browser, bypass restrictions, infer HTTP status or establish indexing. See [browser recovery](../docs/browser-search.md#recover-a-source-page-check-through-the-host-browser).
+
+Optional `google pagespeed` retains one actual public API attempt and its returned lab report or failure. `lighthouse-review` accepts supplied or host-generated JSON without a Google account or paid tool. An approved local Lighthouse/Chrome tool can provide evidence when the public provider is unavailable; the host performs that run. No field-performance or whole-site health claim follows from a lab score. See [performance checks](../docs/operations.md#run-an-optional-public-performance-check).
+
+## Specialist swarm: host-coordinated
+
+`agent-setup` can generate project-scoped Codex/Claude Code role files without changing model selection or unrelated settings. Host loading, delegation and concurrency require actual host verification. The optional `seo-publisher` is excluded from routine audits; it joins an explicitly requested campaign. See [setup](../docs/operations.md#install-specialist-definitions).
+
+`swarm-plan` produces explicit SEO/AEO, SEO/GEO, entity, authority, reputation, backlinks and related specialist assignments. It launches no agents. The skill uses actual host delegation when available and permitted, with shared evidence and request budgets; otherwise the lead works sequentially. Agent availability, concurrency and model usage are host-specific. [Workflow and handoff](../playbooks/core/seo-house-workflow.md#coordinate-the-specialists).
+
+## Search Console evidence: local CSV review
+
+The optional `google` commands add native read-only browser consent, property checks and bounded Search Console/GA4 reports. Official authentication dependencies and the user's configured Desktop OAuth client are required for that route; no shared BeyondSEO OAuth app or account credentials are bundled. Suitable existing host connections or compatible gog commands remain alternative host tools. Property access and each host need live verification. See [account access](../docs/operations.md#google-account-access).
+
+`search-performance` reads a user-supplied English query/page/country/device/date CSV offline; reports exported-row coverage, configurable review candidates and matched-row comparisons without inferring causes. Optional saved-crawl evidence joins exact page URLs only; a query export is never treated as a query-to-page mapping. `present --performance` creates a branded report of the supplied observations and limits. It does not connect to Google or assess conversions, AI citations or complete site totals. [How to use it](../docs/operations.md#review-search-console-exports).
+
 ## Branded client reports: implemented
 
 `present` exports local PDF and self-contained HTML using the official BeyondSEO logo, black/red palette, editorial cover, linked contents, tables, charts and evidence notes. Normal setup includes the free ReportLab renderer. `--audit` preserves a native audit’s findings; `--input` presents a reviewed strategy report. The renderer does not research, score or verify supplied claims. The assistant prepares the analysis and checks every rendered page before delivery. See [report content and export](../docs/branded-reports.md) for formats, font limits and HTML fallback.
@@ -108,7 +126,7 @@ They adapt page strategy, proof, local relevance and conversion focus. They are 
 | Traffic, conversions and GBP performance | The website crawler cannot observe private account measurements; supplied exports can support analysis |
 | Search-engine/Maps/social product scraping | Bounded native search-result adapters and host browser/search imports are implemented; dedicated Maps/social collectors are not |
 | AI-answer visibility/history | Readiness review is available; actual visibility needs captured answer evidence |
-| Core Web Vitals and performance audits | HTTP elapsed time is recorded; Lighthouse/field measurement is not implemented |
+| Core Web Vitals and performance audits | HTTP elapsed time is recorded; saved Lighthouse lab JSON can be imported offline. BeyondSEO does not run Lighthouse or measure field data itself |
 | Complete schema validation | JSON parsing is implemented; semantic and rich-result validation is separate |
 | Authenticated workflows | No account login, session import, consent-click or form-submission automation |
 | Interaction-heavy harvesting | Bounded scrolling is available; no general click recipes or unlimited infinite-scroll engine |
@@ -125,6 +143,6 @@ Deep reputation research now has two native helpers: `research-plan` generates m
 
 `project` records business context, idempotent jobs, effort ranges, activity and evidence-backed completion outside the skill. The optional branded HTML/localhost monitor is read-only and requires consent. `project schedule` stores a cadence; `project run` executes at most one due bounded HTTP review with persistent claims and evidence. A host scheduler must invoke it. No model, OS cron, notification service, CMS connector or hosted dashboard is provisioned automatically.
 
-`onsite plan` stages conservative edits to existing static HTML with short-copy guards, duplicate-metadata checks and the existing reviewed-hash/backup/readback workflow. `onsite sitemap` drafts canonical indexable URLs from reviewed captures. Neither command deploys automatically or verifies visual equivalence. Framework/CMS edits, semantic schema review, responsive checks and deployment use the actual host tools. Off-site publishing remains manual; jobs can track the advice and posting plan. See [website work](../docs/website-work.md) and [installation](../docs/agent-installation.md).
+`onsite plan` stages conservative edits to existing static HTML with short-copy guards, duplicate-metadata checks and the existing reviewed-hash/backup/readback workflow. `onsite sitemap` drafts canonical indexable URLs from reviewed captures. Neither command deploys automatically or verifies visual equivalence. Framework/CMS edits, semantic schema review, responsive checks and deployment use the actual host tools. The optional seo-publisher writes complete distinct articles and uses an authorised host browser for posting; the private publish ledger tracks signup, exact draft approval, submissions and native link verification. A real host scheduler is required for recurring work. See [website work](../docs/website-work.md) and [installation](../docs/agent-installation.md).
 
 PHP content edits require an available compatible PHP CLI and passing `php -n -l` at staging and application. The doctor executes filesystem and local JavaScript probes, with optional bounded target/DNS/robots/sitemap checks; NOT_TESTED remains distinct from success.

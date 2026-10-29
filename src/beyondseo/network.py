@@ -597,6 +597,7 @@ class RobotsCache:
                     "fetched_at": r.fetched_at,
                     "sha256": hashlib.sha256(r.body).hexdigest(),
                     "text": text,
+                    "text_truncated": r.status == 200 and len(r.body) > 512_000,
                     "redirects": r.redirects,
                     "http_events": r.http_events,
                     "access": classify_access(r.status, r.headers, r.body, r.error),

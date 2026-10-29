@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "beyondseo"
-version = "2.9.2"
-description = "A complete SEO house with specialist workflows, a backlink source library and its own local crawler."
+version = "2.10.0"
+description = "An open-source AI SEO skill for website audits, SEO/AEO/GEO, content, competitor research and backlinks, with its own crawler."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 requires-python = ">=3.10"
 authors = [{name = "Muhammad Tahir Ashraf — Beyond Tahir"}]
 dependencies = ["beautifulsoup4>=4.12,<5", "colorama>=0.4.6,<0.5"]
-keywords = ["crawler", "scraper", "seo", "javascript", "markdown"]
+keywords = ["seo", "ai-seo", "aeo", "geo", "website-audit", "backlinks", "content-strategy", "web-crawler"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Console",
@@ -22,10 +22,11 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+google = ["google-auth-oauthlib>=1.2,<2", "requests>=2.32,<3"]
 browser = ["playwright>=1.48,<2"]
 reports = ["reportlab>=4.2,<5"]
 sftp = ["paramiko>=3.4,<5"]
-dev = ["ruff>=0.11,<1", "reportlab>=4.2,<5", "pypdf>=5,<7"]
+dev = ["ruff>=0.11,<1", "reportlab>=4.2,<5", "pypdf>=5,<7", "google-auth-oauthlib>=1.2,<2", "requests>=2.32,<3"]
 hosting-test = ["paramiko>=3.4,<5", "pyftpdlib>=2,<3", "pyOpenSSL>=24,<27"]
 
 [project.scripts]

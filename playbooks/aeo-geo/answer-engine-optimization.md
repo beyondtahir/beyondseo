@@ -15,7 +15,7 @@ Which page should become the source of truth?
 
 ## Inputs
 
-Use:
+Choose the parts needed for the actual customer question. Preserve existing design and concise copy; this is not a mandatory block list or a word-count target:
 
 ```text
 People Also Ask
@@ -66,12 +66,12 @@ Knowledge hub/glossary
 Use:
 
 ```text
-Question as H2/H3
-Direct answer in 40-80 words
-Expanded explanation
-Steps/details/examples
+Question or clear descriptive H2/H3 where it fits
+Direct answer with the detail necessary to be accurate and useful
+Expanded explanation only where needed
+Relevant steps/details/examples
 Risks/limitations where relevant
-Internal link to money page
+Internal link to the genuinely useful supporting or commercial page
 Source/expert proof if needed
 CTA if commercial
 ```

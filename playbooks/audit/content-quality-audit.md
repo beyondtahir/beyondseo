@@ -11,7 +11,7 @@ Content quality is not “more words.” It is whether the page gives users and 
 The content audit answers:
 
 ```text
-Is this content useful enough, specific enough, trustworthy enough, and complete enough to rank and convert?
+Does the inspected content answer the intended reader's questions with specific, trustworthy information and an appropriate next step?
 ```
 
 ---
@@ -202,10 +202,10 @@ Too little useful information for the intent.
 Signs:
 
 ```text
-Service page under 400-500 words in a competitive niche
+Important customer questions remain unanswered in a sufficiently complete inspected capture
 No process explanation
 No cost/price guidance where relevant
-No FAQs
+Relevant objections or follow-up questions remain unanswered; an FAQ block is one possible format
 No proof/trust signals
 No internal links
 Generic text copied across services
@@ -219,6 +219,8 @@ Fix:
 ```text
 Expand with useful sections, not filler.
 ```
+
+Do not diagnose thin content from word count alone. A concise page can satisfy its purpose, and a long page can be unhelpful. Failed requests, incomplete rendering and closed interactive sections do not establish absent answers. Inspect the relevant representation or label the finding conditional. Preserve the existing design and concise copy; propose additional detail only where it serves the reader and fits the authorised layout or a reviewed expandable section.
 
 ---
 
@@ -409,11 +411,13 @@ Sources/citations
 Schema
 ```
 
-Answer engines prefer content that is clear, specific, and easy to extract.
+These formats can make supported information easier to read and extract. They do not establish search rankings, AI inclusion or citations, and no page needs every format.
 
 ---
 
 ## 13. Content Scoring
+
+This is an optional editorial triage rubric, not a search-engine metric or a validated predictor of traffic, conversion or AI visibility. Explain the evidence behind any assigned points. Leave uninspected or inconclusive areas unscored instead of treating missing evidence as a zero.
 
 Score each page out of 10:
 

@@ -303,8 +303,8 @@ Does it answer common objections?
 Thin page signals:
 
 ```text
-Under 400-500 words for competitive service intent
-No FAQs
+Important buyer decisions remain unanswered in the inspected content; word count alone does not establish thinness
+Relevant follow-up questions are unanswered in visible or inspected expandable content; a separate FAQ block is optional
 No proof
 No process
 No pricing/cost guidance where relevant
