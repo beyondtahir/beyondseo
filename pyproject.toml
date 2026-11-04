@@ -26,7 +26,7 @@ google = ["google-auth-oauthlib>=1.2,<2", "requests>=2.32,<3"]
 browser = ["playwright>=1.48,<2"]
 reports = ["reportlab>=4.2,<5"]
 sftp = ["paramiko>=3.4,<5"]
-dev = ["ruff>=0.11,<1", "reportlab>=4.2,<5", "pypdf>=5,<7", "google-auth-oauthlib>=1.2,<2", "requests>=2.32,<3"]
+dev = ["ruff>=0.11,<1", "coverage[toml]>=7,<8", "reportlab>=4.2,<5", "pypdf>=5,<7", "google-auth-oauthlib>=1.2,<2", "requests>=2.32,<3"]
 hosting-test = ["paramiko>=3.4,<5", "pyftpdlib>=2,<3", "pyOpenSSL>=24,<27"]
 
 [project.scripts]
