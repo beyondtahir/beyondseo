@@ -43,7 +43,10 @@ From reviewed source, run:
 ```sh
 python3 scripts/validate_skill.py
 python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.10.0-skill.zip
+python3 scripts/build_skill.py --out ../release-assets/beyondseo-skill.zip
 ```
+
+Attach both archives and their checksums to every release. The stable `beyondseo-skill.zip` name is what the README's direct download link needs: `/releases/latest/download/` only works when the asset name does not change between versions.
 
 The builder keeps the complete runtime and resources under one `beyondseo/` folder and emits a SHA-256 sidecar. Developer tests and local environments stay outside the bundle. Existing output archives are preserved. Check that the archive, tag and version fields describe the same source before attaching the ZIP and checksum to a release. Runtime tests, a format check and a host's installation decision establish different things; report their results separately.
 

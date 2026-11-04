@@ -240,9 +240,10 @@ def readiness(pages, summary, robots, sitemaps):
 
 def export_readiness(out, pages=None, summary=None, robots=None, sitemaps=None):
     out = Path(out)
+    summary = summary if summary is not None else read_json(out / "summary.json")
     result = readiness(
         pages if pages is not None else read_pages(out),
-        summary if summary is not None else read_json(out / "summary.json"),
+        summary,
         robots if robots is not None else read_json(out / "robots.json"),
         sitemaps if sitemaps is not None else read_json(out / "sitemaps.json"),
     )
@@ -257,6 +258,9 @@ def export_readiness(out, pages=None, summary=None, robots=None, sitemaps=None):
         "",
         "Start with access problems on important pages, then review the content and proof that answer your customers' questions.",
     ]
+    access = summary.get("access_diagnostics") or {}
+    if access.get("robots_retrieval_failures"):
+        lines += ["", "Access: " + access["assessment"]]
     for p in result["pages"]:
         lines += [
             "",

@@ -8,6 +8,7 @@ Choose the app you actually use. **Claude on the web, Claude Code and ChatGPT Wo
 | Claude website / desktop / Cowork | [Upload the skill bundle](#claude-website-and-desktop-skills) |
 | Claude Code | [One local installation command](#claude-code) |
 | Codex | [One local installation command](#codex) |
+| Kimi Code | [One local installation command](#kimi-code) |
 | Hermes Agent | [Choose your active profile](#hermes-agent) |
 | OpenClaw | [Choose your agent's workspace](#openclaw) |
 | Cursor | [Install in your coding project](#cursor) |
@@ -36,9 +37,9 @@ This asks the assistant to do the setup for you. It can use its supported import
 
 ### Upload the bundle directly
 
-1. Get the named skill ZIP from the release, when available, or use **Prepare the upload from source** below.
+1. [Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip), or use **Prepare the upload from source** below.
 2. Open **Customize → Skills → Create → Upload from your computer**.
-3. Choose `beyondseo-<version>-skill.zip`. If BeyondSEO is already saved, choose **Replace existing** when prompted. Wait for it to appear in the Skills list, then open it and confirm the supporting files are present, including `docs/website-work.md` and `src/beyondseo/projects.py`.
+3. Choose `beyondseo-skill.zip` or `beyondseo-<version>-skill.zip`. If BeyondSEO is already saved, choose **Replace existing** when prompted. Wait for it to appear in the Skills list, then open it and confirm the supporting files are present, including `docs/website-work.md` and `src/beyondseo/projects.py`.
 4. Choose **Try in chat**, use the **Work** surface, and ask it to run the installation check below. A saved skill and a working crawler are separate results.
 
 These controls were exercised in the ChatGPT web interface. Labels and availability can vary by account. Use the native file chooser for a manual upload; no browser extension is needed. An automated browser's file-upload permission error is separate from the skill's save or safety-scan result.
@@ -80,7 +81,7 @@ OpenAI distinguishes workspace skills from local filesystem skills. A copy on yo
 | Browser cannot launch | Inspect `doctor`; install Chromium/system libraries only where the host permits them. HTTP mode can read initial HTML, but does not establish JavaScript coverage. |
 | Chromium download times out | Retain the official download error. Check for an already available permitted host browser; otherwise continue HTTP/supplied-evidence work. Do not disable TLS or repeatedly download without a bound. |
 | DNS fails while fetching robots | Report the name-resolution failure and the withheld page request separately. It is not a robots disallow or proof the website is offline. Use a permitted host fetch or supplied capture if available. |
-| GitHub download says `Could not resolve host` or `NameResolutionError` | Download the named skill ZIP from [the latest release](https://github.com/beyondtahir/beyondseo/releases/latest) on a device that can reach GitHub, then use the Work skill importer above. If that device cannot reach GitHub either, contact the network administrator or retry after DNS is restored. Uploading does not repair the workspace's DNS, dependency downloads or live crawling; check each separately. |
+| GitHub download says `Could not resolve host` or `NameResolutionError` | [Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip) on a device that can reach GitHub, then use the Work skill importer above. If that device cannot reach GitHub either, contact the network administrator or retry after DNS is restored. Uploading does not repair the workspace's DNS, dependency downloads or live crawling; check each separately. |
 | Website requests work through a proxy in other tools, but BeyondSEO reports DNS failure | Check local target DNS separately from the proxy: BeyondSEO requires local destination resolution and pins a validated IP even when using an HTTP proxy. A proxy that only resolves names remotely does not meet that requirement. Use a permitted host browser/fetch or supplied captures, or ask the workspace administrator for an approved resolver. Never disable address checks or publish proxy credentials. |
 
 The package validator does not call Work's save service or safety scanner. There is no BeyondSEO switch that grants workspace permissions or guarantees acceptance. Keep a failed save separate from a failed runtime setup; correcting one does not prove the other is resolved.
@@ -91,7 +92,7 @@ This route also covers Claude Cowork through its Skills controls.
 
 Check the actual account capabilities separately. Saving a skill and running it in Claude Chat does not establish Cowork access; if Cowork displays an upgrade requirement, report that feature as unavailable on that account. BeyondSEO does not change the subscription or require an upgrade merely to use another available execution route.
 
-1. Use the matching `beyondseo-<version>-skill.zip` from the [release assets](https://github.com/beyondtahir/beyondseo/releases/latest), if offered. If the release provides source only, use **Prepare the upload from source** below. GitHub’s automatic source ZIP is not a direct skill upload; its enclosing folder has a different name.
+1. [Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip). An older release may offer only `beyondseo-<version>-skill.zip` in its [release assets](https://github.com/beyondtahir/beyondseo/releases). If a release provides source only, use **Prepare the upload from source** below. GitHub’s automatic source ZIP is not a direct skill upload; its enclosing folder has a different name.
 2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
 3. Open **Customize → Skills → Add skill → Upload skill**, then select the ZIP. Some versions label this **+ → Create skill → Upload a skill**.
 4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”
@@ -185,6 +186,20 @@ Shared installation uses `OPENCLAW_STATE_DIR/skills/beyondseo`, or `~/.openclaw/
 
 A sandboxed agent needs Python and optional Chromium **inside its execution environment**, even if they work on the Gateway host. Ask the administrator to provide those capabilities through the supported sandbox setup. BeyondSEO is distributed through this repository; these instructions do not assume a ClawHub listing. [OpenClaw skills](https://docs.openclaw.ai/tools/skills) · [Skill configuration](https://docs.openclaw.ai/tools/skills-config).
 
+## Kimi Code
+
+```sh
+python3 scripts/install_skill.py --host kimi --setup
+```
+
+This installs to `$KIMI_CODE_HOME/skills/beyondseo`, which defaults to `~/.kimi-code/skills/beyondseo`. For one project, add `--workspace "/path/to/project"` to install under `.kimi-code/skills`. Start a new Kimi Code session and use `/skill:beyondseo`. Kimi Code also reads `~/.agents/skills`, the folder used by the Codex install, and its documentation says a project skill overrides a user skill of the same name. Keep one current copy where you can. [Kimi Code skills](https://moonshotai.github.io/kimi-code/en/customization/skills.html).
+
+The installer and folder layout are tested against Kimi Code's documented locations, but this release has no recorded end-to-end Kimi Code audit. Run the [installation check](#know-when-installation-is-complete) and report the result. `agent-setup` specialist definitions target Codex and Claude Code, so use the sequential fallback in Kimi Code unless its available tools can delegate the work.
+
+### Kimi website and app
+
+Kimi's help pages describe creating Agent Mode skills from documents or `/skill-creator`; they do not describe importing a skill ZIP. Do not assume the BeyondSEO bundle or its native crawler is available there. Check the controls on your account, and if Python or network access is unavailable, use supplied evidence and state that limit. [Skills in Agent Mode](https://www.kimi.com/help/features/use-skills-in-agent).
+
 ## Crawler setup in a hosted environment
 
 The assistant should identify an approved writable/executable runtime directory. The paths below are placeholders that it must replace with actual paths from its environment:
@@ -204,17 +219,20 @@ Ask your assistant:
 
 ```text
 Check my BeyondSEO installation. Can you find the skill in this host's
-Skills list, read its bundled backlink catalog, and run its native doctor?
+Skills list, tell me the version and path of the SKILL.md you loaded, read
+its bundled backlink catalog, and run its native doctor?
 Report each result separately. Then crawl https://example.com with a
 maximum of two pages and save the evidence outside the skill folder.
 Tell me whether HTTP and JavaScript rendering actually worked.
 ```
 
-There are three separate results: **skill registered**, **HTTP ready**, and **browser ready**. A successful command does not prove every requested page was read; inspect the crawl's saved coverage and errors. In HTTP-only mode a missing browser is expected and `doctor` returns a nonzero status.
+There are four separate results: **skill registered**, **expected version loaded**, **HTTP ready**, and **browser ready**. A successful command does not prove every requested page was read; inspect the crawl's saved coverage and errors. In HTTP-only mode a missing browser is expected and `doctor` returns a nonzero status.
 
 ## Updates and existing installations
 
 Running the same local install again is safe: an identical installation is reported as already installed. After obtaining a newer source folder, add `--update` to the original command. The helper verifies the previous receipt, preserves the old folder under `beyondseo-backups` outside the host's skill discovery folder, and installs a fresh copy. An existing local `.venv` directory is copied back to its original absolute path so an update does not remove a working runtime; the backup remains intact. External or symlinked runtime directories are not copied. Changed skill files are preserved and require review before replacement. Add `--setup` to install or refresh dependencies, then run doctor; preserving a runtime is not proof that it satisfies new dependencies.
+
+Check which copy actually loaded after any install or update, because an assistant can have several. In one Claude Code check, a personal skill in `~/.claude/skills` took priority over a newer project copy of the same name; Kimi Code documents the opposite order. If the reported `metadata.version` is older than the [latest release](https://github.com/beyondtahir/beyondseo/releases/latest), update or remove the older copy.
 
 Use `--dry-run` to preview without writing or downloading anything. Use `--dest "/exact/path/beyondseo"` for a custom skill location. This is a filesystem installer; it does not save a ChatGPT workspace skill or change host settings. For web uploads, use the host's supported update controls and avoid leaving two enabled versions.
 

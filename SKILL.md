@@ -20,7 +20,7 @@ For Lovable execution, read [the Lovable host guide](docs/lovable.md) for privat
 
 ## Capability-first execution
 
-At the start of an audit, inspect the host's actual browser, search, shell and file capabilities, whether it is Claude Code, Codex, Hermes, OpenClaw or Work. Reuse an available permitted browser first for browser-assisted search. Run the native crawler to inspect the target and candidate websites; website reading and search discovery are separate jobs. Native discovery fallbacks serve both backlink and competitor research.
+At the start of an audit, inspect the host's actual browser, search, shell and file capabilities, whether it is Claude Code, Codex, Kimi Code, Hermes, OpenClaw or Work. Reuse an available permitted browser first for browser-assisted search. Run the native crawler to inspect the target and candidate websites; website reading and search discovery are separate jobs. Native discovery fallbacks serve both backlink and competitor research.
 
 For broad audits, backlink comparisons and requests for deep research, follow [the deep research workflow](docs/deep-research.md). Record the actual host browser/backend and try Google through that permitted surface first, then host search and native fallbacks. Use a reviewed business profile, aim for five supported direct competitors from a broader pool, and apply the same reputation query families and verification budgets to every cohort member. Use `research-plan` and `compare-reputation`; lead with standing, evidence gaps and actions, retaining source URLs in an appendix. Withhold a numerical position when coverage cannot support it. Keep reputation, dated search observations, AI readiness and measured AI-answer visibility separate.
 

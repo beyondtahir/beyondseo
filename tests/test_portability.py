@@ -1,3 +1,4 @@
+import importlib.metadata
 import importlib.util
 import json
 import os
@@ -14,6 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("skill_install", ROOT / "scripts/install_skill.py")
 installer = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(installer)
+
+
+def _package_missing(name):
+    raise importlib.metadata.PackageNotFoundError(name)
 
 
 class PortabilityTests(unittest.TestCase):
@@ -368,6 +373,59 @@ class PortabilityTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), expected)
+
+    def _cli_without_html_parser(self, *arguments):
+        code = (
+            "import sys; sys.modules['bs4'] = None; sys.path.insert(0, sys.argv[1]); "
+            "from beyondseo.cli import main; raise SystemExit(main(sys.argv[2:]))"
+        )
+        return subprocess.run(
+            [sys.executable, "-c", code, str(ROOT / "src"), *arguments],
+            cwd=self.root,
+            capture_output=True,
+            text=True,
+        )
+
+    def test_doctor_runs_before_dependencies_are_installed(self):
+        result = self._cli_without_html_parser("doctor")
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("runtime_checks", result.stdout)
+
+    def test_doctor_gives_setup_steps_when_html_parser_is_missing(self):
+        from beyondseo import doctor
+
+        with patch.object(doctor.importlib.metadata, "version", side_effect=_package_missing):
+            report = doctor.environment_report()
+        check = report["runtime_checks"]["html_parser"]
+        self.assertEqual(check["status"], "FAIL")
+        self.assertTrue(check["blocks_crawling"])
+        self.assertIn("not installed", check["evidence"])
+        self.assertIn("scripts/setup.py --venv", check["remediation"])
+
+    def test_command_without_dependencies_explains_setup(self):
+        result = self._cli_without_html_parser("audit", "--help")
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertIn("Missing dependency: bs4", result.stderr)
+        self.assertIn("scripts/setup.py", result.stderr)
+
+    def test_kimi_host_uses_documented_skill_locations(self):
+        with patch.dict(os.environ, {"KIMI_CODE_HOME": str(self.root / "kimi-home")}):
+            self.assertEqual(
+                installer.host_destination("kimi"),
+                self.root / "kimi-home/skills/beyondseo",
+            )
+        with patch.dict(os.environ):
+            os.environ.pop("KIMI_CODE_HOME", None)
+            with patch.object(installer.Path, "home", return_value=self.root):
+                self.assertEqual(
+                    installer.host_destination("kimi"),
+                    self.root / ".kimi-code/skills/beyondseo",
+                )
+        self.assertEqual(
+            installer.host_destination("kimi", workspace=self.root),
+            self.root / ".kimi-code/skills/beyondseo",
+        )
 
     def test_launcher_preserves_cli_error_exit_code(self):
         result = subprocess.run(
