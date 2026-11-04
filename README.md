@@ -33,7 +33,7 @@ For your own business or your clients. It covers SEO, answer engine optimisation
 
 ### Meet your more capable SEO house
 
-**New in 2.10.0:** a clearer way to understand your website, write useful content and put an agreed plan into action. Your existing crawler, backlink library, reports and design protection remain part of the house.
+**New in 2.10:** a clearer way to understand your website, write useful content and put an agreed plan into action. Your existing crawler, backlink library, reports and design protection remain part of the house.
 
 <details>
 <summary><strong>What this update adds</strong></summary>
@@ -346,7 +346,7 @@ python3 scripts/install_skill.py --host codex --setup
 
 ## Project status
 
-**Release: 2.10.0. MIT license.** The project remains in beta. Automated tests, local live acceptance and published CI are different checks; none certifies every assistant's permissions. Test fixtures are fictional, and private audit data stays outside the repository. The only live owner-property image here was expressly requested for this README.
+**Release: 2.10.1. MIT license.** The project remains in beta. Automated tests, local live acceptance and published CI are different checks; none certifies every assistant's permissions. Test fixtures are fictional, and private audit data stays outside the repository. The only live owner-property image here was expressly requested for this README.
 
 [Change notes](CHANGELOG.md) | [Development and validation](docs/development.md) | [Contribute](CONTRIBUTING.md)
 
@@ -574,6 +574,12 @@ Still need help? [Read the detailed questions guide](docs/questions.md), [report
 **Created by Muhammad Tahir Ashraf, known as Beyond Tahir.** Based in Pakistan, Tahir works in AI consulting, development and practical training. BeyondSEO brings that hands-on approach to websites: understand the business, explain the evidence, create useful improvements and check what changed.
 
 [Website](https://beyondtahir.com) | [Instagram](https://instagram.com/beyondtahir) | [YouTube](https://www.youtube.com/@beyondtahir) | [LinkedIn](https://linkedin.com/in/beyondtahir) | [Academy](https://academy.beyondtahir.com)
+
+## Contributors
+
+- **[Muhammad Tahir Ashraf — Beyond Tahir](https://beyondtahir.com)** — creator and maintainer.
+- **[Codex by OpenAI](https://github.com/codex)** — AI contributor assisting with implementation, debugging, testing and documentation.
+- **[Claude by Anthropic](https://claude.com/product/claude-code)** — AI contributor assisting with cross-assistant testing, failure diagnostics, installation and releases.
 
 ---
 

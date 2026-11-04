@@ -42,7 +42,7 @@ From reviewed source, run:
 
 ```sh
 python3 scripts/validate_skill.py
-python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.10.0-skill.zip
+python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.10.1-skill.zip
 python3 scripts/build_skill.py --out ../release-assets/beyondseo-skill.zip
 ```
 

@@ -2,7 +2,7 @@
 name: beyondseo
 description: Audit websites, apply authorised SEO improvements and plan content, competitors and backlinks with evidence, design checks and optional project monitoring.
 metadata:
-  version: 2.10.0
+  version: 2.10.1
   author: Muhammad Tahir Ashraf — Beyond Tahir
 ---
 

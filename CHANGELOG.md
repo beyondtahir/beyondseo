@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 2.10.1 — Clearer connection errors, easier installs
+
+5 November 2026
 
 - Explain a DNS or connection failure while retrieving robots.txt as an environment network problem, not a robots policy, in the crawl report, `access.json` and `readiness.md`. Recognise more name-resolution error wordings.
 - Let `doctor` run before setup so it can report missing dependencies, and replace the raw traceback from other commands with a clear setup instruction.

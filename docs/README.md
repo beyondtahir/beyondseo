@@ -2,7 +2,7 @@
 
 Start with the task you want to complete. Each guide connects the commands, evidence and decisions needed for that job.
 
-New in 2.10.0: coordinated SEO specialists, optional read-only Google data, original article campaigns and clearer evidence-backed reports. The native crawler, backlink library and guarded website work remain included. Read [what changed](../CHANGELOG.md) or [start with a question](../README.md#common-questions).
+New in 2.10: coordinated SEO specialists, optional read-only Google data, original article campaigns and clearer evidence-backed reports. The native crawler, backlink library and guarded website work remain included. Read [what changed](../CHANGELOG.md) or [start with a question](../README.md#common-questions).
 
 ## Start using BeyondSEO
 
