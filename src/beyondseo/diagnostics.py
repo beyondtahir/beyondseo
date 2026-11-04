@@ -83,6 +83,11 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
         "gaierror" in lower
         or "name or service not known" in lower
         or "nodename nor servname" in lower
+        or "temporary failure in name resolution" in lower
+        or "nameresolutionerror" in lower
+        or "could not resolve host" in lower
+        or "getaddrinfo failed" in lower
+        or "err_name_not_resolved" in lower
     ):
         code = "dns_failure"
     elif (
@@ -242,12 +247,30 @@ def summarize_access(pages, robots, sitemap_fetches, summary):
     ):
         if summary["discovery_skips"].get(reason):
             stop.append(reason)
+    robots_failures = Counter(
+        ((r.get("access") or {}).get("failure_detail") or {}).get("code")
+        for r in robots.values()
+        if r.get("blocked") and r.get("error")
+    )
+    robots_failures.pop(None, None)
+    robots_rule_limited = any(
+        counts[c] for c in ("robots_policy", "robots_rule_disallowed", "robots_scope_limited")
+    )
     if remote or remote_discovery or http_denials or challenges:
         assessment = "Access denial, rate limit or challenge was observed. Inspect affected URLs; this is not a whole-site conclusion."
     elif retry_429:
         assessment = (
             "At least one HTTP 429 was observed, including attempts that may have recovered."
         )
+    elif counts["robots_unavailable"] and robots_failures and not robots_rule_limited:
+        if robots_failures["dns_failure"]:
+            assessment = "The website's address could not be resolved from this environment (DNS failure) while retrieving robots.txt, so its page requests were held back. This is not a robots rule and does not show the website is offline. Check this environment's DNS and network access, then retry."
+        else:
+            assessment = (
+                "robots.txt could not be retrieved because of a network or connection failure ("
+                + ", ".join(sorted(robots_failures))
+                + "), so its page requests were held back. This is not a robots rule and does not show the website is offline. Check this environment's network access, then retry."
+            )
     elif any(
         counts[c]
         for c in (
@@ -277,6 +300,7 @@ def summarize_access(pages, robots, sitemap_fetches, summary):
         "challenge_attempts_recorded": challenges,
         "http_429_attempts_recorded": retry_429,
         "http_attempts_recorded": len(events),
+        "robots_retrieval_failures": dict(robots_failures),
         "stop_reasons": stop,
         "browser_restriction_counts": dict(render_blocks),
         "history_note": "Only instrumented HTTP attempts are counted, including recorded browser requests; legacy runs may lack attempt history.",

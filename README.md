@@ -22,7 +22,7 @@
 
 <p align="center">
   <strong><a href="#use-it-in-your-assistant">Choose your assistant</a></strong> |
-  <a href="https://github.com/beyondtahir/beyondseo/releases/download/v2.10.0/beyondseo-2.10.0-skill.zip">Download stable 2.10.0</a>
+  <a href="https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip">Download the latest skill ZIP</a>
 </p>
 
 **BeyondSEO is a free, open-source AI SEO skill for website audits, AI search, content, competitors and backlinks.** Give it your domain and a goal. Get a practical plan, useful drafts and help with authorised improvements.
@@ -45,7 +45,7 @@ For your own business or your clients. It covers SEO, answer engine optimisation
 
 </details>
 
-[Full change notes](CHANGELOG.md) | [Download 2.10.0](https://github.com/beyondtahir/beyondseo/releases/download/v2.10.0/beyondseo-2.10.0-skill.zip)
+[Full change notes](CHANGELOG.md) | [Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip)
 
 ## BeyondSEO at work
 
@@ -300,10 +300,11 @@ Then use BeyondSEO to audit my website.
 | Hermes | [Agent installation](docs/agent-installation.md#hermes-agent) |
 | OpenClaw | [Agent installation](docs/agent-installation.md#openclaw) |
 | Cursor | [Add it to your project](docs/agent-installation.md#cursor) |
+| Kimi Code | [Local installation](docs/agent-installation.md#kimi-code) |
 | Lovable | [Import the full skill](docs/agent-installation.md#lovable) |
 | Vercel / v0 projects | [Use the agent managing your project](docs/agent-installation.md#vercel-and-v0-projects) |
 
-**[Download stable 2.10.0 skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.10.0/beyondseo-2.10.0-skill.zip)** | [Full installation guide](docs/agent-installation.md) | [Permissions](docs/permissions.md)
+**[Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip)** | [Full installation guide](docs/agent-installation.md) | [Permissions](docs/permissions.md)
 
 For app uploads, use the named **skill ZIP**. GitHub's source ZIP is for extraction, not direct skill upload. The prompt is a request to your host, not a universal installer: supported skill controls, model access and runtime permissions still apply. Vercel hosting itself does not install or run skills.
 
@@ -406,7 +407,7 @@ The native crawler needs no API key or paid scraping subscription and makes no l
 <details>
 <summary><strong>Which assistants can I use?</strong></summary>
 
-There are guides for ChatGPT Work, Claude Desktop/Cowork, Claude Code, Codex, Hermes, OpenClaw, Cursor and agents managing Lovable or Vercel/v0 projects. They have different skill, browser and execution controls. BeyondSEO checks what the current environment can actually do. A guide does not mean every account has identical access; Vercel hosting itself does not run a skill. [Choose your assistant](#use-it-in-your-assistant).
+There are guides for ChatGPT Work, Claude Desktop/Cowork, Claude Code, Codex, Kimi Code, Hermes, OpenClaw, Cursor and agents managing Lovable or Vercel/v0 projects. They have different skill, browser and execution controls. BeyondSEO checks what the current environment can actually do. A guide does not mean every account has identical access; Vercel hosting itself does not run a skill. [Choose your assistant](#use-it-in-your-assistant).
 
 </details>
 

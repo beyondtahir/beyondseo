@@ -411,6 +411,58 @@ class CrawlerTests(unittest.TestCase):
         r = json.loads((self.out / "robots.json").read_text())
         self.assertTrue(r[self.root]["blocked"])
 
+    def test_robots_dns_failure_is_not_described_as_robots_policy(self):
+        from beyondseo.diagnostics import failure_detail, summarize_access
+
+        error = "gaierror: [Errno -3] Temporary failure in name resolution"
+        robots = {
+            "https://example.test": {
+                "status": 0,
+                "error": error,
+                "blocked": True,
+                "access": {"code": "request_failed", "failure_detail": failure_detail(error)},
+            }
+        }
+        pages = [
+            {
+                "status": 0,
+                "error": "robots_unavailable",
+                "access": {"code": "robots_unavailable"},
+            }
+        ]
+        summary = {
+            "pending_urls": 0,
+            "attempted_urls": 1,
+            "configuration": {"max_pages": 1},
+            "discovery_skips": {},
+            "render_errors": 0,
+        }
+        result = summarize_access(pages, robots, [], summary)
+        self.assertIn("DNS failure", result["assessment"])
+        self.assertIn("not a robots rule", result["assessment"])
+        self.assertNotIn("withheld by robots policy", result["assessment"])
+        self.assertEqual(result["robots_retrieval_failures"], {"dns_failure": 1})
+
+    def test_name_resolution_wordings_are_dns_failures(self):
+        from beyondseo.diagnostics import failure_detail
+
+        for error in (
+            "Temporary failure in name resolution",
+            "NameResolutionError: Failed to resolve 'example.test'",
+            "fatal: Could not resolve host: example.test",
+            "[Errno 11001] getaddrinfo failed",
+            "net::ERR_NAME_NOT_RESOLVED",
+        ):
+            with self.subTest(error=error):
+                self.assertEqual(failure_detail(error)["code"], "dns_failure")
+
+    def test_robots_server_failure_keeps_policy_assessment(self):
+        Handler.robots_status = 503
+        s = self.crawl(self.config(max_pages=1, sitemaps=False))
+        access = s["access_diagnostics"]
+        self.assertEqual(access["robots_retrieval_failures"], {})
+        self.assertIn("robots policy", access["assessment"])
+
     def test_exclusions_and_discovery_limits(self):
         s = self.crawl(
             self.config(

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Explain a DNS or connection failure while retrieving robots.txt as an environment network problem, not a robots policy, in the crawl report, `access.json` and `readiness.md`. Recognise more name-resolution error wordings.
+- Let `doctor` run before setup so it can report missing dependencies, and replace the raw traceback from other commands with a clear setup instruction.
+- Add `--host kimi` and a Kimi Code guide, with stated limits for Kimi Code and the Kimi website.
+- Add a stable `beyondseo-skill.zip` release asset name and direct README download links that follow the latest release.
+- Ask installation checks to report the loaded version and path, because an older copy can take priority over a newer one.
+
 ## 2.10.0 — Your SEO house, ready for the next step
 
 30 October 2026

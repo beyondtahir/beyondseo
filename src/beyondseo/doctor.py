@@ -138,8 +138,16 @@ def environment_report():
         },
         "html_parser": {
             "status": "PASS" if result["http_ready"] else "FAIL",
-            "evidence": result["packages"]["beautifulsoup4"],
+            "evidence": result["packages"]["beautifulsoup4"]
+            or "beautifulsoup4 is not installed in this Python runtime.",
             "blocks_crawling": not result["http_ready"],
+            **(
+                {}
+                if result["http_ready"]
+                else {
+                    "remediation": "Run scripts/setup.py. If the skill folder is read-only, use scripts/setup.py --venv <writable-folder>, then scripts/run.py --runtime <writable-folder> doctor."
+                }
+            ),
         },
         "javascript_probe": {
             "status": "PASS" if result["chromium"] == "ready" else "BLOCKED",
