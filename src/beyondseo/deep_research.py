@@ -341,6 +341,11 @@ def comparison_from_manifest(path, out):
     plan = read_relative(manifest["plan"])
     entries = []
     for item in manifest["sites"]:
+        if not item.get("verification") or not item.get("discovery"):
+            raise ValueError(
+                "Every manifest site needs verification and discovery files. If a site has none, "
+                "leave it out and record why in stage-notes.json; the comparison will stay limited."
+            )
         entries.append(
             {
                 "verification": read_relative(item["verification"]),

@@ -774,9 +774,12 @@ class AuditCheckTests(unittest.TestCase):
                 "direct_competitors": [{"website": "https://peer.example/"}],
             },
         )
-        self.write("research-plan/research-plan.json", {"status": "planned"})
+        self.write("research-plan/research-plan.json", {"cohort": [{}, {}]})
         self.write("reputation/site-0/links/backlinks.json", {"sources_checked": 30})
-        self.write("comparison/reputation-comparison.json", {"status": "comparison_only"})
+        self.write(
+            "comparison/reputation-comparison.json",
+            {"status": "ranked_within_sample", "sites": [{}, {}]},
+        )
         self.write("audit/audit.json", {"scope_warning": None})
         self.write("report.json", self.report("We checked 30 sources and compared peer.example."))
 
@@ -819,6 +822,32 @@ class AuditCheckTests(unittest.TestCase):
         result = audit_check(self.run_dir)
         self.assertEqual(result["status"], "complete_with_limits")
         self.assertIn("HTTP 403", result["stages"]["reputation_comparison"]["detail"])
+
+    def test_one_sided_comparison_and_small_samples_are_partial(self):
+        self.write(
+            "comparison/reputation-comparison.json", {"status": "comparison_only", "sites": [{}]}
+        )
+        self.write("reputation/site-0/links/backlinks.json", {"sources_checked": 7})
+        self.write("report.json", self.report("We checked 7 sources and compared peer.example."))
+        result = audit_check(self.run_dir)
+        self.assertEqual(result["status"], "complete_with_limits")
+        self.assertEqual(result["stages"]["reputation_comparison"]["status"], "partial")
+        self.assertIn("1 of 2", result["stages"]["reputation_comparison"]["detail"])
+        self.assertEqual(result["stages"]["client_backlinks"]["status"], "partial")
+
+    def test_curly_quotes_match_and_manifest_gaps_explain_themselves(self):
+        from beyondseo.deep_research import comparison_from_manifest
+        from beyondseo.research import normalized_text
+
+        self.assertEqual(normalized_text("We’re “open”"), normalized_text('We\'re "open"'))
+        manifest = self.run_dir / "m.json"
+        manifest.write_text(
+            json.dumps(
+                {"plan": "research-plan/research-plan.json", "sites": [{"verification": None}]}
+            )
+        )
+        with self.assertRaisesRegex(ValueError, "stage-notes"):
+            comparison_from_manifest(manifest, self.run_dir / "c")
 
     def test_thin_competitor_research_is_partial(self):
         self.write(

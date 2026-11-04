@@ -19,6 +19,7 @@ from .research import evidence_index, host, verify_reference
 from .review import read_json, read_pages
 
 COMPETITOR_POOL_TARGET = 15
+MIN_CHECKED_SOURCES = 10
 DIRECT_COMPETITOR_TARGET = 5
 CHECKS = {
     "duplicate_meta_description": (
@@ -404,16 +405,26 @@ def audit_check(run, report_path=None):
     checked = (client_links or {}).get("sources_checked", 0)
     stage(
         "client_backlinks",
-        "done" if checked else "missing",
+        "missing" if not checked else "partial" if checked < MIN_CHECKED_SOURCES else "done",
         f"{checked} sources checked."
+        + (
+            " This is a small sample; state that limit."
+            if 0 < checked < MIN_CHECKED_SOURCES
+            else ""
+        )
         if client_links
         else "reputation/site-0/links/backlinks.json not found.",
     )
     comparison = _optional_json(run / "comparison/reputation-comparison.json")
+    cohort = len((plan or {}).get("cohort", []))
+    compared = len((comparison or {}).get("sites", []))
+    limited = comparison and (
+        comparison.get("status") != "ranked_within_sample" or compared < cohort
+    )
     stage(
         "reputation_comparison",
-        "done" if comparison else "missing",
-        f"Status {comparison.get('status')}."
+        "missing" if not comparison else "partial" if limited else "done",
+        f"Status {comparison.get('status')}; {compared} of {cohort} planned sites compared."
         if comparison
         else "comparison/reputation-comparison.json not found.",
     )
