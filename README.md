@@ -22,7 +22,7 @@
 
 <p align="center">
   <strong><a href="#use-it-in-your-assistant">Choose your assistant</a></strong> |
-  <a href="https://github.com/beyondtahir/beyondseo/releases/download/v2.10.0/beyondseo-2.10.0-skill.zip">Download stable 2.10.0</a>
+  <a href="https://github.com/beyondtahir/beyondseo/releases/latest">Download the latest stable release</a>
 </p>
 
 **BeyondSEO is a free, open-source AI SEO skill for website audits, AI search, content, competitors and backlinks.** Give it your domain and a goal. Get a practical plan, useful drafts and help with authorised improvements.
@@ -45,7 +45,7 @@ For your own business or your clients. It covers SEO, answer engine optimisation
 
 </details>
 
-[Full change notes](CHANGELOG.md) | [Download 2.10.0](https://github.com/beyondtahir/beyondseo/releases/download/v2.10.0/beyondseo-2.10.0-skill.zip)
+[Full change notes](CHANGELOG.md) | [Download the latest release](https://github.com/beyondtahir/beyondseo/releases/latest)
 
 ## BeyondSEO at work
 
@@ -303,7 +303,7 @@ Then use BeyondSEO to audit my website.
 | Lovable | [Import the full skill](docs/agent-installation.md#lovable) |
 | Vercel / v0 projects | [Use the agent managing your project](docs/agent-installation.md#vercel-and-v0-projects) |
 
-**[Download stable 2.10.0 skill ZIP](https://github.com/beyondtahir/beyondseo/releases/download/v2.10.0/beyondseo-2.10.0-skill.zip)** | [Full installation guide](docs/agent-installation.md) | [Permissions](docs/permissions.md)
+**[Download the latest stable skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest)** | [Full installation guide](docs/agent-installation.md) | [Permissions](docs/permissions.md)
 
 For app uploads, use the named **skill ZIP**. GitHub's source ZIP is for extraction, not direct skill upload. The prompt is a request to your host, not a universal installer: supported skill controls, model access and runtime permissions still apply. Vercel hosting itself does not install or run skills.
 
@@ -347,7 +347,7 @@ python3 scripts/install_skill.py --host codex --setup
 
 **Release: 2.10.0. MIT license.** The project remains in beta. Automated tests, local live acceptance and published CI are different checks; none certifies every assistant's permissions. Test fixtures are fictional, and private audit data stays outside the repository. The only live owner-property image here was expressly requested for this README.
 
-[Change notes](CHANGELOG.md) | [Development and validation](docs/development.md) | [Contribute](CONTRIBUTING.md)
+[Change notes](CHANGELOG.md) | [Roadmap](https://github.com/beyondtahir/beyondseo/blob/main/ROADMAP.md) | [Development and validation](docs/development.md) | [Contribute](CONTRIBUTING.md)
 
 ## Documentation and support
 
@@ -573,6 +573,16 @@ Still need help? [Read the detailed questions guide](docs/questions.md), [report
 **Created by Muhammad Tahir Ashraf, known as Beyond Tahir.** Based in Pakistan, Tahir works in AI consulting, development and practical training. BeyondSEO brings that hands-on approach to websites: understand the business, explain the evidence, create useful improvements and check what changed.
 
 [Website](https://beyondtahir.com) | [Instagram](https://instagram.com/beyondtahir) | [YouTube](https://www.youtube.com/@beyondtahir) | [LinkedIn](https://linkedin.com/in/beyondtahir) | [Academy](https://academy.beyondtahir.com)
+
+## Contributors
+
+BeyondSEO is built by people and AI assistants working together, and the project credits both openly.
+
+- **[Muhammad Tahir Ashraf — Beyond Tahir](https://beyondtahir.com)** — creator and maintainer: direction, SEO strategy, documentation, reviews and releases.
+- **Codex (OpenAI)** — development assistance across the engine, tests and release engineering.
+- **Kimi (Moonshot AI)** — development assistance: release automation, CI hardening and repository infrastructure.
+
+Want your name here? Read [how to contribute](CONTRIBUTING.md) and pick up an open issue.
 
 ---
 
