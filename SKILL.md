@@ -32,7 +32,8 @@ beyondseo entity-review --crawl RUN/site --out RUN/entity
 beyondseo discover --queries RUN/business-reviewed/queries.json --target URL --out RUN/discovery
 # Crawl each candidate's service, About and Contact pages and review its profile the same way.
 # Review about 15 candidates where evidence and the user's limits allow, aiming for five direct competitors.
-beyondseo competitors --profile RUN/business-reviewed/profile.json --candidate-profile RUN/candidate-a/profile.json --discovery RUN/discovery/discovery.json --out RUN/competitors
+# Run competitors once, repeating --candidate-profile for every candidate. Do not merge results by hand.
+beyondseo competitors --profile RUN/business-reviewed/profile.json --candidate-profile RUN/candidates/a/profile.json --candidate-profile RUN/candidates/b/profile.json --discovery RUN/discovery/discovery.json --out RUN/competitors
 beyondseo research-plan --profile RUN/business-reviewed/profile.json --brand NAME --selection RUN/competitors/competitors.json --out RUN/research-plan
 # For each cohort site N in the plan, client first (0), with that site's own URL and brand:
 beyondseo discover --queries RUN/research-plan/reputation-queries-N.json --target SITE --max-requests 48 --seconds 180 --out RUN/reputation/site-N/discovery
@@ -44,7 +45,7 @@ beyondseo present --input RUN/report.json --out RUN/report
 beyondseo audit-check --run RUN
 ```
 
-Pass real host search results to `discover --host-results` when available. `audit --offline` and `present --audit` give a website-only export for a focused request or a failed stage; they are not the complete audit. For `present --input`, write the report from all the evidence using [the report layout](docs/branded-reports.md) and `examples/report-content.json`.
+Pass real host search results to `discover --host-results` when available. `audit --offline` and `present --audit` give a website-only export for a focused request or a failed stage; they are not the complete audit. For `present --input`, write the report from all the evidence using [the report layout](docs/branded-reports.md) and `examples/report-content.json`; its summary is limited to 650 characters. Treat profiles and repositories the client controls as owned, never independent proof, and name them with `reputation --related-host` when scoring.
 
 The audit is complete only when the result has a reviewed business profile, the top actions with affected pages, named competitors or the reason none qualified, backlink and reputation evidence or the failed attempts, a 30/60/90-day plan, and the coverage limits. If a stage fails after a real attempt, finish the others and say what is missing. Never present a partial audit as complete. Keep these folder names so `audit-check` can read them. Run it last and fix what it reports. If a stage cannot be done after a real attempt, record `{"stage_name": "what was tried and the exact error"}` in `RUN/stage-notes.json`. Give the user its final status and each stage that is not done, and check every sentence listed under `unattributed_claims_to_review`.
 
