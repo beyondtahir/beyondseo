@@ -350,10 +350,15 @@ def audit_check(run, report_path=None):
 
     coverage = _optional_json(run / "site/coverage.json")
     inspected = (coverage or {}).get("inspected", 0)
+    partial = (coverage or {}).get("partial_captures", 0)
     stage(
         "crawl",
-        "done" if inspected else "missing",
-        f"{inspected} pages inspected." if coverage else "site/coverage.json not found.",
+        "missing" if not inspected else "partial" if partial else "done",
+        (
+            f"{inspected} pages inspected, {partial} only partly captured."
+            if coverage
+            else "site/coverage.json not found."
+        ),
     )
     profile_data = _optional_json(run / "business-reviewed/profile.json")
     reviewed = (profile_data or {}).get("status") == "reviewed"

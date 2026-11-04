@@ -404,7 +404,7 @@ Ask BeyondSEO to apply the agreed on-site plan through your agent's available ed
 
 ## Project status
 
-**Release: 2.10.1. MIT license.** The project remains in beta. Automated tests, local live acceptance and published CI are different checks; none certifies every assistant's permissions. Test fixtures are fictional, and private audit data stays outside the repository. The only live owner-property image here was expressly requested for this README.
+**Release: 2.11.0. MIT license.** The project remains in beta. Automated tests, local live acceptance and published CI are different checks; none certifies every assistant's permissions. Test fixtures are fictional, and private audit data stays outside the repository. The only live owner-property image here was expressly requested for this README.
 
 [Change notes](CHANGELOG.md) | [Development and validation](docs/development.md) | [Contribute](CONTRIBUTING.md)
 

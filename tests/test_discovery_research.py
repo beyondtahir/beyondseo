@@ -823,6 +823,12 @@ class AuditCheckTests(unittest.TestCase):
         self.assertEqual(result["status"], "complete_with_limits")
         self.assertIn("HTTP 403", result["stages"]["reputation_comparison"]["detail"])
 
+    def test_partly_captured_crawl_is_partial(self):
+        self.write("site/coverage.json", {"inspected": 15, "partial_captures": 15})
+        result = audit_check(self.run_dir)
+        self.assertEqual(result["status"], "complete_with_limits")
+        self.assertIn("15 only partly captured", result["stages"]["crawl"]["detail"])
+
     def test_one_sided_comparison_and_small_samples_are_partial(self):
         self.write(
             "comparison/reputation-comparison.json", {"status": "comparison_only", "sites": [{}]}

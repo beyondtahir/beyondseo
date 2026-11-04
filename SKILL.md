@@ -2,7 +2,7 @@
 name: beyondseo
 description: Audit websites, apply authorised SEO improvements and plan content, competitors and backlinks with evidence, design checks and optional project monitoring.
 metadata:
-  version: 2.10.1
+  version: 2.11.0
   author: Muhammad Tahir Ashraf — Beyond Tahir
 ---
 
@@ -45,7 +45,7 @@ beyondseo present --input RUN/report.json --out RUN/report
 beyondseo audit-check --run RUN
 ```
 
-Pass real host search results to `discover --host-results` when available. `audit --offline` and `present --audit` give a website-only export for a focused request or a failed stage; they are not the complete audit. For `present --input`, write the report from all the evidence using [the report layout](docs/branded-reports.md) and `examples/report-content.json`; its summary is limited to 650 characters. Treat profiles and repositories the client controls as owned, never independent proof, and name them with `reputation --related-host` when scoring.
+If `doctor` reports that Chromium is denied or unavailable and it cannot be fixed, crawl with `--mode http` instead of repeating failed browser attempts, and state that JavaScript content was not verified. Pass real host search results to `discover --host-results` when available. `audit --offline` and `present --audit` give a website-only export for a focused request or a failed stage; they are not the complete audit. For `present --input`, write the report from all the evidence using [the report layout](docs/branded-reports.md) and `examples/report-content.json`; its summary is limited to 650 characters. Treat profiles and repositories the client controls as owned, never independent proof, and name them with `reputation --related-host` when scoring.
 
 The audit is complete only when the result has a reviewed business profile, the top actions with affected pages, named competitors or the reason none qualified, backlink and reputation evidence or the failed attempts, a 30/60/90-day plan, and the coverage limits. If a stage fails after a real attempt, finish the others and say what is missing. Never present a partial audit as complete. Keep these folder names so `audit-check` can read them. Run it last and fix what it reports. If a stage cannot be done after a real attempt, record `{"stage_name": "what was tried and the exact error"}` in `RUN/stage-notes.json`. Give the user its final status and each stage that is not done, and check every sentence listed under `unattributed_claims_to_review`.
 
