@@ -1,14 +1,25 @@
 """Material audit findings with capture evidence, impact and acceptance checks."""
 
+import re
 from pathlib import Path
 
 from .engine import write_json
 from .evidence import capture_quality
 from .network import utcnow
-from .reports import group_findings, group_observation, next_actions, page_count
+from .reports import (
+    group_findings,
+    group_observation,
+    next_actions,
+    page_count,
+    readable_observation,
+    scope_warning,
+    validate_report,
+)
 from .research import evidence_index, host, verify_reference
 from .review import read_json, read_pages
 
+COMPETITOR_POOL_TARGET = 15
+DIRECT_COMPETITOR_TARGET = 5
 CHECKS = {
     "duplicate_meta_description": (
         "Different service or trust pages share the same extracted summary, which may obscure their distinct purpose for prospective customers.",
@@ -157,23 +168,6 @@ def material_findings(issues, pages, profile=None, summary=None):
     return result
 
 
-def scope_warning(profile, discovery):
-    """Name missing audit stages so a website-only export is not mistaken for the full audit."""
-    missing = []
-    if not profile or profile.get("status") != "reviewed":
-        missing.append("reviewed business profile")
-    if not discovery or discovery.get("status") in (None, "not_run"):
-        missing.append("search discovery")
-    if not missing:
-        return None
-    return (
-        "These findings come from the website crawl. This export has no "
-        + " or ".join(missing)
-        + ", so it cannot support named competitor comparisons, backlink or reputation evidence, "
-        "or a business-specific plan. Complete those stages, or state why each could not be done."
-    )
-
-
 def audit_report(crawl, out, profile=None, discovery=None, reviewed_findings=()):
     pages, summary = read_pages(crawl), read_json(Path(crawl) / "summary.json")
     if profile and host(profile.get("target", "")) != host(summary["seed"]):
@@ -274,7 +268,186 @@ def audit_report(crawl, out, profile=None, discovery=None, reviewed_findings=())
             "Limits: " + str(row["uncertainty"]),
             "",
         ]
-    if groups:
-        lines += ["Every separate observation is kept in audit.json.", ""]
+        if len(row["occurrences"]) > 1:
+            lines += ["All observations:", ""]
+            lines += [
+                f"- {', '.join(item['urls'])}: {readable_observation(item['observation'])}"
+                for item in row["occurrences"]
+            ]
+            lines.append("")
     (Path(out) / "audit.md").write_text("\n".join(lines), encoding="utf-8")
+    return result
+
+
+CLAIM_WORDS = re.compile(r"(#\s?1\b|\bNo\.?\s?1\b|\bnumber one\b|\bleading\b|\bbest\b)", re.I)
+ATTRIBUTION = re.compile(
+    r"\b(describes?|calls?|claims?|states?|says?|presents?|markets?|self-|according|site's|its own)\b",
+    re.I,
+)
+
+
+def _optional_json(path):
+    try:
+        return read_json(path)
+    except (OSError, ValueError):
+        return None
+
+
+def _report_strings(value):
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from _report_strings(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from _report_strings(item)
+    elif isinstance(value, (int, float)) and not isinstance(value, bool):
+        yield str(value)
+
+
+def _check_report(report, competitors, client_links):
+    """Check the written report against the evidence; this cannot judge whether it is correct."""
+    problems, warnings = [], []
+    try:
+        validate_report(report)
+    except ValueError as error:
+        problems.append("Report format: " + str(error))
+    strings = list(_report_strings(report))
+    body = "\n".join(strings)
+    for row in (competitors or {}).get("direct_competitors", []):
+        name = host(row.get("website", ""))
+        if name and name not in body:
+            problems.append(f"Direct competitor {name} is not named in the report.")
+    if client_links:
+        checked = client_links.get("sources_checked")
+        number = rf"(?<![\d.]){checked}(?![\d.])"
+        stated = rf"{number}[^.\n]{{0,40}}\bsources?\b|\bsources?\b[^.\n]{{0,40}}{number}"
+        if checked is not None and not re.search(stated, body, re.I):
+            problems.append(
+                f"The evidence shows {checked} client sources checked, but the report does not state that."
+            )
+    if not all(re.search(rf"\b{day}\b", body) for day in (30, 60, 90)):
+        problems.append("The report has no 30/60/90-day plan.")
+    for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z\"'])|\n", body):
+        words = re.sub(r"\S*/\S*", "", sentence)
+        if CLAIM_WORDS.search(words) and not ATTRIBUTION.search(words):
+            warnings.append(sentence.strip()[:160])
+    return problems, warnings[:12]
+
+
+def audit_check(run, report_path=None):
+    """Compare a complete-audit folder with the stages the skill requires. Runs nothing else."""
+    run = Path(run)
+    notes = _optional_json(run / "stage-notes.json") or {}
+    stages = {}
+
+    def stage(name, status, detail):
+        if status == "missing" and notes.get(name):
+            status, detail = "failed_explained", str(notes[name])
+        stages[name] = {"status": status, "detail": detail}
+
+    coverage = _optional_json(run / "site/coverage.json")
+    inspected = (coverage or {}).get("inspected", 0)
+    stage(
+        "crawl",
+        "done" if inspected else "missing",
+        f"{inspected} pages inspected." if coverage else "site/coverage.json not found.",
+    )
+    profile_data = _optional_json(run / "business-reviewed/profile.json")
+    reviewed = (profile_data or {}).get("status") == "reviewed"
+    stage(
+        "business_profile",
+        "done" if reviewed else "missing",
+        "Reviewed." if reviewed else "No reviewed business-reviewed/profile.json.",
+    )
+    entity = _optional_json(run / "entity/entity-review.json")
+    stage(
+        "entity_review",
+        "done" if entity is not None else "missing",
+        "Saved." if entity is not None else "entity/entity-review.json not found.",
+    )
+    discovery = _optional_json(run / "discovery/discovery.json")
+    searched = bool(discovery) and (
+        discovery.get("status") == "leads_available" or discovery.get("search_available")
+    )
+    stage(
+        "search_discovery",
+        "done" if searched else "missing",
+        f"Status {discovery.get('status')}."
+        if discovery
+        else "discovery/discovery.json not found.",
+    )
+    competitors = _optional_json(run / "competitors/competitors.json")
+    if competitors is None:
+        stage("competitors", "missing", "competitors/competitors.json not found.")
+    else:
+        evaluated = competitors.get("candidate_profiles_evaluated", 0)
+        direct = len(competitors.get("direct_competitors", []))
+        thin = evaluated < COMPETITOR_POOL_TARGET and direct < DIRECT_COMPETITOR_TARGET
+        stage(
+            "competitors",
+            "partial" if thin else "done",
+            f"{evaluated} candidates reviewed, {direct} direct. "
+            f"Target: about {COMPETITOR_POOL_TARGET} reviewed, aiming for {DIRECT_COMPETITOR_TARGET} direct."
+            + (" Inspect more, or state why this is the limit." if thin else ""),
+        )
+    plan = _optional_json(run / "research-plan/research-plan.json")
+    stage(
+        "research_plan",
+        "done" if plan else "missing",
+        "Saved." if plan else "research-plan/research-plan.json not found.",
+    )
+    client_links = None
+    for name in ("backlinks-reviewed.json", "backlinks.json"):
+        client_links = client_links or _optional_json(run / "reputation/site-0/links" / name)
+    checked = (client_links or {}).get("sources_checked", 0)
+    stage(
+        "client_backlinks",
+        "done" if checked else "missing",
+        f"{checked} sources checked."
+        if client_links
+        else "reputation/site-0/links/backlinks.json not found.",
+    )
+    comparison = _optional_json(run / "comparison/reputation-comparison.json")
+    stage(
+        "reputation_comparison",
+        "done" if comparison else "missing",
+        f"Status {comparison.get('status')}."
+        if comparison
+        else "comparison/reputation-comparison.json not found.",
+    )
+    audit = _optional_json(run / "audit/audit.json")
+    warning = (audit or {}).get("scope_warning")
+    stage(
+        "audit_export",
+        "done" if audit and not warning else "missing",
+        warning or ("Saved." if audit else "audit/audit.json not found."),
+    )
+    report_file = Path(report_path) if report_path else run / "report.json"
+    report = _optional_json(report_file)
+    problems, warnings = [], []
+    if report is None:
+        stage("report", "missing", f"{report_file.name} not found or not valid JSON.")
+    else:
+        problems, warnings = _check_report(report, competitors, client_links)
+        stages["report"] = {
+            "status": "failed" if problems else "done",
+            "detail": " ".join(problems) or "Matches the checked evidence.",
+        }
+    statuses = {item["status"] for item in stages.values()}
+    if statuses & {"missing", "failed"}:
+        overall = "incomplete"
+    elif statuses == {"done"}:
+        overall = "complete"
+    else:
+        overall = "complete_with_limits"
+    result = {
+        "status": overall,
+        "stages": stages,
+        "unattributed_claims_to_review": warnings,
+        "limits": "This checks that evidence exists and that key counts and names reach the report. "
+        "It does not judge whether the analysis is correct.",
+    }
+    write_json(run / "audit-check.json", result)
     return result

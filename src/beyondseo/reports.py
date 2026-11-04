@@ -25,7 +25,19 @@ MUTED = "#595959"
 PALE = "#F5F3F1"
 RULE = "#DDDAD7"
 BLOCKS = {"text", "bullets", "callout", "table", "metrics", "bars", "finding"}
-PRIORITY_ORDER = {"P0": 0, "P1": 1, "P2": 2, "P3": 3, "review": 4}
+PRIORITY_ORDER = {
+    "p0": 0,
+    "critical": 0,
+    "p1": 1,
+    "high": 1,
+    "p2": 2,
+    "medium": 2,
+    "p3": 3,
+    "low": 3,
+    "review": 5,
+    "info": 5,
+}
+UNKNOWN_PRIORITY_RANK = 4
 CLAIM_STRENGTH = {"verified_fact": 0, "inference": 1, "hypothesis": 2}
 MAX_LISTED_URLS = 10
 FINDING_TITLES = {
@@ -161,14 +173,32 @@ def finding_title(row):
     )
 
 
+def _priority_rank(priority):
+    words = str(priority).strip().lower().split()
+    return PRIORITY_ORDER.get(words[0] if words else "", UNKNOWN_PRIORITY_RANK)
+
+
+def _is_informational(group):
+    return _priority_rank(group["priority"]) == PRIORITY_ORDER["review"]
+
+
+def _capture_dates(value):
+    values = value if isinstance(value, (list, tuple)) else [value]
+    return [str(item) for item in values if item]
+
+
 def group_findings(rows):
-    """Merge repeats of one issue and action; every occurrence stays in `occurrences`."""
+    """Merge repeats of one crawler issue; every occurrence stays in `occurrences`."""
     groups = {}
     for position, row in enumerate(rows):
-        # Reviewed findings have no issue code and are distinct by construction.
-        key = (row.get("code"), row["recommended_action"], row["priority"])
-        if not row.get("code"):
-            key = ("reviewed", position)
+        # Only crawler issues are mechanical repeats: each has one `url` and no written title.
+        # Hand-reviewed findings are separate judgments and must never lose their content.
+        repeatable = row.get("code") and row.get("url") and not row.get("title")
+        key = (
+            (row["code"], row["recommended_action"], row["priority"])
+            if repeatable
+            else ("reviewed", position)
+        )
         group = groups.get(key)
         if group is None:
             group = groups[key] = {
@@ -185,25 +215,39 @@ def group_findings(rows):
         group["uncertainty"] = _unique(group["uncertainty"] + [_string(v) for v in limits])
         group["evidence_refs"] += row.get("evidence_refs", [])
         group["occurrences"].append(
-            {"urls": list(row["affected_urls"]), "observation": row["observation"]}
+            {
+                "urls": list(row["affected_urls"]),
+                "observation": row["observation"],
+                "captured_at": row.get("captured_at"),
+            }
         )
         # A merged claim is only as strong as its weakest occurrence.
         if CLAIM_STRENGTH.get(row["claim_type"], 2) > CLAIM_STRENGTH.get(group["claim_type"], 2):
             group["claim_type"] = row["claim_type"]
+    for group in groups.values():
+        if len(group["occurrences"]) > 1:
+            dates = sorted(
+                {d for o in group["occurrences"] for d in _capture_dates(o["captured_at"])}
+            )
+            group["captured_at"] = (
+                dates[0] if len(dates) == 1 else f"{dates[0]} to {dates[-1]}" if dates else None
+            )
     return sorted(
         groups.values(),
-        key=lambda g: (PRIORITY_ORDER.get(g["priority"], 5), -len(g["affected_urls"])),
+        key=lambda g: (_priority_rank(g["priority"]), -len(g["affected_urls"])),
     )
 
 
 def readable_observation(value):
     """Show recorded lists in plain words; audit.json keeps the original evidence."""
-    if not isinstance(value, str) or not value.startswith("["):
+    if not isinstance(value, str) or not value.startswith(("[", "{")):
         return value
     try:
         items = json.loads(value)
     except ValueError:
         return value
+    if isinstance(items, dict) and items.get("src"):
+        return "Image: " + str(items["src"])
     if not isinstance(items, list) or not items:
         return value
     if all(isinstance(item, dict) and item.get("url") for item in items):
@@ -217,9 +261,12 @@ def readable_observation(value):
     return value
 
 
+def _count(number, noun):
+    return f"{number} {noun}{'s' if number != 1 else ''}"
+
+
 def page_count(group):
-    pages = len(group["affected_urls"])
-    return f"{pages} page{'s' if pages != 1 else ''}"
+    return _count(len(group["affected_urls"]), "page")
 
 
 def group_observation(group):
@@ -236,11 +283,30 @@ def group_observation(group):
 
 def next_actions(groups, limit=5):
     """Actionable priorities first; review items only fill any remaining places."""
-    actionable = [g for g in groups if g["priority"] != "review"]
-    return (actionable + [g for g in groups if g["priority"] == "review"])[:limit]
+    actionable = [g for g in groups if not _is_informational(g)]
+    return (actionable + [g for g in groups if _is_informational(g)])[:limit]
 
 
-def _start_here(audit, groups):
+def scope_warning(profile, discovery):
+    """Name missing audit stages so a website-only export is not mistaken for the full audit."""
+    missing = []
+    if not profile or profile.get("status") != "reviewed":
+        missing.append("reviewed business profile")
+    status = (discovery or {}).get("status")
+    failed = status == "no_leads" and not discovery.get("search_available")
+    if status in (None, "not_run") or failed:
+        missing.append("working search discovery")
+    if not missing:
+        return None
+    return (
+        "These findings come from the website crawl. This export has no "
+        + " or ".join(missing)
+        + ", so it cannot support named competitor comparisons, backlink or reputation evidence, "
+        "or a business-specific plan. Complete those stages, or state why each could not be done."
+    )
+
+
+def _start_here(groups):
     pages = len({url for group in groups for url in group["affected_urls"]})
     occurrences = sum(len(group["occurrences"]) for group in groups)
     return {
@@ -249,7 +315,9 @@ def _start_here(audit, groups):
         "blocks": [
             {
                 "type": "text",
-                "text": f"{occurrences} observations on {pages} pages come down to {len(groups)} separate issues. "
+                "text": f"{_count(occurrences, 'observation')} on {_count(pages, 'page')} "
+                f"{'comes' if occurrences == 1 else 'come'} down to "
+                f"{_count(len(groups), 'separate issue')}. "
                 "These are ordered by recorded priority and pages affected, so check them against your business priorities.",
             },
             {
@@ -274,15 +342,17 @@ def _start_here(audit, groups):
 def _evidence_appendix(groups):
     rows = []
     for group in groups:
-        if len(group["occurrences"]) < 2:
+        if len(group["occurrences"]) < 2 and len(group["affected_urls"]) <= MAX_LISTED_URLS:
             continue
         pages = {}
         for occurrence in group["occurrences"]:
-            pages.setdefault(", ".join(occurrence["urls"]), []).append(occurrence["observation"])
+            for page in occurrence["urls"]:
+                pages.setdefault(page, []).append(occurrence["observation"])
         for page, observations in pages.items():
-            count = f"{len(observations)} times. Example: " if len(observations) > 1 else ""
-            example = _shorten(readable_observation(observations[0]), 140)
-            rows.append([group["title"], page, count + example])
+            shown = _unique(_shorten(readable_observation(o), 110) for o in observations)[:3]
+            count = f"{len(observations)} times: " if len(observations) > 1 else ""
+            more = "; more in audit.json" if len(set(observations)) > len(shown) else ""
+            rows.append([group["title"], page, count + "; ".join(shown) + more])
     if not rows:
         return []
     return [
@@ -306,11 +376,11 @@ def _evidence_appendix(groups):
     ]
 
 
-def _listed(urls):
+def _listed(urls, where="listed in the evidence appendix"):
     extra = len(urls) - MAX_LISTED_URLS
     if extra <= 0:
         return list(urls)
-    return [*urls[:MAX_LISTED_URLS], f"…and {extra} more, listed in the evidence appendix"]
+    return [*urls[:MAX_LISTED_URLS], f"…and {extra} more, {where}"]
 
 
 def from_audit(audit):
@@ -338,10 +408,17 @@ def from_audit(audit):
                 "rationale": row["priority_rationale"],
                 "acceptance": row["acceptance_check"],
                 "limits": row["uncertainty"],
-                "source": "; ".join(_listed(sources)) or "Source reference not recorded",
+                "source": "; ".join(_listed(sources, "recorded in audit.json"))
+                or "Source reference not recorded",
             }
         )
     coverage = audit.get("crawl_coverage", {})
+    # Audits saved before this field existed still deserve the warning.
+    warning = (
+        audit["scope_warning"]
+        if "scope_warning" in audit
+        else scope_warning(audit.get("business_profile"), audit.get("discovery_coverage"))
+    )
     finding_sections = [
         {
             "title": "Findings & actions" if offset == 0 else "Findings & actions continued",
@@ -369,7 +446,7 @@ def from_audit(audit):
         "subtitle": "Evidence, priorities and practical next steps",
         "summary": "This report presents the findings in the supplied audit. Read the evidence, proposed action and acceptance check together. Strategic conclusions require a reviewed business profile and comparable research.",
         "sections": [
-            *([_start_here(audit, groups)] if groups else []),
+            *([_start_here(groups)] if groups else []),
             {
                 "title": "Scope & evidence",
                 "lead": "What this report can establish",
@@ -383,10 +460,10 @@ def from_audit(audit):
                             {
                                 "type": "callout",
                                 "title": "Not a complete audit yet",
-                                "text": _string(audit["scope_warning"]),
+                                "text": _string(warning),
                             }
                         ]
-                        if audit.get("scope_warning")
+                        if warning
                         else []
                     ),
                     {

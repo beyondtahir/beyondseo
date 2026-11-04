@@ -11,7 +11,8 @@ from beyondseo.diagnostics import failure_detail
 from beyondseo.discovery import RequestBudget, consolidate, discover, host_attempts, parse_search
 from beyondseo.evidence import capture_quality
 from beyondseo.extract import extract, page_findings
-from beyondseo.findings import audit_report, scope_warning
+from beyondseo.findings import audit_check, audit_report
+from beyondseo.reports import scope_warning
 from beyondseo.research import FIELDS, profile, research_queries, select_competitors
 from beyondseo.review import readiness
 
@@ -736,13 +737,103 @@ class BrowserSetupTests(unittest.TestCase):
 
 class ScopeWarningTests(unittest.TestCase):
     def test_website_only_export_names_what_is_missing(self):
-        self.assertIn("no reviewed business profile or search discovery", scope_warning(None, None))
         self.assertIn(
-            "no search discovery", scope_warning({"status": "reviewed"}, {"status": "not_run"})
+            "no reviewed business profile or working search discovery", scope_warning(None, None)
+        )
+        self.assertIn(
+            "no working search discovery",
+            scope_warning({"status": "reviewed"}, {"status": "not_run"}),
         )
         self.assertIn(
             "no reviewed business profile", scope_warning({"status": "draft"}, {"status": "ok"})
         )
 
     def test_reviewed_profile_and_discovery_clear_the_warning(self):
-        self.assertIsNone(scope_warning({"status": "reviewed"}, {"status": "partial"}))
+        self.assertIsNone(scope_warning({"status": "reviewed"}, {"status": "leads_available"}))
+        searched = {"status": "no_leads", "search_available": True}
+        self.assertIsNone(scope_warning({"status": "reviewed"}, searched))
+
+    def test_failed_search_does_not_clear_the_warning(self):
+        failed = {"status": "no_leads", "search_available": False}
+        self.assertIn("working search discovery", scope_warning({"status": "reviewed"}, failed))
+
+
+class AuditCheckTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.run_dir = Path(self.temp.name)
+        self.write("site/coverage.json", {"inspected": 15})
+        self.write("business-reviewed/profile.json", {"status": "reviewed"})
+        self.write("entity/entity-review.json", {})
+        self.write("discovery/discovery.json", {"status": "leads_available"})
+        self.write(
+            "competitors/competitors.json",
+            {
+                "candidate_profiles_evaluated": 15,
+                "direct_competitors": [{"website": "https://peer.example/"}],
+            },
+        )
+        self.write("research-plan/research-plan.json", {"status": "planned"})
+        self.write("reputation/site-0/links/backlinks.json", {"sources_checked": 30})
+        self.write("comparison/reputation-comparison.json", {"status": "comparison_only"})
+        self.write("audit/audit.json", {"scope_warning": None})
+        self.write("report.json", self.report("We checked 30 sources and compared peer.example."))
+
+    def write(self, name, value):
+        path = self.run_dir / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value), encoding="utf-8")
+
+    def report(self, text):
+        return {
+            "title": "Audit",
+            "client": "Example",
+            "date": "2026-01-01",
+            "summary": "Summary.",
+            "sections": [
+                {
+                    "title": "Plan",
+                    "blocks": [{"type": "text", "text": text + " Days 30, 60 and 90."}],
+                }
+            ],
+        }
+
+    def test_complete_folder_passes(self):
+        result = audit_check(self.run_dir)
+        self.assertEqual(result["status"], "complete")
+        self.assertTrue((self.run_dir / "audit-check.json").is_file())
+
+    def test_report_with_wrong_count_or_missing_competitor_fails(self):
+        self.write("report.json", self.report("Five sources were checked."))
+        result = audit_check(self.run_dir)
+        self.assertEqual(result["status"], "incomplete")
+        detail = result["stages"]["report"]["detail"]
+        self.assertIn("30 client sources", detail)
+        self.assertIn("peer.example", detail)
+
+    def test_missing_stage_fails_until_the_failure_is_recorded(self):
+        (self.run_dir / "comparison/reputation-comparison.json").unlink()
+        self.assertEqual(audit_check(self.run_dir)["status"], "incomplete")
+        self.write("stage-notes.json", {"reputation_comparison": "Search blocked: HTTP 403"})
+        result = audit_check(self.run_dir)
+        self.assertEqual(result["status"], "complete_with_limits")
+        self.assertIn("HTTP 403", result["stages"]["reputation_comparison"]["detail"])
+
+    def test_thin_competitor_research_is_partial(self):
+        self.write(
+            "competitors/competitors.json",
+            {
+                "candidate_profiles_evaluated": 2,
+                "direct_competitors": [{"website": "https://peer.example/"}],
+            },
+        )
+        result = audit_check(self.run_dir)
+        self.assertEqual(result["status"], "complete_with_limits")
+        self.assertEqual(result["stages"]["competitors"]["status"], "partial")
+
+    def test_unattributed_claim_is_listed_but_attributed_claim_is_not(self):
+        text = "We checked 30 sources and compared peer.example. Example is the No. 1 firm. The site describes itself as the leading firm."
+        self.write("report.json", self.report(text))
+        claims = audit_check(self.run_dir)["unattributed_claims_to_review"]
+        self.assertEqual(claims, ["Example is the No. 1 firm."])

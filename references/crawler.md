@@ -9,6 +9,7 @@ Run `beyondseo --help` or `beyondseo crawl --help` for the installed command. Fr
 | `crawl URL --out DIRECTORY` | Discover and process a bounded website queue |
 | `scrape URL --out DIRECTORY` | Process one URL; sitemap discovery is disabled |
 | `report --out DIRECTORY` | Regenerate exports from the local database without network access |
+| `audit-check --run DIRECTORY` | Check a complete-audit folder against the required stages, confirm key counts and competitor names reach `report.json`, write `audit-check.json`, and exit 1 if incomplete |
 | `doctor` | Execute runtime, file read/write and local JavaScript probes; use `--target` for separate DNS, robots, sitemap and page-access checks |
 | `--version` | Print the installed project version |
 
