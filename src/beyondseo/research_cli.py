@@ -35,6 +35,11 @@ def add_commands(sub):
     )
     p.add_argument("--manifest", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser(
+        "audit-check", help="Check a complete-audit folder and report; exit 1 if incomplete."
+    )
+    p.add_argument("--run", type=Path, required=True)
+    p.add_argument("--report", type=Path)
     p = sub.add_parser("discover", help="Collect unverified search leads with bounded fallbacks.")
     p.add_argument("--query", action="append", default=[])
     p.add_argument(

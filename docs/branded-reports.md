@@ -26,7 +26,7 @@ python3 scripts/run.py present --audit /path/to/client/audit.json \
   --out /path/to/client/audit-deliverable
 ```
 
-This preserves findings, URLs, dates, claim types, priority rationale, actions, acceptance checks and uncertainty. It does not invent an executive judgment, competitor research or missing measurements. For a complete strategy report, the assistant prepares reviewed content JSON from the audit and other captured research first.
+This opens with the top next actions and groups repeats of one crawler issue into one card, with date ranges, the weakest claim type and an appendix of affected pages. Hand-reviewed findings stay separate, and `audit.json` and `audit.md` keep every observation. It warns when there is no reviewed business profile or working search discovery. It does not invent an executive judgment, competitor research or missing measurements. For a complete strategy report, the assistant prepares reviewed content JSON from the audit and other captured research first.
 
 `--format html` needs no PDF library. `--format pdf` requests only PDF. The default `both` retains usable HTML if the PDF renderer is unavailable and returns a partial status with the reason. An explicitly overwritten, outdated PDF is removed in that case so it cannot be mistaken for the new report. The existing `report --out` command still regenerates raw crawl exports; `present` is the client-facing design step.
 

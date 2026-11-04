@@ -25,6 +25,31 @@ MUTED = "#595959"
 PALE = "#F5F3F1"
 RULE = "#DDDAD7"
 BLOCKS = {"text", "bullets", "callout", "table", "metrics", "bars", "finding"}
+PRIORITY_ORDER = {
+    "p0": 0,
+    "critical": 0,
+    "p1": 1,
+    "high": 1,
+    "p2": 2,
+    "medium": 2,
+    "p3": 3,
+    "low": 3,
+    "review": 5,
+    "info": 5,
+}
+UNKNOWN_PRIORITY_RANK = 4
+CLAIM_STRENGTH = {"verified_fact": 0, "inference": 1, "hypothesis": 2}
+MAX_LISTED_URLS = 10
+FINDING_TITLES = {
+    "canonical_elsewhere": "Canonical points to a different page",
+    "image_dimensions_review": "Images without width and height",
+    "javascript_content": "Main content needs JavaScript to appear",
+    "multiple_canonicals": "More than one canonical tag",
+    "multiple_h1_review": "More than one main heading",
+    "multiple_meta_descriptions": "More than one meta description",
+    "multiple_titles": "More than one page title",
+    "sitemap_url_conflict": "Sitemap URL differs from the captured page",
+}
 
 
 def text(value):
@@ -130,18 +155,248 @@ def validate_report(data):
     return copy.deepcopy(data)
 
 
+def _unique(values):
+    return list(dict.fromkeys(values))
+
+
+def _shorten(value, limit=200):
+    value = _string(value)
+    return value if len(value) <= limit else value[: limit - 1].rstrip() + "…"
+
+
+def finding_title(row):
+    code = row.get("code")
+    return (
+        row.get("title")
+        or FINDING_TITLES.get(code)
+        or (code or "Observed finding").replace("_", " ").capitalize()
+    )
+
+
+def _priority_rank(priority):
+    words = str(priority).strip().lower().split()
+    return PRIORITY_ORDER.get(words[0] if words else "", UNKNOWN_PRIORITY_RANK)
+
+
+def _is_informational(group):
+    return _priority_rank(group["priority"]) == PRIORITY_ORDER["review"]
+
+
+def _capture_dates(value):
+    values = value if isinstance(value, (list, tuple)) else [value]
+    return [str(item) for item in values if item]
+
+
+def group_findings(rows):
+    """Merge repeats of one crawler issue; every occurrence stays in `occurrences`."""
+    groups = {}
+    for position, row in enumerate(rows):
+        # Only crawler issues are mechanical repeats: each has one `url` and no written title.
+        # Hand-reviewed findings are separate judgments and must never lose their content.
+        repeatable = row.get("code") and row.get("url") and not row.get("title")
+        key = (
+            (row["code"], row["recommended_action"], row["priority"])
+            if repeatable
+            else ("reviewed", position)
+        )
+        group = groups.get(key)
+        if group is None:
+            group = groups[key] = {
+                **row,
+                "title": finding_title(row),
+                "affected_urls": [],
+                "uncertainty": [],
+                "evidence_refs": [],
+                "occurrences": [],
+            }
+        group["affected_urls"] = _unique(group["affected_urls"] + list(row["affected_urls"]))
+        limits = row["uncertainty"]
+        limits = limits if isinstance(limits, list) else [limits]
+        group["uncertainty"] = _unique(group["uncertainty"] + [_string(v) for v in limits])
+        group["evidence_refs"] += row.get("evidence_refs", [])
+        group["occurrences"].append(
+            {
+                "urls": list(row["affected_urls"]),
+                "observation": row["observation"],
+                "captured_at": row.get("captured_at"),
+            }
+        )
+        # A merged claim is only as strong as its weakest occurrence.
+        if CLAIM_STRENGTH.get(row["claim_type"], 2) > CLAIM_STRENGTH.get(group["claim_type"], 2):
+            group["claim_type"] = row["claim_type"]
+    for group in groups.values():
+        if len(group["occurrences"]) > 1:
+            dates = sorted(
+                {d for o in group["occurrences"] for d in _capture_dates(o["captured_at"])}
+            )
+            group["captured_at"] = (
+                dates[0] if len(dates) == 1 else f"{dates[0]} to {dates[-1]}" if dates else None
+            )
+    return sorted(
+        groups.values(),
+        key=lambda g: (_priority_rank(g["priority"]), -len(g["affected_urls"])),
+    )
+
+
+def readable_observation(value):
+    """Show recorded lists in plain words; audit.json keeps the original evidence."""
+    if not isinstance(value, str) or not value.startswith(("[", "{")):
+        return value
+    try:
+        items = json.loads(value)
+    except ValueError:
+        return value
+    if isinstance(items, dict) and items.get("src"):
+        return "Image: " + str(items["src"])
+    if not isinstance(items, list) or not items:
+        return value
+    if all(isinstance(item, dict) and item.get("url") for item in items):
+        targets = _unique(item["url"] for item in items)
+        return (
+            f"{len(items)} tags pointing to {len(targets)} "
+            f"address{'es' if len(targets) != 1 else ''}: " + ", ".join(targets)
+        )
+    if all(isinstance(item, str) for item in items):
+        return f"{len(items)} values: " + " | ".join(f"“{item}”" for item in items)
+    return value
+
+
+def _count(number, noun):
+    return f"{number} {noun}{'s' if number != 1 else ''}"
+
+
+def page_count(group):
+    return _count(len(group["affected_urls"]), "page")
+
+
+def group_observation(group):
+    occurrences = group["occurrences"]
+    if len(occurrences) == 1:
+        return readable_observation(occurrences[0]["observation"])
+    examples = _unique(_shorten(readable_observation(o["observation"]), 160) for o in occurrences)[
+        :3
+    ]
+    return f"Seen {len(occurrences)} times on {page_count(group)}. Examples: " + " | ".join(
+        examples
+    )
+
+
+def next_actions(groups, limit=5):
+    """Actionable priorities first; review items only fill any remaining places."""
+    actionable = [g for g in groups if not _is_informational(g)]
+    return (actionable + [g for g in groups if _is_informational(g)])[:limit]
+
+
+def scope_warning(profile, discovery):
+    """Name missing audit stages so a website-only export is not mistaken for the full audit."""
+    missing = []
+    if not profile or profile.get("status") != "reviewed":
+        missing.append("reviewed business profile")
+    status = (discovery or {}).get("status")
+    failed = status == "no_leads" and not discovery.get("search_available")
+    if status in (None, "not_run") or failed:
+        missing.append("working search discovery")
+    if not missing:
+        return None
+    return (
+        "These findings come from the website crawl. This export has no "
+        + " or ".join(missing)
+        + ", so it cannot support named competitor comparisons, backlink or reputation evidence, "
+        "or a business-specific plan. Complete those stages, or state why each could not be done."
+    )
+
+
+def _start_here(groups):
+    pages = len({url for group in groups for url in group["affected_urls"]})
+    occurrences = sum(len(group["occurrences"]) for group in groups)
+    return {
+        "title": "Start here",
+        "lead": "The most useful next actions from this evidence",
+        "blocks": [
+            {
+                "type": "text",
+                "text": f"{_count(occurrences, 'observation')} on {_count(pages, 'page')} "
+                f"{'comes' if occurrences == 1 else 'come'} down to "
+                f"{_count(len(groups), 'separate issue')}. "
+                "These are ordered by recorded priority and pages affected, so check them against your business priorities.",
+            },
+            {
+                "type": "table",
+                "columns": ["#", "Issue", "What to do", "Pages", "Priority"],
+                "widths": [0.4, 2.2, 3.8, 0.9, 1],
+                "rows": [
+                    [
+                        str(number),
+                        group["title"],
+                        _shorten(group["recommended_action"], 170),
+                        str(len(group["affected_urls"])),
+                        group["priority"],
+                    ]
+                    for number, group in enumerate(next_actions(groups), 1)
+                ],
+            },
+        ],
+    }
+
+
+def _evidence_appendix(groups):
+    rows = []
+    for group in groups:
+        if len(group["occurrences"]) < 2 and len(group["affected_urls"]) <= MAX_LISTED_URLS:
+            continue
+        pages = {}
+        for occurrence in group["occurrences"]:
+            for page in occurrence["urls"]:
+                pages.setdefault(page, []).append(occurrence["observation"])
+        for page, observations in pages.items():
+            shown = _unique(_shorten(readable_observation(o), 110) for o in observations)[:3]
+            count = f"{len(observations)} times: " if len(observations) > 1 else ""
+            more = "; more in audit.json" if len(set(observations)) > len(shown) else ""
+            rows.append([group["title"], page, count + "; ".join(shown) + more])
+    if not rows:
+        return []
+    return [
+        {
+            "title": "Evidence appendix" if offset == 0 else "Evidence appendix continued",
+            "lead": "Where each grouped issue was seen",
+            "blocks": [
+                {
+                    "type": "text",
+                    "text": "This lists each page once per issue, with a shortened example. audit.json keeps every observation in full.",
+                },
+                {
+                    "type": "table",
+                    "columns": ["Issue", "Page", "Observed"],
+                    "widths": [1.6, 2.6, 3.6],
+                    "rows": rows[offset : offset + 1000],
+                },
+            ],
+        }
+        for offset in range(0, len(rows), 1000)
+    ]
+
+
+def _listed(urls, where="listed in the evidence appendix"):
+    extra = len(urls) - MAX_LISTED_URLS
+    if extra <= 0:
+        return list(urls)
+    return [*urls[:MAX_LISTED_URLS], f"…and {extra} more, {where}"]
+
+
 def from_audit(audit):
     """Turn an existing evidence audit into a report without inventing analysis."""
+    groups = group_findings(audit.get("findings", []))
     blocks = []
-    for row in audit.get("findings", []):
+    for row in groups:
+        captured = row.get("captured_at") or "Not recorded"
+        sources = _unique(ref.get("url", "") for ref in row.get("evidence_refs", []))
         blocks.append(
             {
                 "type": "finding",
-                "title": row.get("title")
-                or row.get("code", "Observed finding").replace("_", " ").capitalize(),
-                "urls": row["affected_urls"],
-                "observation": row["observation"],
-                "captured_at": row.get("captured_at") or "Not recorded",
+                "title": row["title"],
+                "urls": _listed(row["affected_urls"]),
+                "observation": group_observation(row),
+                "captured_at": captured,
                 "claim_type": row["claim_type"],
                 "impact": "\n".join(
                     _string(value)
@@ -153,11 +408,17 @@ def from_audit(audit):
                 "rationale": row["priority_rationale"],
                 "acceptance": row["acceptance_check"],
                 "limits": row["uncertainty"],
-                "source": "; ".join(ref.get("url", "") for ref in row.get("evidence_refs", []))
+                "source": "; ".join(_listed(sources, "recorded in audit.json"))
                 or "Source reference not recorded",
             }
         )
     coverage = audit.get("crawl_coverage", {})
+    # Audits saved before this field existed still deserve the warning.
+    warning = (
+        audit["scope_warning"]
+        if "scope_warning" in audit
+        else scope_warning(audit.get("business_profile"), audit.get("discovery_coverage"))
+    )
     finding_sections = [
         {
             "title": "Findings & actions" if offset == 0 else "Findings & actions continued",
@@ -185,6 +446,7 @@ def from_audit(audit):
         "subtitle": "Evidence, priorities and practical next steps",
         "summary": "This report presents the findings in the supplied audit. Read the evidence, proposed action and acceptance check together. Strategic conclusions require a reviewed business profile and comparable research.",
         "sections": [
+            *([_start_here(groups)] if groups else []),
             {
                 "title": "Scope & evidence",
                 "lead": "What this report can establish",
@@ -193,6 +455,17 @@ def from_audit(audit):
                         "type": "text",
                         "text": audit.get("note", "Findings describe the inspected evidence only."),
                     },
+                    *(
+                        [
+                            {
+                                "type": "callout",
+                                "title": "Not a complete audit yet",
+                                "text": _string(warning),
+                            }
+                        ]
+                        if warning
+                        else []
+                    ),
                     {
                         "type": "table",
                         "columns": ["Coverage", "Recorded status"],
@@ -215,6 +488,7 @@ def from_audit(audit):
                 ],
             },
             *finding_sections,
+            *_evidence_appendix(groups),
         ],
     }
 

@@ -6,7 +6,16 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from beyondseo.reports import PDFUnavailable, asset, export_report, from_audit, validate_report
+from beyondseo.reports import (
+    PDFUnavailable,
+    asset,
+    export_report,
+    from_audit,
+    group_findings,
+    next_actions,
+    readable_observation,
+    validate_report,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 PDF_READY = bool(importlib.util.find_spec("reportlab") and importlib.util.find_spec("pypdf"))
@@ -145,7 +154,8 @@ class ReportTests(unittest.TestCase):
         report = from_audit(
             {"target": "https://example.com", "created_at": "2026-01-01", "findings": [finding]}
         )
-        block = report["sections"][1]["blocks"][0]
+        self.assertEqual(report["sections"][0]["title"], "Start here")
+        block = report["sections"][2]["blocks"][0]
         self.assertEqual(block["limits"], finding["uncertainty"])
         self.assertEqual(block["urls"], finding["affected_urls"])
         self.assertEqual(block["captured_at"], finding["captured_at"])
@@ -156,7 +166,15 @@ class ReportTests(unittest.TestCase):
             {
                 "target": "https://example.com",
                 "created_at": "2026-01-01",
-                "findings": [{**finding, "observation": f"Observation {i}"} for i in range(101)],
+                "findings": [
+                    {
+                        **finding,
+                        "code": "repeat",
+                        "url": "https://e.test/",
+                        "observation": f"Observation {i}",
+                    }
+                    for i in range(101)
+                ],
             }
         )
         export_report(large, self.out, "html")
@@ -166,10 +184,140 @@ class ReportTests(unittest.TestCase):
             for block in section["blocks"]
             if block["type"] == "finding"
         ]
-        self.assertEqual(len(retained), 101)
-        self.assertEqual(retained[-1]["observation"], "Observation 100")
-        self.assertIn(finding["business_relevance"], retained[-1]["impact"])
-        self.assertIn("Observation 100", (self.out / "report.html").read_text(encoding="utf-8"))
+        # One issue on one page is one card; the appendix counts its observations.
+        self.assertEqual(len(retained), 1)
+        self.assertIn("Seen 101 times on 1 page", retained[0]["observation"])
+        self.assertIn(finding["business_relevance"], retained[0]["impact"])
+        self.assertIn("101 times", (self.out / "report.html").read_text(encoding="utf-8"))
+
+    def test_audit_report_groups_repeats_and_leads_with_actions(self):
+        def row(code, url, priority, action="Fix it", claim="verified_fact"):
+            return {
+                "code": code,
+                "url": url,
+                "affected_urls": [url],
+                "observation": f"{code} on {url}",
+                "why_it_matters": "It matters.",
+                "recommended_action": action,
+                "priority": priority,
+                "priority_rationale": "Observed",
+                "acceptance_check": "Recrawl",
+                "uncertainty": ["Sample only"],
+                "captured_at": "2026-01-01",
+                "claim_type": claim,
+                "evidence_refs": [{"url": url}],
+            }
+
+        urls = [f"https://example.com/{i}" for i in range(12)]
+        rows = [row("javascript_content", urls[0], "review", "Check it")]
+        rows += [row("image_dimensions_review", url, "P3") for url in urls for _ in range(2)]
+        rows += [
+            row("multiple_canonicals", urls[0], "P2"),
+            row("multiple_canonicals", urls[1], "P2"),
+        ]
+        rows.append(row("multiple_canonicals", urls[2], "P2", claim="hypothesis"))
+        rows.append({**row(None, urls[3], "P1"), "code": None, "title": "Reviewed A"})
+        rows.append({**row(None, urls[4], "P1"), "code": None, "title": "Reviewed B"})
+        report = from_audit(
+            {
+                "target": "https://example.com",
+                "created_at": "2026-01-01",
+                "findings": rows,
+                "scope_warning": "No discovery.",
+            }
+        )
+        validate_report(report)
+        by_title = {s["title"]: s for s in report["sections"]}
+        cards = [b for b in by_title["Findings & actions"]["blocks"] if b["type"] == "finding"]
+        # Reviewed findings stay separate; each coded issue becomes one card, in priority order.
+        self.assertEqual(
+            [c["title"] for c in cards],
+            [
+                "Reviewed A",
+                "Reviewed B",
+                "More than one canonical tag",
+                "Images without width and height",
+                "Main content needs JavaScript to appear",
+            ],
+        )
+        self.assertEqual(cards[2]["claim_type"], "hypothesis")
+        images = cards[3]
+        self.assertIn("Seen 24 times on 12 pages", images["observation"])
+        self.assertEqual(len(images["urls"]), 11)
+        self.assertIn("2 more", images["urls"][-1])
+        actions = by_title["Start here"]["blocks"][1]["rows"]
+        self.assertEqual(actions[0][1], "Reviewed A")
+        self.assertEqual(actions[3][3], "12")
+        self.assertEqual(len(actions), 5)
+        appendix = by_title["Evidence appendix"]["blocks"][1]["rows"]
+        # Twelve image pages plus three canonical pages: one row per page and issue.
+        self.assertEqual(len(appendix), 15)
+        self.assertTrue(any(urls[11] in r[1] for r in appendix))
+        warning = by_title["Scope & evidence"]["blocks"][1]
+        self.assertEqual(warning["title"], "Not a complete audit yet")
+
+    def test_recorded_lists_are_shown_in_plain_words(self):
+        tags = [
+            {"raw": "/a", "url": "https://example.com/a"},
+            {"raw": "/", "url": "https://example.com/"},
+        ]
+        self.assertEqual(
+            readable_observation(json.dumps(tags)),
+            "2 tags pointing to 2 addresses: https://example.com/a, https://example.com/",
+        )
+        self.assertEqual(readable_observation('["One", "Two"]'), "2 values: “One” | “Two”")
+        for unchanged in ("Plain text", "[not json", "[]", '[{"other": 1}]'):
+            self.assertEqual(readable_observation(unchanged), unchanged)
+
+    def test_review_fixes_keep_evidence_visible(self):
+        base = {
+            "why_it_matters": "It matters.",
+            "recommended_action": "Fix it",
+            "priority_rationale": "Observed",
+            "acceptance_check": "Recrawl",
+            "uncertainty": ["Sample only"],
+            "claim_type": "verified_fact",
+            "evidence_refs": [],
+            "observation": "Seen",
+        }
+        urls = [f"https://example.com/{i}" for i in range(14)]
+        many = {**base, "title": "Many pages", "priority": "P1", "affected_urls": urls}
+        report = from_audit({"target": urls[0], "created_at": "2026-01-01", "findings": [many]})
+        self.assertIn(urls[13], json.dumps(report))
+        self.assertIn(
+            "1 observation on 14 pages comes down to 1 separate issue.", json.dumps(report)
+        )
+        # Coded reviewed findings stay separate.
+        one = {**base, "code": "content_gap", "priority": "P1", "affected_urls": urls[:1]}
+        groups = group_findings([{**one, "title": "Pricing"}, {**one, "title": "Refunds"}])
+        self.assertEqual([g["title"] for g in groups], ["Pricing", "Refunds"])
+        # Priority labels outside P0-P3 rank above informational items.
+        mixed = [
+            {**base, "title": label, "priority": label, "affected_urls": urls[:1]}
+            for label in ("review", "P3", "High", "Custom", "P2 / High")
+        ]
+        self.assertEqual(
+            [g["priority"] for g in group_findings(mixed)],
+            ["High", "P2 / High", "P3", "Custom", "review"],
+        )
+        # Merged cards show the whole capture range.
+        crawl = {**base, "code": "x", "url": urls[0], "priority": "P2", "affected_urls": urls[:1]}
+        dated = group_findings(
+            [{**crawl, "captured_at": "2026-01-01"}, {**crawl, "captured_at": "2026-06-30"}]
+        )
+        self.assertEqual(dated[0]["captured_at"], "2026-01-01 to 2026-06-30")
+        # Older saved audits still get the warning.
+        report = from_audit({"target": urls[0], "created_at": "2026-01-01", "findings": [crawl]})
+        self.assertIn("Not a complete audit yet", json.dumps(report))
+        self.assertEqual(
+            readable_observation('{"src": "https://e.test/a.png", "width": null}'),
+            "Image: https://e.test/a.png",
+        )
+
+    def test_review_items_only_fill_remaining_next_actions(self):
+        groups = [{"priority": "review"}, {"priority": "P3"}, {"priority": "P1"}]
+        ordered = next_actions(groups, 2)
+        self.assertEqual([g["priority"] for g in ordered], ["P3", "P1"])
 
     @unittest.skipUnless(PDF_READY, "Install reportlab and pypdf for PDF integration checks.")
     def test_pdf_content_navigation_brand_and_no_blank_pages(self):

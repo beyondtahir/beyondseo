@@ -152,6 +152,8 @@ python3 scripts/install_skill.py --host codex --setup
 
 The personal location is `~/.agents/skills/beyondseo`. Add `--workspace "/path/to/project"` for project scope. Select BeyondSEO in the skill list; CLI and IDE users can invoke `$beyondseo`. If it is not listed, refresh or open a new session. [Official skill guidance](https://learn.chatgpt.com/docs/build-skills).
 
+Codex's default sandbox can block network access and Chromium. In one macOS check with `sandbox_workspace_write.network_access = true`, HTTP crawling worked while `doctor` reported Chromium execution denied, so JavaScript-only pages could not be read fully. Check `doctor` before relying on a crawl. If Chromium is denied, approve browser execution through Codex's own permission controls where your policy allows it, or use a browser Codex already provides. Otherwise treat the crawl as partial.
+
 ## Hermes Agent
 
 ```sh

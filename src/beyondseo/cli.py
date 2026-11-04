@@ -487,6 +487,12 @@ def main(argv=None):
             file=sys.stderr,
         )
         return 2
+    if args.command == "audit-check":
+        from .findings import audit_check
+
+        result = audit_check(args.run, args.report)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result["status"] != "incomplete" else 1
     from beyondseo.engine import Crawler
     from beyondseo.network import Config
 
