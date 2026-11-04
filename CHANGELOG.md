@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Group repeated audit findings into one issue, open reports with a short "Start here" action list, order issues by priority, and keep every observation in an evidence appendix and `audit.json`.
+- Add plain titles and explanations for common issues that previously had a generic message.
+- Warn clearly in `audit.json`, `audit.md` and reports when an audit has no reviewed business profile or search discovery, so a website-only export is not mistaken for a complete audit.
+- Add a complete-audit checklist to the skill, with exact commands and a definition of done.
+
 ## 2.10.1 — Clearer connection errors, easier installs
 
 5 November 2026

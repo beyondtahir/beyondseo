@@ -11,7 +11,7 @@ from beyondseo.diagnostics import failure_detail
 from beyondseo.discovery import RequestBudget, consolidate, discover, host_attempts, parse_search
 from beyondseo.evidence import capture_quality
 from beyondseo.extract import extract, page_findings
-from beyondseo.findings import audit_report
+from beyondseo.findings import audit_report, scope_warning
 from beyondseo.research import FIELDS, profile, research_queries, select_competitors
 from beyondseo.review import readiness
 
@@ -732,3 +732,17 @@ class BrowserSetupTests(unittest.TestCase):
             result = select_competitors(client, [candidate], root / "selection")
         self.assertFalse(result["direct_competitors"])
         self.assertIn("Unresolved comparison conflict", result["rejected"][0]["reasons"][0])
+
+
+class ScopeWarningTests(unittest.TestCase):
+    def test_website_only_export_names_what_is_missing(self):
+        self.assertIn("no reviewed business profile or search discovery", scope_warning(None, None))
+        self.assertIn(
+            "no search discovery", scope_warning({"status": "reviewed"}, {"status": "not_run"})
+        )
+        self.assertIn(
+            "no reviewed business profile", scope_warning({"status": "draft"}, {"status": "ok"})
+        )
+
+    def test_reviewed_profile_and_discovery_clear_the_warning(self):
+        self.assertIsNone(scope_warning({"status": "reviewed"}, {"status": "partial"}))

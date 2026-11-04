@@ -18,6 +18,33 @@ When the user supplies a Lighthouse JSON report, use [the lab review](docs/opera
 
 For Lovable execution, read [the Lovable host guide](docs/lovable.md) for private runtime recovery, bounded captures and project-safe operation.
 
+## Complete audit checklist
+
+Unless the user narrows the scope, complete every stage below and report each as done, partial or failed with its exact error. "Not requested" is not a reason to skip a stage. Reading public pages and running searches needs no extra permission; posting, sign-in and messages stay separately authorised, and a limit on those does not cancel research. Use `python3 <skill>/scripts/run.py` (plus any `--runtime`) where `beyondseo` is not on the path. Check a flag with `--help` before guessing.
+
+```sh
+beyondseo doctor
+beyondseo crawl URL --include-www --out RUN/site
+beyondseo profile --crawl RUN/site --out RUN/business
+# Read the packet and write RUN/review.json with natural buyer search_queries.
+beyondseo profile --crawl RUN/site --review RUN/review.json --out RUN/business-reviewed
+beyondseo entity-review --crawl RUN/site --out RUN/entity
+beyondseo discover --queries RUN/business-reviewed/queries.json --target URL --out RUN/discovery
+# Crawl each candidate competitor and review its profile the same way, then:
+beyondseo competitors --profile RUN/business-reviewed/profile.json --candidate-profile RUN/candidate-a/profile.json --discovery RUN/discovery/discovery.json --out RUN/competitors
+beyondseo research-plan --profile RUN/business-reviewed/profile.json --brand NAME --selection RUN/competitors/competitors.json --out RUN/research-plan
+beyondseo backlinks --sources RUN/discovery/sources.csv --target URL --brand NAME --out RUN/links
+beyondseo compare-reputation --manifest RUN/comparison-input.json --out RUN/comparison
+beyondseo audit --crawl RUN/site --profile RUN/business-reviewed/profile.json --discovery RUN/discovery/discovery.json --out RUN/audit
+beyondseo present --input RUN/report.json --out RUN/report
+```
+
+Pass real host search results to `discover --host-results` when available. `audit --offline` and `present --audit` give a website-only export for a focused request or a failed stage; they are not the complete audit. For `present --input`, write the report from all the evidence using [the report layout](docs/branded-reports.md) and `examples/report-content.json`.
+
+The audit is complete only when the result has a reviewed business profile, the top actions with affected pages, named competitors or the reason none qualified, backlink and reputation evidence or the failed attempts, a 30/60/90-day plan, and the coverage limits. If a stage fails after a real attempt, finish the others and say what is missing. Never present a partial audit as complete.
+
+Before writing the report, wait for every command you started to finish, then check each count in the report against the output files. Attribute a website's own claims to the website ("the site describes itself as..."), including titles such as "leading" or "No. 1", unless an independent source supports them. Do not add ratings or percentages that no evidence or stated assumption supports.
+
 ## Capability-first execution
 
 At the start of an audit, inspect the host's actual browser, search, shell and file capabilities, whether it is Claude Code, Codex, Kimi Code, Hermes, OpenClaw or Work. Reuse an available permitted browser first for browser-assisted search. Run the native crawler to inspect the target and candidate websites; website reading and search discovery are separate jobs. Native discovery fallbacks serve both backlink and competitor research.

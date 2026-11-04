@@ -5,6 +5,7 @@ from pathlib import Path
 from .engine import write_json
 from .evidence import capture_quality
 from .network import utcnow
+from .reports import group_findings, group_observation, next_actions, page_count
 from .research import evidence_index, host, verify_reference
 from .review import read_json, read_pages
 
@@ -36,6 +37,26 @@ CHECKS = {
     "jsonld_syntax_error": (
         "Malformed JSON-LD cannot reliably express the page's entities.",
         "Parse every JSON-LD block on this URL without errors, then validate the chosen type against visible content.",
+    ),
+    "multiple_canonicals": (
+        "Several canonical tags can send mixed signals about which address is the main version of this page.",
+        "Inspect the rendered head and recrawl; this page should declare one canonical that names its intended public URL.",
+    ),
+    "multiple_meta_descriptions": (
+        "Several descriptions leave the page's intended summary unclear, and a shared default can hide what makes it different.",
+        "Inspect the rendered head and recrawl; this page should have one accurate description of its own.",
+    ),
+    "image_dimensions_review": (
+        "Images without declared space can make the page shift while it loads, which is frustrating for visitors. This observation does not measure layout shift.",
+        "Add width and height or reserved CSS space, recrawl, then measure layout shift with Lighthouse or field data.",
+    ),
+    "sitemap_url_conflict": (
+        "A sitemap should list the addresses you want found; a conflict suggests the sitemap and the page disagree.",
+        "Compare the sitemap entry with the captured response and recrawl; keep only intended canonical pages in the sitemap.",
+    ),
+    "multiple_h1_review": (
+        "Several main headings can make the page's main topic less clear to readers. This alone does not establish an SEO defect.",
+        "Review the visible page and recrawl; the heading structure should make the page's main topic clear.",
     ),
     "canonical_elsewhere": (
         "A canonical signals consolidation, which should agree with the intended public URL.",
@@ -136,6 +157,23 @@ def material_findings(issues, pages, profile=None, summary=None):
     return result
 
 
+def scope_warning(profile, discovery):
+    """Name missing audit stages so a website-only export is not mistaken for the full audit."""
+    missing = []
+    if not profile or profile.get("status") != "reviewed":
+        missing.append("reviewed business profile")
+    if not discovery or discovery.get("status") in (None, "not_run"):
+        missing.append("search discovery")
+    if not missing:
+        return None
+    return (
+        "These findings come from the website crawl. This export has no "
+        + " or ".join(missing)
+        + ", so it cannot support named competitor comparisons, backlink or reputation evidence, "
+        "or a business-specific plan. Complete those stages, or state why each could not be done."
+    )
+
+
 def audit_report(crawl, out, profile=None, discovery=None, reviewed_findings=()):
     pages, summary = read_pages(crawl), read_json(Path(crawl) / "summary.json")
     if profile and host(profile.get("target", "")) != host(summary["seed"]):
@@ -194,6 +232,7 @@ def audit_report(crawl, out, profile=None, discovery=None, reviewed_findings=())
         "unmeasured": summary.get("unmeasured", [])
         + ["AI citations", "competitor authority advantage"],
         "note": "No traffic, authority, keyword volume, complete backlink total or ranking is inferred from these captures.",
+        "scope_warning": scope_warning(profile, discovery),
     }
     Path(out).mkdir(parents=True, exist_ok=True)
     write_json(Path(out) / "audit.json", result)
@@ -205,13 +244,24 @@ def audit_report(crawl, out, profile=None, discovery=None, reviewed_findings=())
         f"Search discovery: {result['discovery_status']}",
         "",
     ]
-    for row in rows:
+    if result["scope_warning"]:
+        lines += ["**Not a complete audit yet.** " + result["scope_warning"], ""]
+    groups = group_findings(rows)
+    if groups:
+        lines += ["## Start here", ""]
         lines += [
-            f"## {row.get('code', 'Reviewed finding')} — {row['priority']}",
+            f"{number}. **{group['title']}** ({page_count(group)}, "
+            f"{group['priority']}): {group['recommended_action']}"
+            for number, group in enumerate(next_actions(groups), 1)
+        ]
+        lines.append("")
+    for row in groups:
+        lines += [
+            f"## {row['title']} — {row['priority']}",
             "",
             "URLs: " + ", ".join(row["affected_urls"]),
             "",
-            row["observation"],
+            group_observation(row),
             "",
             f"Evidence date: {row['captured_at']}; {row['claim_type']}.",
             "",
@@ -224,5 +274,7 @@ def audit_report(crawl, out, profile=None, discovery=None, reviewed_findings=())
             "Limits: " + str(row["uncertainty"]),
             "",
         ]
+    if groups:
+        lines += ["Every separate observation is kept in audit.json.", ""]
     (Path(out) / "audit.md").write_text("\n".join(lines), encoding="utf-8")
     return result
