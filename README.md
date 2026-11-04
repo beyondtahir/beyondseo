@@ -1,72 +1,108 @@
 <h1 align="center">
   <picture>
-    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/readme-opening-mobile.png">
-    <img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/readme-opening.png" width="1200" alt="BeyondSEO — your complete SEO house. Audit, plan, write and improve with the assistant you already use.">
+    <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/hero-mobile.png">
+    <img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/hero.png" width="1200" alt="BeyondSEO. Help customers find you on Google and AI. Tell your AI one sentence. Get a clear plan, useful words and checked fixes.">
   </picture>
 </h1>
 
 <p align="center">
-  <a href="#quick-start"><strong>Get started</strong></a> |
-  <a href="#give-it-a-goal">Try a prompt</a> |
-  <a href="#beyondseo-at-work">Watch the demo</a> |
-  <a href="#your-complete-seo-house">Explore the SEO house</a> |
-  <a href="#our-backlink-and-reputation-system">Backlinks</a> |
+  <a href="https://github.com/beyondtahir/beyondseo/releases/latest"><img src="https://img.shields.io/github/v/release/beyondtahir/beyondseo?style=for-the-badge&label=latest&color=991B1B" alt="Latest release"></a>
+  <a href="https://github.com/beyondtahir/beyondseo/stargazers"><img src="https://img.shields.io/github/stars/beyondtahir/beyondseo?style=for-the-badge&color=151515" alt="GitHub stars"></a>
+  <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/beyondtahir/beyondseo/tests.yml?branch=main&style=for-the-badge&label=tests" alt="Test status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/free-MIT_license-151515?style=for-the-badge" alt="Free, MIT license"></a>
+  <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/no_API_key-needed-991B1B?style=for-the-badge" alt="The native engine needs no API key"></a>
+</p>
+
+<h3 align="center">
+  <a href="#quick-start">Install</a> &nbsp;·&nbsp;
+  <a href="#what-is-beyondseo">See how it works</a> &nbsp;·&nbsp;
+  <a href="#give-it-a-goal">Copy a prompt</a> &nbsp;·&nbsp;
+  <a href="#our-academy-after-using-beyondseo">Real results</a> &nbsp;·&nbsp;
   <a href="#common-questions">Questions</a>
+</h3>
+
+**BeyondSEO is a free, open-source AI SEO skill for website audits, AI search, content, competitors and backlinks.** Add it to the AI assistant you already use, such as Claude, ChatGPT, Codex or Cursor. Give it your website. It reads your pages, compares real competitors, checks your backlinks and tells you exactly what to fix for Google (SEO), answers (AEO) and AI search (GEO).
+
+## What is BeyondSEO?
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/explainer-still.png">
+  <img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/explainer.gif" width="1200" alt="Illustrated explainer: a 3D paper box turns through each step. You have a website, but customers can't find it. Tell your AI one sentence. It reads your pages, then checks rivals and links, shown as small boxes flying in and being ticked. It shows what to fix and writes the words. You stay in control: nothing changes until you approve. Free and open source.">
+</picture>
+
+*An illustration of the workflow, not a recording of a real audit.*
+
+## Quick start
+
+### Use it in your assistant
+
+Choose your app. You can start by pasting this request into an assistant with installation tools:
+
+```text
+Install BeyondSEO from https://github.com/beyondtahir/beyondseo.
+Follow docs/agent-installation.md for my app. Confirm the skill is saved,
+set up its crawler in an allowed runtime, and check that it can run.
+Then use BeyondSEO to audit my website.
+```
+
+**Or choose your assistant:**
+
+<p align="center">
+  <a href="docs/agent-installation.md#claude-code"><img src="https://img.shields.io/badge/Claude_Code-install-151515?style=for-the-badge" alt="Install in Claude Code"></a>
+  <a href="docs/agent-installation.md#claude-website-and-desktop-skills"><img src="https://img.shields.io/badge/Claude_Desktop-install-151515?style=for-the-badge" alt="Install in Claude Desktop"></a>
+  <a href="docs/agent-installation.md#chatgpt-work"><img src="https://img.shields.io/badge/ChatGPT_Work-install-151515?style=for-the-badge" alt="Install in ChatGPT Work"></a>
+  <a href="docs/agent-installation.md#codex"><img src="https://img.shields.io/badge/Codex-install-151515?style=for-the-badge" alt="Install in Codex"></a>
+  <a href="docs/agent-installation.md#cursor"><img src="https://img.shields.io/badge/Cursor-install-151515?style=for-the-badge" alt="Install in Cursor"></a>
+  <a href="docs/agent-installation.md#kimi-code"><img src="https://img.shields.io/badge/Kimi_Code-install-151515?style=for-the-badge" alt="Install in Kimi Code"></a>
+  <a href="docs/agent-installation.md#hermes-agent"><img src="https://img.shields.io/badge/Hermes-install-151515?style=for-the-badge" alt="Install in Hermes"></a>
+  <a href="docs/agent-installation.md#openclaw"><img src="https://img.shields.io/badge/OpenClaw-install-151515?style=for-the-badge" alt="Install in OpenClaw"></a>
+  <a href="docs/agent-installation.md#lovable"><img src="https://img.shields.io/badge/Lovable-install-151515?style=for-the-badge" alt="Install in Lovable"></a>
+  <a href="docs/agent-installation.md#vercel-and-v0-projects"><img src="https://img.shields.io/badge/Vercel_v0-install-151515?style=for-the-badge" alt="Install in Vercel v0"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml"><img src="https://github.com/beyondtahir/beyondseo/actions/workflows/tests.yml/badge.svg" alt="Published test workflow status"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-991B1B?style=flat-square" alt="MIT license"></a>
-  <a href="docs/questions.md#does-it-need-tokens-apis-or-paid-scraping-services"><img src="https://img.shields.io/badge/native_engine-no_API_key-151515?style=flat-square" alt="Native engine needs no API key"></a>
+  <a href="https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip"><img src="https://img.shields.io/badge/Download_the_skill_ZIP-991B1B?style=for-the-badge&logo=github&logoColor=white" height="44" alt="Download the latest skill ZIP"></a>
 </p>
 
-<p align="center">
-  <strong><a href="#use-it-in-your-assistant">Choose your assistant</a></strong> |
-  <a href="https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip">Download the latest skill ZIP</a>
-</p>
+[Full installation guide](docs/agent-installation.md) | [Permissions](docs/permissions.md)
 
-**BeyondSEO is a free, open-source AI SEO skill for website audits, AI search, content, competitors and backlinks.** Give it your domain and a goal. Get a practical plan, useful drafts and help with authorised improvements.
-
-For your own business or your clients. It covers SEO, answer engine optimisation (AEO) and generative engine optimisation (GEO). The illustrations explain the workflow; the demo shows real report output for a fictional business.
-
-## What's New
-
-### Meet your more capable SEO house
-
-**New in 2.10:** a clearer way to understand your website, write useful content and put an agreed plan into action. Your existing crawler, backlink library, reports and design protection remain part of the house.
+For app uploads, use the named **skill ZIP**. GitHub's source ZIP is for extraction, not direct skill upload. The prompt is a request to your host, not a universal installer: supported skill controls, model access and runtime permissions still apply. Vercel hosting itself does not install or run skills.
 
 <details>
-<summary><strong>What this update adds</strong></summary>
+<summary><strong>Prefer the terminal? Four commands to start.</strong></summary>
 
-- **A focused team around your website.** SEO, answer content, identity, reputation and competitor specialists share one business brief.
-- **Your Google data, when you choose.** Optional read-only Search Console and Analytics access adds real performance evidence to the plan.
-- **Useful articles, written for you.** An optional Publishing Agent prepares distinct articles and helps with approved submissions.
-- **More ways to keep moving.** Permitted browser evidence, search alternatives and local performance checks help when one route fails.
+You need Python 3.10+ and Git; Python 3.12 is recommended for this version.
+
+```sh
+git clone https://github.com/beyondtahir/beyondseo.git
+cd beyondseo
+python3 scripts/setup.py
+python3 scripts/run.py crawl https://example.com --include-www --out ../client-runs/example
+```
+
+Setup prepares an isolated runtime, the local engine, PDF renderer and Chromium. On Windows use `py -3` instead of `python3`. No virtualenv activation or execution-policy change is needed. Open `report.md`, `readiness.md` and `coverage.json` in your output folder.
+
+For a supported local assistant, run the matching installer from the checkout, for example:
+
+```sh
+python3 scripts/install_skill.py --host codex --setup
+```
+
+[All host commands](docs/agent-installation.md) | [Setup and troubleshooting](docs/setup.md) | [Local practice site](examples/README.md)
 
 </details>
 
-[Full change notes](CHANGELOG.md) | [Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip)
+## What you get
 
-## BeyondSEO at work
+<table>
+<tr>
+<td width="33%" align="center"><img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/card-find.png" height="170" alt="Paper helper with a magnifying glass"><br><br><strong>See what is wrong</strong><br><br>A full audit of your pages, with the exact pages to fix, why each fix matters and how to check it worked.</td>
+<td width="33%" align="center"><img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/card-write.png" height="170" alt="Paper helper writing with a pencil"><br><br><strong>Get the words written</strong><br><br>Page copy, clear answers for AI search and complete article drafts based on your real business.</td>
+<td width="33%" align="center"><img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/paperworks/card-trust.png" height="170" alt="Paper helper pulling a large paperclip"><br><br><strong>Build real trust</strong><br><br>Compare real competitors, check backlinks and get a plan for where to contribute next.</td>
+</tr>
+</table>
 
-**From a website question to a report you can use.** The report walks through priorities, comparable businesses, specific page findings and the next actions.
-
-<picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/report-preview-still.png">
-  <img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/report-preview.gif" width="1120" alt="Actual BeyondSEO HTML report replay: cover, priorities, competitor comparison, page evidence and action plan. Uses the included fictional Example Studio input.">
-</picture>
-
-*Real report output, fictional example business. This demonstrates the report format, not a client's rankings or growth.* [Static preview](https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/report-preview-still.png) | [See the example input](examples/report-content.json) | [PDF and HTML reports](docs/branded-reports.md)
-
-Start with one request:
-
-```text
-Use BeyondSEO to audit https://example.com.
-Understand our business first. Tell me what to fix, which competitors
-really matter, and what to write next. Give me a clear 30/60/90-day plan.
-```
-
-You get the **affected pages, the reason each change matters, useful drafts and a way to check the result**. A normal audit starts with 15 priority page attempts. Choose a homepage, exact pages or a deeper review, and see what remains unchecked.
+You also get a branded PDF report and a 30/60/90-day plan. It needs no API key or paid SEO tool, and it never promises rankings: it shows the evidence, and what it could not check.
 
 ## Give it a goal
 
@@ -174,6 +210,49 @@ understand and show what was checked and what remains unknown.
 
 Be as brief or specific as you like. An audit alone does not edit your website or start background jobs; implementation and recurring work follow the scope you authorise.
 
+## See a real report
+<a id="beyondseo-at-work"></a>
+
+**From a website question to a report you can use.** The report walks through priorities, comparable businesses, specific page findings and the next actions.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/report-preview-still.png">
+  <img src="https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/report-preview.gif" width="1120" alt="Actual BeyondSEO HTML report replay: cover, priorities, competitor comparison, page evidence and action plan. Uses the included fictional Example Studio input.">
+</picture>
+
+*Real report output, fictional example business. This demonstrates the report format, not a client's rankings or growth.* [Static preview](https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/report-preview-still.png) | [See the example input](examples/report-content.json) | [PDF and HTML reports](docs/branded-reports.md)
+
+Start with one request:
+
+```text
+Use BeyondSEO to audit https://example.com.
+Understand our business first. Tell me what to fix, which competitors
+really matter, and what to write next. Give me a clear 30/60/90-day plan.
+```
+
+You get the **affected pages, the reason each change matters, useful drafts and a way to check the result**. A normal audit starts with 15 priority page attempts. Choose a homepage, exact pages or a deeper review, and see what remains unchecked.
+
+## Our Academy, after using BeyondSEO
+
+**These are our Academy’s real search results, shared after using BeyondSEO on the site.** Google Search Console shows **5,371 clicks and 222,268 impressions** across the selected three-month period.
+
+![Genuine cropped Google Search Console performance view for academy.beyondtahir.com. Web search, 28 July to 27 October 2026: 5.37K clicks, 222K impressions, 2.4% average CTR and 6.3 average position.](https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/academy-search-console-20261030.jpg)
+
+*Shared by BeyondSEO creator Tahir. Google Search Console, Web search, 28 July–27 October 2026; captured on 30 October 2026. The screenshot rounds the totals to 5.37K clicks and 222K impressions.* [Image provenance](https://github.com/beyondtahir/beyondseo/blob/main/media/README.md)
+
+BeyondSEO helps turn performance evidence into better questions: **Which pages deserve attention? Which searches fit the business? What should we check after a change?**
+
+Use a Search Console export now. The optional Google connection can read Search Console and Organic Search landing-page reports from Analytics, with your consent and property access. An existing suitable connector may be usable; native OAuth requires your own Google client setup. Real-account consent has not been verified in every host. [Google connection and export guide](docs/operations.md#google-account-access)
+
+**Latest release:** clearer connection errors, shorter reports that start with your top actions, and a check that a complete audit really is complete. [Full change notes](CHANGELOG.md)
+
+## Go deeper
+
+Everything else is here when you want the detail.
+
+<details>
+<summary><strong>Your complete SEO house: the specialists</strong></summary>
+
 ## Your complete SEO house
 
 Your customer sees one business. Your website, answers, identity and reputation should tell the same story.
@@ -214,6 +293,11 @@ These are responsibilities using your host's available model. Independent work c
 
 [Explore every capability](references/capabilities.md) | [How a complete engagement works](playbooks/core/seo-house-workflow.md)
 
+</details>
+
+<details>
+<summary><strong>How competitors are chosen</strong></summary>
+
 ## Compare businesses that belong together
 
 An AI agency should be compared with agencies serving similar customers and needs. A shared keyword alone is not enough.
@@ -231,17 +315,10 @@ Direct competitors, search competitors and aspirational examples stay separate. 
 
 [How business profiles and competitor research work](docs/browser-search.md)
 
-## Our Academy, after using BeyondSEO
+</details>
 
-**These are our Academy’s real search results, shared after using BeyondSEO on the site.** Google Search Console shows **5,371 clicks and 222,268 impressions** across the selected three-month period.
-
-![Genuine cropped Google Search Console performance view for academy.beyondtahir.com. Web search, 28 July to 27 October 2026: 5.37K clicks, 222K impressions, 2.4% average CTR and 6.3 average position.](https://raw.githubusercontent.com/beyondtahir/beyondseo/main/media/academy-search-console-20261030.jpg)
-
-*Shared by BeyondSEO creator Tahir. Google Search Console, Web search, 28 July–27 October 2026; captured on 30 October 2026. The screenshot rounds the totals to 5.37K clicks and 222K impressions.* [Image provenance](https://github.com/beyondtahir/beyondseo/blob/main/media/README.md)
-
-BeyondSEO helps turn performance evidence into better questions: **Which pages deserve attention? Which searches fit the business? What should we check after a change?**
-
-Use a Search Console export now. The optional Google connection can read Search Console and Organic Search landing-page reports from Analytics, with your consent and property access. An existing suitable connector may be usable; native OAuth requires your own Google client setup. Real-account consent has not been verified in every host. [Google connection and export guide](docs/operations.md#google-account-access)
+<details>
+<summary><strong>Backlinks and reputation</strong></summary>
 
 ## Our backlink and reputation system
 
@@ -270,6 +347,11 @@ When you request a publishing campaign, the optional Publishing Agent can write 
 
 [Browse the 206-entry library](docs/backlink-source-catalog.md) | [Writing and posting guide](docs/backlink-posting-guide.md) | [Reputation scoring explained](docs/scoring-explained.md)
 
+</details>
+
+<details>
+<summary><strong>Keep your design while you improve the site</strong></summary>
+
 ## Keep your design. Improve what matters.
 
 Ask BeyondSEO to apply the agreed on-site plan through your agent's available editing or hosting tools. Preserve the layout, useful concise copy and real business facts while improving titles, answers, internal links, structured data and supported sitemap changes.
@@ -278,59 +360,10 @@ Ask BeyondSEO to apply the agreed on-site plan through your agent's available ed
 
 [Website work and design protection](docs/website-work.md) | [Progress, repeat checks and hosting](docs/operations.md)
 
-## Quick start
-
-### Use it in your assistant
-
-Choose your app. You can start by pasting this request into an assistant with installation tools:
-
-```text
-Install BeyondSEO from https://github.com/beyondtahir/beyondseo.
-Follow docs/agent-installation.md for my app. Confirm the skill is saved,
-set up its crawler in an allowed runtime, and check that it can run.
-Then use BeyondSEO to audit my website.
-```
-
-| Where you work | Start here |
-|---|---|
-| ChatGPT Work | [Skill upload and runtime guide](docs/agent-installation.md#chatgpt-work) |
-| Claude Desktop / Cowork | [Claude skill upload guide](docs/agent-installation.md#claude-website-and-desktop-skills) |
-| Claude Code | [Local installation](docs/agent-installation.md#claude-code) |
-| Codex | [Local installation](docs/agent-installation.md#codex) |
-| Hermes | [Agent installation](docs/agent-installation.md#hermes-agent) |
-| OpenClaw | [Agent installation](docs/agent-installation.md#openclaw) |
-| Cursor | [Add it to your project](docs/agent-installation.md#cursor) |
-| Kimi Code | [Local installation](docs/agent-installation.md#kimi-code) |
-| Lovable | [Import the full skill](docs/agent-installation.md#lovable) |
-| Vercel / v0 projects | [Use the agent managing your project](docs/agent-installation.md#vercel-and-v0-projects) |
-
-**[Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip)** | [Full installation guide](docs/agent-installation.md) | [Permissions](docs/permissions.md)
-
-For app uploads, use the named **skill ZIP**. GitHub's source ZIP is for extraction, not direct skill upload. The prompt is a request to your host, not a universal installer: supported skill controls, model access and runtime permissions still apply. Vercel hosting itself does not install or run skills.
+</details>
 
 <details>
-<summary><strong>Prefer the terminal? Four commands to start.</strong></summary>
-
-You need Python 3.10+ and Git; Python 3.12 is recommended for this version.
-
-```sh
-git clone https://github.com/beyondtahir/beyondseo.git
-cd beyondseo
-python3 scripts/setup.py
-python3 scripts/run.py crawl https://example.com --include-www --out ../client-runs/example
-```
-
-Setup prepares an isolated runtime, the local engine, PDF renderer and Chromium. On Windows use `py -3` instead of `python3`. No virtualenv activation or execution-policy change is needed. Open `report.md`, `readiness.md` and `coverage.json` in your output folder.
-
-For a supported local assistant, run the matching installer from the checkout, for example:
-
-```sh
-python3 scripts/install_skill.py --host codex --setup
-```
-
-[All host commands](docs/agent-installation.md) | [Setup and troubleshooting](docs/setup.md) | [Local practice site](examples/README.md)
-
-</details>
+<summary><strong>Why choose BeyondSEO?</strong></summary>
 
 ## Why choose BeyondSEO?
 
@@ -343,6 +376,31 @@ python3 scripts/install_skill.py --host codex --setup
 | Come back and improve | Saved evidence, repeat reviews and optional private progress monitoring |
 
 **Your evidence stays inspectable. Your plan stays specific. Your agent stays the place you work.**
+
+</details>
+
+<details>
+<summary><strong>What's in recent releases</strong></summary>
+
+## What's New
+
+### Meet your more capable SEO house
+
+**New in 2.10:** a clearer way to understand your website, write useful content and put an agreed plan into action. Your existing crawler, backlink library, reports and design protection remain part of the house.
+
+<details>
+<summary><strong>What this update adds</strong></summary>
+
+- **A focused team around your website.** SEO, answer content, identity, reputation and competitor specialists share one business brief.
+- **Your Google data, when you choose.** Optional read-only Search Console and Analytics access adds real performance evidence to the plan.
+- **Useful articles, written for you.** An optional Publishing Agent prepares distinct articles and helps with approved submissions.
+- **More ways to keep moving.** Permitted browser evidence, search alternatives and local performance checks help when one route fails.
+
+</details>
+
+[Full change notes](CHANGELOG.md) | [Download the latest skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip)
+
+</details>
 
 ## Project status
 
@@ -567,7 +625,6 @@ Use your host's skill controls to replace or remove the installed skill. For a l
 </details>
 
 Still need help? [Read the detailed questions guide](docs/questions.md), [report a problem](https://github.com/beyondtahir/beyondseo/issues/new?template=bug.yml) or ask BeyondSEO to explain its findings in plain language.
-
 
 ## About the creator
 

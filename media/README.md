@@ -38,6 +38,14 @@ stacks these elements. This is precise layout and text finishing using the exist
 art, not a new character design. The README keeps its description, navigation and
 copyable example prompts as native text; image alternative text identifies the heading.
 
+## The README opening and explainer
+
+`paperworks/hero.png` and `hero-mobile.png` are captures of `paperworks/source/hero.html`, using the original
+house artwork and unchanged logo. `paperworks/explainer.gif` is an illustrated, silent 3D explainer of about 21 seconds, drawn as an original
+paper box. It is not a recording of an audit. Its editable HyperFrames project is `paperworks/source/explainer`; the GIF is a
+10 fps, 800-pixel-wide, 64-colour cut, and `explainer-still.png` is its reduced-motion alternative. `card-*.png`
+are clean cut-outs of the original poses.
+
 ## Actual output and owner-authorised evidence
 
 `report-preview.gif` replays actual BeyondSEO HTML report output using the included
