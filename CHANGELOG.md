@@ -1,27 +1,5 @@
 # Changelog
 
-## 2.11.0 — Complete audits, readable reports
-
-5 November 2026
-
-- Group repeated audit findings into one issue, open reports with a short "Start here" action list, order issues by priority, and keep every observation in an evidence appendix and `audit.json`.
-- Add plain titles and explanations for common issues that previously had a generic message.
-- Warn clearly in `audit.json`, `audit.md` and reports when an audit has no reviewed business profile or search discovery, so a website-only export is not mistaken for a complete audit.
-- Add a complete-audit checklist to the skill, with exact commands and a definition of done.
-- Add `audit-check`, which compares an audit folder and report with the required stages, flags missing evidence, counts or competitor names, and lists unattributed claims to review.
-- Document Codex's sandbox limit on Chromium, and tell the skill to use HTTP mode when `doctor` reports that the browser is denied.
-- Redesign the README around a 3D paper box explainer, with install buttons and plain-language cards.
-
-## 2.10.1 — Clearer connection errors, easier installs
-
-5 November 2026
-
-- Explain a DNS or connection failure while retrieving robots.txt as an environment network problem, not a robots policy, in the crawl report, `access.json` and `readiness.md`. Recognise more name-resolution error wordings.
-- Let `doctor` run before setup so it can report missing dependencies, and replace the raw traceback from other commands with a clear setup instruction.
-- Add `--host kimi` and a Kimi Code guide, with stated limits for Kimi Code and the Kimi website.
-- Add a stable `beyondseo-skill.zip` release asset name and direct README download links that follow the latest release.
-- Ask installation checks to report the loaded version and path, because an older copy can take priority over a newer one.
-
 ## 2.10.0 — Your SEO house, ready for the next step
 
 30 October 2026

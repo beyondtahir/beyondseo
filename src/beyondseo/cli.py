@@ -12,7 +12,7 @@ from contextlib import closing
 from pathlib import Path
 
 
-def parser(extensions=True):
+def parser():
     root = argparse.ArgumentParser(prog="beyondseo", description=__doc__)
     from . import __version__
 
@@ -288,13 +288,12 @@ def parser(extensions=True):
             p.add_argument(
                 "--expect-plan", required=True, help="SHA-256 of the reviewed plan.json."
             )
-    if extensions:
-        from . import google_access, offsite, onsite, projects
+    from . import google_access, offsite, onsite, projects
 
-        onsite.register(sub)
-        projects.register(sub)
-        google_access.register(sub)
-        offsite.register(sub)
+    onsite.register(sub)
+    projects.register(sub)
+    google_access.register(sub)
+    offsite.register(sub)
     p = sub.add_parser(
         "browser-evidence",
         help="Import actual permitted source-page browser observations; no browser is launched.",
@@ -328,17 +327,7 @@ class OutputLock:
 
 
 def main(argv=None):
-    arguments = list(sys.argv[1:] if argv is None else argv)
-    try:
-        # doctor must be able to report a runtime whose dependencies are still missing.
-        args = parser(extensions=arguments[:1] != ["doctor"]).parse_args(arguments)
-    except ModuleNotFoundError as exc:
-        print(
-            f"Missing dependency: {exc.name}. Prepare the runtime with scripts/setup.py "
-            "(use --venv with a writable folder if the skill folder is read-only).",
-            file=sys.stderr,
-        )
-        return 2
+    args = parser().parse_args(argv)
     if args.command == "browser-evidence":
         from .backlinks import import_browser_evidence
 
@@ -487,12 +476,6 @@ def main(argv=None):
             file=sys.stderr,
         )
         return 2
-    if args.command == "audit-check":
-        from .findings import audit_check
-
-        result = audit_check(args.run, args.report)
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        return 0 if result["status"] != "incomplete" else 1
     from beyondseo.engine import Crawler
     from beyondseo.network import Config
 
