@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 from .engine import Crawler, write_json
+from .evidence import require_native_snapshot
 from .network import utcnow
 from .review import compare
 
@@ -14,6 +15,7 @@ def watch(config, out, cycles=3, interval=3600, quiet=False, sleep=time.sleep, s
     if not 1 <= cycles <= 10000 or interval < 60:
         raise ValueError("Use 1–10000 cycles and at least 60 seconds between completed runs.")
     out = Path(out)
+    require_native_snapshot(out, "Native monitoring")
     out.mkdir(parents=True, exist_ok=True)
     state_path = out / "watch.json"
     if state_path.exists() or any(out.glob("run-*")):

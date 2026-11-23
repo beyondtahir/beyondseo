@@ -20,19 +20,27 @@ def installed_browsers():
         "chrome": ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"],
         "edge": ["/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"],
         "firefox": ["/Applications/Firefox.app/Contents/MacOS/firefox"],
+        "brave": ["/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"],
+        "safari": ["/Applications/Safari.app/Contents/MacOS/Safari"],
+        "vivaldi": ["/Applications/Vivaldi.app/Contents/MacOS/Vivaldi"],
     }
     for browser, relative in [
         ("chrome", "Google/Chrome/Application/chrome.exe"),
         ("edge", "Microsoft/Edge/Application/msedge.exe"),
+        ("brave", "BraveSoftware/Brave-Browser/Application/brave.exe"),
+        ("vivaldi", "Vivaldi/Application/vivaldi.exe"),
     ]:
         for variable in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA"):
             if os.getenv(variable):
-                paths[browser].append(str(Path(os.environ[variable]) / relative))
+                paths.setdefault(browser, []).append(str(Path(os.environ[variable]) / relative))
     for browser, commands in {
         "chrome": ["google-chrome", "google-chrome-stable"],
         "edge": ["microsoft-edge"],
         "chromium": ["chromium", "chromium-browser"],
         "firefox": ["firefox"],
+        "brave": ["brave-browser", "brave-browser-stable"],
+        "safari": [],
+        "vivaldi": ["vivaldi", "vivaldi-stable"],
     }.items():
         options = paths.get(browser, []) + [shutil.which(command) for command in commands]
         match = next((path for path in options if path and Path(path).is_file()), None)
@@ -94,7 +102,7 @@ def prepare_browser():
     }
 
 
-def environment_report():
+def environment_report(*, check_browser=True):
     result = {"python": platform.python_version(), "packages": {}, "chromium": "not installed"}
     for package in ("beautifulsoup4", "colorama", "playwright", "reportlab"):
         try:
@@ -105,7 +113,7 @@ def environment_report():
         "code": "missing_dependency",
         "evidence": "Playwright package not installed.",
     }
-    if result["packages"]["playwright"]:
+    if result["packages"]["playwright"] and check_browser:
         try:
             from playwright.sync_api import sync_playwright
 
@@ -126,6 +134,9 @@ def environment_report():
             error = type(exc).__name__ + ": " + str(exc)
             result["chromium"] = "unavailable"
             browser_failure = failure_detail(error, context="execution")
+    if not check_browser:
+        result["chromium"] = "not tested"
+        browser_failure = None
     result["http_ready"] = bool(result["packages"]["beautifulsoup4"])
     result["http_ready_meaning"] = (
         "Legacy dependency-availability flag only; see checks.target_reachable for actual access."
@@ -138,14 +149,24 @@ def environment_report():
         },
         "html_parser": {
             "status": "PASS" if result["http_ready"] else "FAIL",
-            "evidence": result["packages"]["beautifulsoup4"],
+            "evidence": result["packages"]["beautifulsoup4"]
+            or "beautifulsoup4 is not installed in this Python runtime.",
             "blocks_crawling": not result["http_ready"],
+            **(
+                {}
+                if result["http_ready"]
+                else {
+                    "remediation": "Run scripts/setup.py. If the skill folder is read-only, use scripts/setup.py --venv <writable-folder>, then scripts/run.py --runtime <writable-folder> doctor."
+                }
+            ),
         },
         "javascript_probe": {
-            "status": "PASS" if result["chromium"] == "ready" else "BLOCKED",
+            "status": "NOT_TESTED"
+            if not check_browser
+            else ("PASS" if result["chromium"] == "ready" else "BLOCKED"),
             "evidence": "Local inline-script DOM mutation verified."
             if result["chromium"] == "ready"
-            else browser_failure,
+            else (browser_failure or "Browser launch explicitly skipped."),
             "blocks_crawling": False,
             "blocks": "JavaScript rendering only",
         },
@@ -163,7 +184,9 @@ def environment_report():
             "evidence": "Python executed; beautifulsoup4 package availability checked.",
         },
         "browser_runtime": {
-            "status": "ready" if result["browser_ready"] else browser_failure["code"],
+            "status": "not_tested"
+            if not check_browser
+            else ("ready" if result["browser_ready"] else browser_failure["code"]),
             "failure": browser_failure,
         },
         "target_reachable": {"status": "not_tested"},
@@ -198,9 +221,9 @@ def environment_report():
     return result
 
 
-def check_environment(target=None, query=None, out=None):
+def check_environment(target=None, query=None, out=None, *, check_browser=True):
     """Only explicit target/query probes make network requests; preserve legacy fields."""
-    result = environment_report()
+    result = environment_report(check_browser=check_browser)
     launcher = Path(__file__).resolve().parents[2] / "scripts/run.py"
     command = (
         [sys.executable, str(launcher), "doctor"]
@@ -213,6 +236,8 @@ def check_environment(target=None, query=None, out=None):
         command.extend(["--query", query])
     if out:
         command.extend(["--out", str(out)])
+    if not check_browser:
+        command.append("--no-browser")
     result["command"] = command
     probes = result.setdefault("runtime_checks", {})
     for name in ("dns", "robots", "sitemap", "target_http", "target_render"):
@@ -252,7 +277,7 @@ def check_environment(target=None, query=None, out=None):
                     max_sitemaps=3,
                     workers=1,
                     include_www=True,
-                    render_mode="auto",
+                    render_mode="auto" if check_browser else "http",
                     timeout=12,
                     retries=0,
                 )
@@ -266,10 +291,18 @@ def check_environment(target=None, query=None, out=None):
                 except (OSError, ValueError) as exc:
                     probes["dns"] = {
                         "status": "BLOCKED",
-                        "failure": failure_detail(str(exc)),
+                        "failure": failure_detail(type(exc).__name__ + ": " + str(exc)),
                         "evidence": str(exc),
                         "blocks_crawling": True,
-                        "remediation": "Check this host's DNS/network access; do not alter security controls.",
+                        "remediation": (
+                            "Check the target hostname spelling and retry a temporary resolver failure within the request budget. "
+                            "This route needs local target DNS even with an HTTP proxy; the configured proxy does not establish its cause. "
+                            "Use an independently permitted host browser/fetch capture, "
+                            "or ask the host administrator for approved DNS access. "
+                            "Installing Chromium does not change this transport."
+                            if "dns_resolution_failed_with_proxy_configured" in str(exc)
+                            else "Check this host's DNS/network access; do not alter security controls."
+                        ),
                     }
                 if probes["dns"]["status"] == "PASS":
                     crawler = Crawler(config, folder / "target")
@@ -327,8 +360,10 @@ def check_environment(target=None, query=None, out=None):
                     result["target_coverage"] = summary.get("coverage")
                 else:
                     result["checks"]["target_reachable"] = {
-                        "status": "blocked",
-                        "failure": probes["dns"],
+                        "status": (probes["dns"].get("failure") or {}).get("code", "blocked"),
+                        "url": config.url,
+                        "failure": probes["dns"].get("failure"),
+                        "remediation": probes["dns"]["remediation"],
                     }
             if query and result["http_ready"]:
                 from .discovery import discover
@@ -384,6 +419,8 @@ def check_environment(target=None, query=None, out=None):
     print(json.dumps(result, indent=2))
     return (
         1
-        if result["status"] == "BLOCKED" or not result["http_ready"] or not result["browser_ready"]
+        if result["status"] == "BLOCKED"
+        or not result["http_ready"]
+        or (check_browser and not result["browser_ready"])
         else 0
     )

@@ -197,7 +197,7 @@ def extract(html, url, headers=None, selectors=None):
     }
 
 
-def index_signals(data, headers, status, final_url):
+def index_signals(data, headers, status, final_url, *, headers_observed=True):
     # Preserve directives by agent; do not merge another crawler's restrictions into Google's.
     generic = list(data.get("meta", {}).get("robots", []))
     google = list(data.get("meta", {}).get("googlebot", []))
@@ -228,9 +228,12 @@ def index_signals(data, headers, status, final_url):
         "googlebot_noindex_observed": noindex,
         "generic_meta": generic,
         "googlebot_meta": google,
-        "x_robots_tag": raw_header,
+        "x_robots_tag": raw_header if headers_observed else None,
+        "headers_observed": headers_observed,
         "canonical_elsewhere": any(normalize_url(c) != normalize_url(final_url) for c in canonical),
-        "indexability_candidate": 200 <= status < 300
+        "indexability_candidate": None
+        if not status or not headers_observed
+        else 200 <= status < 300
         and not noindex
         and not any(normalize_url(c) != normalize_url(final_url) for c in canonical),
         "indexing_status": "not_verified",

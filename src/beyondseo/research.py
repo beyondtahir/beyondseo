@@ -64,7 +64,7 @@ def verify_reference(reference, index, *, require_complete=False):
     url = normalize_url(reference.get("url", ""))
     page = index.get(url)
     if not page or not capture_quality(page)["usable"]:
-        raise ValueError("Reference needs a successful native capture: " + str(url))
+        raise ValueError("Reference needs a successful page capture: " + str(url))
     quality = capture_quality(page)
     if require_complete and not quality["absence_supported"]:
         raise ValueError("Incomplete capture cannot support an absence claim: " + url)
@@ -79,7 +79,7 @@ def verify_reference(reference, index, *, require_complete=False):
     elif len(quote) < 12 or quote not in normalized_text(
         data.get("text", "") + " " + data.get("main_text", "")
     ):
-        raise ValueError("Evidence quote must match native captured text: " + url)
+        raise ValueError("Evidence quote must match captured text: " + url)
     return {
         **reference,
         "url": url,

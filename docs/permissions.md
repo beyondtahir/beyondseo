@@ -21,6 +21,7 @@ Developer tests, Git history, virtual environments, caches and client run folder
 | Crawl a website | Reads the requested HTTP(S) site and bounded sitemap/page links; writes reports to the chosen output folder | Public network requests; optional JavaScript rendering and public page dependencies |
 | Discover candidates | Writes queries, source leads, response snapshots and provenance | Optional public native search; host results and offline imports also supported |
 | Check backlinks | Reads supplied/discovered source pages and verifies observed links | Public HTTP(S) requests within configured limits |
+| Import public page captures | Reads a bounded HTML manifest and local HTML; writes a new private analysis snapshot | No requests, script execution or browser launch; does not change host permissions |
 | Watch changes | Creates a bounded series of crawl snapshots | Repeats the configured crawl; does not publish or create a host automation |
 | Apply a website edit | Reads the specified existing content file; stages a diff, backup and reviewed plan | Optional SFTP/FTPS to the configured host, only for the authorized edit |
 

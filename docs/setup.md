@@ -39,6 +39,8 @@ py -3 scripts/run.py doctor
 
 Setup creates `.venv`, installs the local project, PDF renderer and browser library, downloads Chromium, and checks that it can launch. It does not change your system Python or send a crawl to a hosted service.
 
+Setup first tests whether Python can execute from the chosen runtime folder, before downloading dependencies. It installs the base engine first, then attempts PDF and browser support separately. If an optional download or Chromium launch fails, it checks the HTTP engine and reports that narrower result. Use `--http-only` to skip the browser, or `--require-browser` when your task needs setup to fail unless browser rendering works. Commands have timeouts; setup does not retry indefinitely. A setup success confirms local engine readiness, not website or search access.
+
 The launcher works without activation or changes to PowerShell execution policy:
 
 ```powershell
@@ -64,6 +66,8 @@ python3 scripts/run.py doctor
 ```
 
 `doctor` executes a private filesystem write/readback and launches Chromium with a local JavaScript DOM probe. With `--target https://example.com --out ../doctor-run`, it separately checks DNS/address policy, robots, bounded sitemap discovery, one HTTP page and automatic rendering where needed. Results use PASS, WARN, FAIL, BLOCKED and NOT_TESTED, with commands and recorded evidence. Missing dependencies or a blocked target affect the exit status. A successful local runtime does not prove website/network access. The legacy `http_ready` flag means parser dependency availability only; use `runtime_checks` and `checks.target_reachable` for executed checks. An HTTP-only audit can still use `--mode http` without Chromium. PDF package availability is not a rendered PDF test.
+
+For an HTTP-only environment use `doctor --no-browser`. This explicitly skips browser launch and rendering probes, records them as NOT_TESTED, and checks the HTTP runtime independently. It does not label a skipped browser as ready. Setup also uses this route after a browser diagnostic timeout.
 
 ## 4. Run a small crawl
 
@@ -92,6 +96,8 @@ python3 /path/to/beyondseo/scripts/run.py --runtime /approved/runtime/beyondseo 
 ```
 
 Replace both paths with real paths in that execution environment. Setup uses a temporary source copy when building the package, so it does not write build files into the mounted skill. A denied path still needs a host-supported location; the option does not change permissions. Use the same `--runtime` for every crawler command. See [Work save and execution errors](agent-installation.md#when-work-cannot-save-or-run-it).
+
+If target DNS or native networking is unavailable, use [saved public page captures](browser-search.md#continue-a-website-audit-from-saved-pages) from an independently permitted host tool. Installing Chromium does not provide a different DNS route: its requests pass through the same protected transport as the HTTP crawler.
 
 ## Manual installation
 
