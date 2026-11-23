@@ -98,6 +98,43 @@ class CaptureImportTests(unittest.TestCase):
         self.assertIsNone(readiness["sitemap_urls_observed"])
         self.assertIsNone(readiness["pages"][0]["index_signals_selected"]["indexability_candidate"])
 
+    def test_direct_page_text_supports_content_but_not_technical_findings(self):
+        del self.record["html_path"]
+        text = "We implement AI assistants for retailers in Pakistan."
+        self.record.update(method="host_page_text", title="Example agency", page_text=text)
+        self.manifest_for()
+        with patch("socket.getaddrinfo", side_effect=socket.gaierror("DNS denied")) as dns:
+            result = import_captures(self.manifest, self.out)
+            packet = profile(self.out, self.root / "profile")
+            report = audit_report(self.out, self.root / "audit")
+        dns.assert_not_called()
+        self.assertEqual(result["inspected"], 1)
+        page = read_pages(self.out)[0]
+        self.assertIsNone(page["html_path"])
+        self.assertEqual((self.out / page["text_path"]).read_text(), text)
+        self.assertEqual(page["status"], 0)
+        self.assertFalse(page["imported_capture"]["complete"])
+        self.assertEqual(packet["page_evidence"][0]["main_text"], text)
+        self.assertIsNone(packet["page_evidence"][0]["schema_types"])
+        self.assertEqual([f["code"] for f in report["findings"]], ["capture_incomplete"])
+        finding = report["findings"][0]["evidence_refs"][0]
+        self.assertEqual(finding["representation"], "host_page_text")
+        self.assertEqual(finding["text_path"], page["text_path"])
+        readiness = read_json(self.out / "readiness.json")
+        self.assertIsNone(readiness["pages"][0]["index_signals_selected"]["indexability_candidate"])
+
+    def test_browser_access_screen_is_not_a_usable_text_capture(self):
+        del self.record["html_path"]
+        self.record.update(
+            method="host_page_text",
+            title="Just a moment…",
+            page_text="Verify you are human.\nPlease complete this challenge.",
+        )
+        self.manifest_for()
+        result = import_captures(self.manifest, self.out)
+        self.assertEqual(result["inspected"], 0)
+        self.assertIn("challenge", read_pages(self.out)[0]["error"])
+
     def test_challenge_html_is_not_accepted_as_website_content(self):
         (self.root / "home.html").write_text(
             '<title>Just a moment...</title><div class="cf-chl-test">Checking browser</div>'

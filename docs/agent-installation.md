@@ -100,7 +100,7 @@ directly and continue with the evidence you can read.
 - **Work in the desktop app:** if Chrome access is unavailable or unnecessary, try the app’s built-in browser. Reference `@Browser` where the app supports it. [Built-in browser controls](https://help.openai.com/en/articles/20001277-using-the-built-in-browser-in-the-chatgpt-desktop-app).
 - **Work on the web:** use a browser tool offered in the task, such as the cloud browser if enabled. If there’s no browser, use a permitted tool that can open the exact public URL or work from supplied files. The cloud browser has its own tabs and account state. [Work cloud browser availability](https://help.openai.com/en/articles/20001280-using-cloud-browser-in-chatgpt).
 
-The assistant handles [capturing and importing the pages](browser-search.md#continue-a-website-audit-from-saved-pages). If its tool returns only visible text, it can still review the observed copy and headings, but must leave headers, markup, indexing and site coverage unmeasured. A search snippet or a blocked page does not count as an inspected page.
+The assistant handles [capturing and importing the pages](browser-search.md#continue-a-website-audit-from-saved-pages). If its tool returns only page text, BeyondSEO can import the verbatim excerpt for a content review. Headers, markup, indexing and site coverage stay unmeasured. A search snippet or a blocked page does not count as an inspected page.
 
 ## Claude website and desktop Skills
 

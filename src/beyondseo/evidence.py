@@ -21,6 +21,10 @@ def capture_quality(page):
     )
     limits = []
     if imported:
+        if representation == "host_page_text":
+            limits.append(
+                "Only text from the opened page was supplied; HTML and headings were not inspected."
+            )
         limits.append(
             "Supplied page capture; HTTP reachability, headers, redirects, robots and "
             "render completeness were not independently verified by the native crawler."
@@ -66,7 +70,7 @@ def selected_data(page):
 
 
 def import_captures(manifest, out):
-    """Review bounded supplied public HTML without making any network request."""
+    """Review bounded supplied public HTML or directly retrieved page text offline."""
     import hashlib
     import json
     import tempfile
@@ -105,8 +109,11 @@ def import_captures(manifest, out):
             raise ValueError("Duplicate capture URL; choose one observation per URL per snapshot.")
         seen.add(url)
         method = record.get("method")
-        if method not in ("host_browser_dom", "host_fetch", "saved_html"):
-            raise ValueError("Method must be host_browser_dom, host_fetch or saved_html.")
+        if method not in ("host_browser_dom", "host_fetch", "saved_html", "host_page_text"):
+            raise ValueError(
+                "Method must be host_browser_dom, host_fetch, saved_html or host_page_text."
+            )
+        text_only = method == "host_page_text"
         if record.get("access_context") != "public":
             raise ValueError("Only public captures support this website audit import.")
         tool = record.get("tool")
@@ -128,7 +135,45 @@ def import_captures(manifest, out):
             error = "Supplied capture reports HTTP " + str(status)
         name = record.get("html_path")
         body = b""
-        if name:
+        data = None
+        if text_only:
+            text = record.get("page_text", "")
+            title = record.get("title", "")
+            if name or not isinstance(text, str) or len(text) > 50_000:
+                raise ValueError(
+                    "For a text observation, supply page_text up to 50,000 characters, without html_path."
+                )
+            if not isinstance(title, str) or len(title) > 512:
+                raise ValueError("Supply only an observed title of up to 512 characters.")
+            if not text.strip() and not error:
+                raise ValueError("Supply actual page text or the observed capture error.")
+            body = text.encode("utf-8")
+            markers = {
+                "access denied",
+                "just a moment",
+                "verify you are human",
+                "checking your browser",
+            }
+            first_lines = [
+                line.strip().lower().rstrip(".!") for line in text.strip().splitlines()[:2]
+            ]
+            if markers.intersection([title.strip().lower().rstrip(".!"), *first_lines]):
+                error = (
+                    error
+                    or "Access or challenge screen in supplied text; page content not established."
+                )
+            if body and not error:
+                data = {
+                    "title": title or None,
+                    "text": text,
+                    "main_text": text,
+                    "word_count": len(text.split()),
+                    "body_word_count": None,
+                    "text_visibility": "Directly retrieved page text; original markup was not supplied.",
+                }
+        elif "page_text" in record:
+            raise ValueError("Use host_page_text for a text observation.")
+        elif name:
             relative = Path(name)
             source = manifest.parent / relative
             if relative.is_absolute() or ".." in relative.parts:
@@ -146,15 +191,18 @@ def import_captures(manifest, out):
             raise ValueError("Supply html_path or the actual capture error.")
         total += len(body)
         if total > 20_000_000:
-            raise ValueError("Combined HTML captures exceed 20 MB.")
-        if challenge_signal({}, body):
-            error = (
-                error or "Challenge interstitial in supplied capture; page content not established."
-            )
-        data = extract(body, final) if body and not error else None
+            raise ValueError("Combined capture bodies exceed 20 MB.")
+        if not text_only:
+            if challenge_signal({}, body):
+                error = (
+                    error
+                    or "Challenge interstitial in supplied capture; page content not established."
+                )
+            data = extract(body, final) if body and not error else None
         if not data or not data.get("text", "").strip():
             error = error or "No usable text in the supplied capture."
-        destination = f"html/{len(pages) + 1:03d}.html" if body else None
+        html_path = f"html/{len(pages) + 1:03d}.html" if body and not text_only else None
+        text_path = f"text/{len(pages) + 1:03d}.txt" if body and text_only else None
         pages.append(
             {
                 "url": url,
@@ -165,13 +213,14 @@ def import_captures(manifest, out):
                 "data": data,
                 "fetched_at": captured,
                 "redirects": [],
-                "html_path": destination,
+                "html_path": html_path,
+                **({"text_path": text_path} if text_only else {}),
                 "body_sha256": hashlib.sha256(body).hexdigest() if body else None,
                 "imported_capture": {
                     "method": method,
                     "tool": tool,
                     "access_context": "public",
-                    "complete": record.get("complete") is True,
+                    "complete": not text_only and record.get("complete") is True,
                     "http_status_observed": status != 0,
                     "metadata_verification": "supplied; not independently authenticated",
                 },
@@ -211,8 +260,11 @@ def import_captures(manifest, out):
         out = Path(scratch) / "snapshot"
         (out / "html").mkdir(parents=True)
         for page, body in zip(pages, bodies):
-            if body:
-                (out / page["html_path"]).write_bytes(body)
+            relative = page["html_path"] or page.get("text_path")
+            if relative:
+                evidence_file = out / relative
+                evidence_file.parent.mkdir(exist_ok=True)
+                evidence_file.write_bytes(body)
         (out / "pages.jsonl").write_text(
             "".join(json.dumps(page, ensure_ascii=False) + "\n" for page in pages), encoding="utf-8"
         )

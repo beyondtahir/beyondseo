@@ -128,6 +128,7 @@ def material_findings(issues, pages, profile=None, summary=None):
                         "representation": issue.get("representation") or quality["representation"],
                         "body_sha256": page.get("body_sha256"),
                         "html_path": page.get("html_path"),
+                        **({"text_path": page["text_path"]} if page.get("text_path") else {}),
                         "rendered_html_path": (page.get("rendered") or {}).get("html_path"),
                     }
                 ],

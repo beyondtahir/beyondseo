@@ -308,6 +308,8 @@ def page_findings(page):
             "; ".join(quality["limits"]),
             "Inspect access and browser evidence, then recapture this URL before assessing missing content.",
         )
+    if representation == "host_page_text":
+        return issues
     missing = missing_content(page)
     if missing:
         add(

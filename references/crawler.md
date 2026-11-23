@@ -10,7 +10,7 @@ Run `beyondseo --help` or `beyondseo crawl --help` for the installed command. Fr
 | `scrape URL --out DIRECTORY` | Process one URL; sitemap discovery is disabled |
 | `report --out DIRECTORY` | Regenerate exports from the local database without network access |
 | `doctor` | Check the runtime, filesystem and browser. Use `--target` to probe page access and `--no-browser` to check HTTP without Chromium. |
-| `capture-import --input MANIFEST --out DIRECTORY` | Inspect [saved public page HTML](../docs/browser-search.md#continue-a-website-audit-from-saved-pages) offline and keep its coverage limits. |
+| `capture-import --input MANIFEST --out DIRECTORY` | Inspect [saved public HTML or directly retrieved page text](../docs/browser-search.md#continue-a-website-audit-from-saved-pages) offline and keep its coverage limits. |
 | `--version` | Print the installed project version |
 
 The output directory is required. A nonempty crawl database requires `--resume`. The output lock prevents concurrent commands from writing the same run. If a process is killed, check the PID in `crawl.lock` before removing that stale file.

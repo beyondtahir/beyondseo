@@ -309,7 +309,7 @@ def parser(extensions=True):
     p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser(
         "capture-import",
-        help="Review supplied public page HTML offline; no browser or network is used.",
+        help="Review supplied public page HTML or observed text offline.",
     )
     p.add_argument("--input", type=Path, required=True, help="JSON capture manifest.")
     p.add_argument("--out", type=Path, required=True, help="New private output folder.")

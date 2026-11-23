@@ -4,7 +4,7 @@
 
 - Set up the basic crawler first. If optional Chromium or PDF setup fails, the crawler can still read initial HTML. Use `--http-only` to skip Chromium and `doctor --no-browser` to check HTTP readiness on its own.
 - Report when a target's address lookup fails with a proxy configured. Keep the original error and destination safety checks. This builds on the community report in [PR #11](https://github.com/beyondtahir/beyondseo/pull/11).
-- Continue with public HTML captured by a permitted browser or supplied by the user. Imported pages keep their source, date and coverage limits.
+- Continue with public HTML or actual page text captured by a permitted browser or page opener. Imported pages keep their source, date and coverage limits. Text alone supports content review.
 - Give Claude Code, Claude Desktop and ChatGPT Work separate installation steps. Check the save, file access and crawler separately. If Work cannot resolve a site, the skill tries a browser Work can already use and continues with the pages it actually reads.
 - Restore the illustrated README, including the paper box explainer and dedicated mobile artwork.
 
