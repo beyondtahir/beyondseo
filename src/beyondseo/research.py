@@ -47,13 +47,7 @@ def host(url):
     return (urlsplit(url).hostname or "").removeprefix("www.")
 
 
-TYPOGRAPHY = str.maketrans(
-    {"‘": "'", "’": "'", "“": '"', "”": '"', "–": "-", "—": "-", "\u00a0": " "}
-)
-
-
 def normalized_text(value):
-    value = str(value).translate(TYPOGRAPHY)
     return re.sub(r"\s+", " ", value).strip()
 
 
@@ -85,12 +79,7 @@ def verify_reference(reference, index, *, require_complete=False):
     elif len(quote) < 12 or quote not in normalized_text(
         data.get("text", "") + " " + data.get("main_text", "")
     ):
-        raise ValueError(
-            "Evidence quote must match native captured text: "
-            + url
-            + ". Copy at least 12 characters of body text, or use a field reference for the "
-            'title or meta description, such as {"field": "meta_description", "value": "..."}.'
-        )
+        raise ValueError("Evidence quote must match native captured text: " + url)
     return {
         **reference,
         "url": url,
