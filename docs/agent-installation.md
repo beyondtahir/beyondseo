@@ -86,7 +86,21 @@ OpenAI distinguishes workspace skills from local filesystem skills. A copy on yo
 
 The package validator does not call Work's save service or safety scanner. There is no BeyondSEO switch that grants workspace permissions or guarantees acceptance. Keep a failed save separate from a failed runtime setup; correcting one does not prove the other is resolved.
 
-When native crawling cannot resolve the target, [continue from saved public pages](browser-search.md#continue-a-website-audit-from-saved-pages) if an independent, permitted browser or fetch tool can read them.
+### Keep an audit going in Work
+
+After a failed native DNS or connection check, continue with an available browser rather than reinstalling Chromium. Ask Work:
+
+```text
+Use BeyondSEO to audit my website. If its crawler cannot reach the pages,
+use the browser already available in this Work task. Open the public pages
+directly and continue with the evidence you can read.
+```
+
+- **Work with Chrome already connected:** use the offered Chrome integration for the public site. If Work prompts for access, review that prompt. The integration can read and interact with open tabs. BeyondSEO only needs the tab for the agreed website. [Using your regular browser in ChatGPT](https://learn.chatgpt.com/docs/chrome-extension).
+- **Work in the desktop app:** if Chrome access is unavailable or unnecessary, try the app’s built-in browser. Reference `@Browser` where the app supports it. [Built-in browser controls](https://help.openai.com/en/articles/20001277-using-the-built-in-browser-in-the-chatgpt-desktop-app).
+- **Work on the web:** use a browser tool offered in the task, such as the cloud browser if enabled. If there’s no browser, use a permitted tool that can open the exact public URL or work from supplied files. The cloud browser has its own tabs and account state. [Work cloud browser availability](https://help.openai.com/en/articles/20001280-using-cloud-browser-in-chatgpt).
+
+The assistant handles [capturing and importing the pages](browser-search.md#continue-a-website-audit-from-saved-pages). If its tool returns only visible text, it can still review the observed copy and headings, but must leave headers, markup, indexing and site coverage unmeasured. A search snippet or a blocked page does not count as an inspected page.
 
 ## Claude website and desktop Skills
 

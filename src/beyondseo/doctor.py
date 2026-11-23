@@ -289,9 +289,10 @@ def check_environment(target=None, query=None, out=None, *, check_browser=True):
                         "blocks_crawling": False,
                     }
                 except (OSError, ValueError) as exc:
+                    failure = failure_detail(type(exc).__name__ + ": " + str(exc))
                     probes["dns"] = {
                         "status": "BLOCKED",
-                        "failure": failure_detail(type(exc).__name__ + ": " + str(exc)),
+                        "failure": failure,
                         "evidence": str(exc),
                         "blocks_crawling": True,
                         "remediation": (
@@ -300,8 +301,14 @@ def check_environment(target=None, query=None, out=None, *, check_browser=True):
                             "Use an independently permitted host browser/fetch capture, "
                             "or ask the host administrator for approved DNS access. "
                             "Installing Chromium does not change this transport."
-                            if "dns_resolution_failed_with_proxy_configured" in str(exc)
-                            else "Check this host's DNS/network access; do not alter security controls."
+                            if failure and failure["code"] == "dns_failure_proxy_configured"
+                            else (
+                                "Use an available permitted host browser to inspect the public URL, "
+                                "or continue from an existing page capture. "
+                                "Reinstalling Chromium does not repair this runtime's DNS."
+                                if failure and failure["code"] == "dns_failure"
+                                else "Check this host's DNS/network access and destination policy."
+                            )
                         ),
                     }
                 if probes["dns"]["status"] == "PASS":

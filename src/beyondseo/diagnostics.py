@@ -83,6 +83,8 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
         code = "browser_runtime_missing"
     elif (
         "gaierror" in lower
+        or "temporary failure in name resolution" in lower
+        or "could not resolve host" in lower
         or "name or service not known" in lower
         or "nodename nor servname" in lower
     ):

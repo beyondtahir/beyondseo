@@ -103,7 +103,7 @@ For full audits, record the host browser/backend/profile in the research evidenc
 Use this when native HTTP fails but the host has an independently permitted public browser/fetch route, or the user already has saved HTML. The importer does not fetch anything, launch a browser, execute page scripts or override a network restriction. A screenshot, search snippet or copied title alone is insufficient HTML evidence.
 
 1. Keep the failed native run and its error. Check the host's actual browser/fetch capabilities, rather than inferring them from the assistant's name. Use a permitted route to inspect the homepage, About, Contact and relevant services within the agreed page budget. A broad access prohibition still applies.
-2. Save the actual public HTML or DOM in a private folder. Do not include account pages, cookies, passwords, tokens or unrelated personal information. Identify the tool, exact URL and original timezone-aware capture date. If no permitted route works, use existing supplied evidence and report the coverage gap.
+2. Save the actual public HTML or DOM in a private folder. Do not include account pages, cookies, passwords, tokens or unrelated personal information. Identify the tool, exact URL and original timezone-aware capture date. If the tool returns only visible text, keep the actual URL, capture time and tool with the excerpt. Review observable copy and headings from that evidence and leave markup, headers and full-page coverage unmeasured. Use any current task browser tools that are permitted before asking the user to save pages. If every route fails, finish from existing evidence and report the gap.
 3. Save `captures.json` beside the HTML files. Repeat a record for each distinct page:
 
 ```json

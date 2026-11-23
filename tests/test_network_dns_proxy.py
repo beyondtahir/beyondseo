@@ -101,9 +101,33 @@ class FailureDetailProxyDnsTests(unittest.TestCase):
         self.assertEqual(detail["code"], "dns_failure_proxy_configured")
 
     def test_plain_dns_failure_still_classifies_as_dns_failure(self):
-        detail = failure_detail("gaierror: Temporary failure in name resolution")
-        self.assertIsNotNone(detail)
-        self.assertEqual(detail["code"], "dns_failure")
+        for message in (
+            "Temporary failure in name resolution",
+            "Could not resolve host: github.com",
+        ):
+            with self.subTest(message=message):
+                detail = failure_detail(message)
+                self.assertEqual(detail["code"], "dns_failure")
+                self.assertEqual(detail["evidence"], message)
+
+    def test_doctor_suggests_existing_browser_after_work_dns_failure(self):
+        from beyondseo.doctor import check_environment
+
+        stdout = io.StringIO()
+        with (
+            tempfile.TemporaryDirectory() as folder,
+            patch(
+                "beyondseo.network.addresses",
+                side_effect=socket.gaierror(-3, "Temporary failure in name resolution"),
+            ),
+            contextlib.redirect_stdout(stdout),
+        ):
+            code = check_environment("https://example.com", out=folder, check_browser=False)
+        target = json.loads(stdout.getvalue())["checks"]["target_reachable"]
+        self.assertEqual(code, 1)
+        self.assertEqual(target["status"], "dns_failure")
+        self.assertIn("host browser", target["remediation"])
+        self.assertIn("Reinstalling Chromium does not repair", target["remediation"])
 
 
 if __name__ == "__main__":
