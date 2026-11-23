@@ -201,7 +201,19 @@ class Config:
 def addresses(url, allow_private=False):
     p = urlsplit(url)
     port = p.port or (443 if p.scheme == "https" else 80)
-    infos = socket.getaddrinfo(p.hostname, port, type=socket.SOCK_STREAM)
+    try:
+        infos = socket.getaddrinfo(p.hostname, port, type=socket.SOCK_STREAM)
+    except socket.gaierror:
+        # Resolution happens locally by design: Transport tunnels to an
+        # already validated IP and never lets a proxy resolve a target.
+        # When a proxy is configured for this scheme, a DNS failure here
+        # means the local resolver cannot resolve public names (common in
+        # proxy-only sandboxes); name that case instead of surfacing a
+        # raw gaierror that reads like a target-site problem.
+        proxies = getproxies_environment()
+        if proxies.get(p.scheme) and not proxy_bypass_environment(p.netloc, proxies):
+            raise ValueError("dns_resolution_failed_with_proxy_configured") from None
+        raise
     if not infos:
         raise ValueError("DNS returned no addresses")
     for _, _, _, _, addr in infos:

@@ -57,6 +57,8 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
         code = "proxy_tunnel_denied"
     elif "unsupported_proxy_configuration" in lower:
         code = "unsupported_proxy_configuration"
+    elif "dns_resolution_failed_with_proxy_configured" in lower:
+        code = "dns_failure_proxy_configured"
     elif "robots_rule_disallowed" in lower:
         code = "robots_restricted"
     elif lower.startswith("robots_"):
