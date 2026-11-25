@@ -251,6 +251,22 @@ class PortabilityTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "already exists"):
                 build(ROOT, archive)
 
+    def test_skill_version_mismatch_stops_archive_build(self):
+        with patch.object(sys, "path", [str(ROOT / "scripts"), *sys.path]):
+            from build_skill import build
+
+            source = self.root / "stale-skill"
+            installer.install(ROOT, source)
+            skill = source / "SKILL.md"
+            text = skill.read_text(encoding="utf-8")
+            start = text.index("  version: ") + len("  version: ")
+            end = text.index("\n", start)
+            skill.write_text(text[:start] + "0.0.0" + text[end:], encoding="utf-8")
+            archive = self.root / "mismatched.zip"
+            with self.assertRaisesRegex(ValueError, r"version mismatch .*SKILL\.md: 0\.0\.0"):
+                build(source, archive)
+            self.assertFalse(archive.exists())
+
     def test_upload_limit_includes_receipt_and_fails_before_writing(self):
         with patch.object(sys, "path", [str(ROOT / "scripts"), *sys.path]):
             from build_skill import build

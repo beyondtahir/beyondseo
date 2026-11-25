@@ -43,6 +43,8 @@ def validate(source):
     if not 1 <= len(metadata["description"]) <= 200:
         raise ValueError("Use a description of 1–200 characters for Claude.ai compatibility.")
     required = (
+        "pyproject.toml",
+        "CITATION.cff",
         "scripts/run.py",
         "scripts/setup.py",
         "src/beyondseo/cli.py",
@@ -55,6 +57,21 @@ def validate(source):
     for name in required:
         if source / name not in included:
             raise ValueError(f"Required runtime resource is missing: {name}")
+    versions = {}
+    for path, pattern in (
+        ("SKILL.md", r"^  version: ([^\s]+)$"),
+        ("pyproject.toml", r'^version\s*=\s*"([^"]+)"$'),
+        ("src/beyondseo/__init__.py", r'^__version__\s*=\s*"([^"]+)"$'),
+        ("CITATION.cff", r"^version: ([^\s]+)$"),
+    ):
+        content = match[1] if path == "SKILL.md" else (source / path).read_text(encoding="utf-8")
+        found = re.findall(pattern, content, re.M)
+        if len(found) != 1:
+            raise ValueError(f"Expected one BeyondSEO version in {path}.")
+        versions[path] = found[0]
+    if len(set(versions.values())) != 1:
+        details = ", ".join(f"{path}: {version}" for path, version in versions.items())
+        raise ValueError(f"BeyondSEO version mismatch ({details}).")
     checked = 0
     for page in files:
         if page.suffix.lower() != ".md":
@@ -75,6 +92,7 @@ def validate(source):
                 )
     return {
         "name": metadata["name"],
+        "version": versions["SKILL.md"],
         "description_characters": len(metadata["description"]),
         "files": len(files),
         "archive_files": archive_files,
