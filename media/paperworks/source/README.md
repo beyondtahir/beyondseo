@@ -37,3 +37,5 @@ keep the artwork left and the text right on desktop, then stack on phones. Captu
 the `#desktop` and `#mobile` elements as PNGs to rebuild the responsive header images.
 The existing logo and illustration are referenced unchanged; this file does not run
 SEO tasks or create a public website.
+
+`hero.html` is the README's dark opening banner. Capture its `#desktop` and `#mobile` sections as PNGs. `explainer/` is the 3D paper box project behind `explainer.gif`; install GSAP there the same way, then render with HyperFrames.

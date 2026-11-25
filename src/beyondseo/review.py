@@ -6,7 +6,7 @@ import json
 import re
 from pathlib import Path
 
-from .evidence import capture_quality, missing_content, selected_data
+from .evidence import capture_quality, missing_content, require_native_snapshot, selected_data
 from .extract import index_signals
 from .network import RobotsRules, origin, utcnow
 
@@ -57,7 +57,7 @@ def readiness(pages, summary, robots, sitemaps):
                 }
             )
 
-        if page.get("error") or not 200 <= page.get("status", 0) < 300 or not data:
+        if not quality["usable"]:
             add(
                 "access_incomplete",
                 "We did not capture usable page content.",
@@ -127,10 +127,18 @@ def readiness(pages, summary, robots, sitemaps):
                     "Review relevant markup for this page; add only types and facts it actually supports.",
                 )
         raw_signals = index_signals(
-            page.get("data") or {}, page.get("headers") or {}, page.get("status", 0), url
+            page.get("data") or {},
+            page.get("headers") or {},
+            page.get("status", 0),
+            url,
+            headers_observed=not bool(page.get("imported_capture")),
         )
         selected_signals = index_signals(
-            data, page.get("headers") or {}, page.get("status", 0), url
+            data,
+            page.get("headers") or {},
+            page.get("status", 0),
+            url,
+            headers_observed=not bool(page.get("imported_capture")),
         )
         if (
             raw_signals["googlebot_noindex_observed"]
@@ -145,7 +153,7 @@ def readiness(pages, summary, robots, sitemaps):
         controls = (
             selected_signals["generic_meta"]
             + selected_signals["googlebot_meta"]
-            + [selected_signals["x_robots_tag"]]
+            + ([selected_signals["x_robots_tag"]] if selected_signals["x_robots_tag"] else [])
         )
         # Preserve exact header text; agent-specific headers need individual interpretation.
         snippet_controls = [
@@ -207,14 +215,16 @@ def readiness(pages, summary, robots, sitemaps):
                 "status": page.get("status"),
                 "main_words": data.get("word_count", 0),
                 "body_words": data.get("body_word_count", 0),
-                "in_observed_sitemap": page["url"] in listed or url in listed,
+                "in_observed_sitemap": None
+                if page.get("imported_capture")
+                else (page["url"] in listed or url in listed),
                 "schema_types": data.get("schema_types", []),
                 "microdata_types": data.get("microdata_types", []),
                 "schema_errors": data.get("jsonld_errors", []),
                 "robots_path_permissions": policies,
                 "ai_robots_policy": ai_policies,
                 "snippet_controls_to_review": snippet_controls,
-                "index_signals_http": raw_signals,
+                "index_signals_http": None if page.get("imported_capture") else raw_signals,
                 "index_signals_selected": selected_signals,
                 "observations": observations,
             }
@@ -224,8 +234,10 @@ def readiness(pages, summary, robots, sitemaps):
         "checked_at": summary.get("exported_at") or utcnow(),
         "seed": summary.get("seed"),
         "coverage_limited": summary.get("coverage_limited", True),
-        "sitemap_urls_observed": len(listed),
-        "sitemap_fetch_failures": summary.get("sitemap_fetch_failures", 0),
+        "sitemap_urls_observed": None if summary.get("imported_captures") else len(listed),
+        "sitemap_fetch_failures": None
+        if summary.get("imported_captures")
+        else summary.get("sitemap_fetch_failures", 0),
         "pages": entries,
         "not_measured": [
             "actual indexing",
@@ -253,7 +265,13 @@ def export_readiness(out, pages=None, summary=None, robots=None, sitemaps=None):
         "",
         result["interpretation"],
         "",
-        f"Sitemap URLs observed: {result['sitemap_urls_observed']}. Coverage limited: {result['coverage_limited']}.",
+        "Sitemap URLs observed: "
+        + (
+            str(result["sitemap_urls_observed"])
+            if result["sitemap_urls_observed"] is not None
+            else "not inspected"
+        )
+        + f". Coverage limited: {result['coverage_limited']}.",
         "",
         "Start with access problems on important pages, then review the content and proof that answer your customers' questions.",
     ]
@@ -314,6 +332,8 @@ def page_snapshot(page):
 
 def compare(before, after, out):
     a, b = Path(before), Path(after)
+    for folder in (a, b):
+        require_native_snapshot(folder, "Snapshot comparison")
     sa, sb = read_json(a / "summary.json"), read_json(b / "summary.json")
     if sa["seed"] != sb["seed"]:
         raise ValueError(

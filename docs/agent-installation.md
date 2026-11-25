@@ -4,7 +4,7 @@ Choose the app you actually use. **Claude on the web, Claude Code and ChatGPT Wo
 
 | Your app | Start here |
 |---|---|
-| ChatGPT Work | [Ask Work to install it](#chatgpt-work) |
+| ChatGPT Work | [Upload the skill ZIP](#chatgpt-work) |
 | Claude website / desktop / Cowork | [Upload the skill bundle](#claude-website-and-desktop-skills) |
 | Claude Code | [One local installation command](#claude-code) |
 | Codex | [One local installation command](#codex) |
@@ -15,9 +15,9 @@ Choose the app you actually use. **Claude on the web, Claude Code and ChatGPT Wo
 | Vercel / v0 project | [Install in the agent managing the project](#vercel-and-v0-projects) |
 | Another assistant | [Check its capabilities](#other-assistants) |
 
-## Easiest start: paste the GitHub URL
+## If your assistant can install from GitHub
 
-In Work, Cowork or a local coding assistant with installation tools, paste:
+If your assistant can download from GitHub and save skills, paste this request. For ChatGPT Work or Claude Desktop, the upload route below avoids a GitHub download inside the assistant.
 
 ```text
 Install BeyondSEO from https://github.com/beyondtahir/beyondseo in the
@@ -36,12 +36,12 @@ This asks the assistant to do the setup for you. It can use its supported import
 
 ### Upload the bundle directly
 
-1. Get the named skill ZIP from the release, when available, or use **Prepare the upload from source** below.
-2. Open **Customize → Skills → Create → Upload from your computer**.
-3. Choose `beyondseo-<version>-skill.zip`. If BeyondSEO is already saved, choose **Replace existing** when prompted. Wait for it to appear in the Skills list, then open it and confirm the supporting files are present, including `docs/website-work.md` and `src/beyondseo/projects.py`.
+1. Download the [official skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip) in your browser.
+2. Open [ChatGPT Skills](https://chatgpt.com/skills). Choose **Add skill → Upload from your computer**. If your account shows Skills under Plugins or Customize, use that entry instead.
+3. Choose the downloaded skill ZIP. If BeyondSEO is already saved, choose **Replace existing** when prompted. Check that BeyondSEO appears under **Installed** and that you can open `SKILL.md` and a supporting file.
 4. Choose **Try in chat**, use the **Work** surface, and ask it to run the installation check below. A saved skill and a working crawler are separate results.
 
-These controls were exercised in the ChatGPT web interface. Labels and availability can vary by account. Use the native file chooser for a manual upload; no browser extension is needed. An automated browser's file-upload permission error is separate from the skill's save or safety-scan result.
+Labels and availability can vary by account and workspace. If the skill appears under Installed but its files won't open, record the preview error and check again in a fresh Work task. A visible entry alone does not confirm that the files can be read or that the crawler can run.
 
 For a complete bundle update, use the archive importer above. Uploading a ZIP as a chat attachment or as one supporting file in the editor does not replace the skill's contents. After replacement, start a fresh Work task: an already running task may still hold the previous mounted copy.
 
@@ -72,10 +72,11 @@ OpenAI distinguishes workspace skills from local filesystem skills. A copy on yo
 
 | Error | What the assistant should do |
 |---|---|
-| HTTP 422 during save | Capture the response body, failing operation and submitted file list. Check the skill name, description, complete folder layout and supported file requirements. A 422 alone does not identify a safety finding. |
+| HTTP 422 during save | Keep the exact response, operation, BeyondSEO version and archive checksum. Record any flagged file or request ID shown by the host, with credentials removed. If chat’s save tool failed, try the native archive importer once. If the reason is still unavailable, report the rejection to workspace support. |
 | Chat has skill list/read tools but no save tool | Use the native archive importer above, including **Replace existing** for an update. Missing chat tools do not prove the UI cannot save the skill. |
 | An explicit safety-scan rejection | Read the flagged file/rule, explain the finding and correct the actual issue. Use workspace support if the reason is unavailable. Keep scanning and approval controls enabled. |
 | Permission denied launching Python | Identify which path was denied. Use an execution folder supported by that Work environment with `--venv`; do not place a virtualenv inside a read-only or non-executable skill mount. |
+| Skill is listed, but its preview will not load | Open a fresh Work task and check whether it can read `SKILL.md` and a supporting file. If it still cannot load them, report the exact preview or task error. Reinstalling Python cannot repair the host’s file preview. |
 | Saved skill, missing bundled files | Re-import the complete bundle through the supported workflow and verify a playbook, the catalog and `src/beyondseo/cli.py` are accessible. |
 | Browser cannot launch | Inspect `doctor`; install Chromium/system libraries only where the host permits them. HTTP mode can read initial HTML, but does not establish JavaScript coverage. |
 | Chromium download times out | Retain the official download error. Check for an already available permitted host browser; otherwise continue HTTP/supplied-evidence work. Do not disable TLS or repeatedly download without a bound. |
@@ -85,20 +86,38 @@ OpenAI distinguishes workspace skills from local filesystem skills. A copy on yo
 
 The package validator does not call Work's save service or safety scanner. There is no BeyondSEO switch that grants workspace permissions or guarantees acceptance. Keep a failed save separate from a failed runtime setup; correcting one does not prove the other is resolved.
 
+### Keep an audit going in Work
+
+After a failed native DNS or connection check, continue with an available browser rather than reinstalling Chromium. Ask Work:
+
+```text
+Use BeyondSEO to audit my website. If its crawler cannot reach the pages,
+use the browser already available in this Work task. Open the public pages
+directly and continue with the evidence you can read.
+```
+
+- **Work with Chrome already connected:** use the offered Chrome integration for the public site. If Work prompts for access, review that prompt. The integration can read and interact with open tabs. BeyondSEO only needs the tab for the agreed website. [Using your regular browser in ChatGPT](https://learn.chatgpt.com/docs/chrome-extension).
+- **Work in the desktop app:** if Chrome access is unavailable or unnecessary, try the app’s built-in browser. Reference `@Browser` where the app supports it. [Built-in browser controls](https://help.openai.com/en/articles/20001277-using-the-built-in-browser-in-the-chatgpt-desktop-app).
+- **Work on the web:** use a browser tool offered in the task, such as the cloud browser if enabled. If there’s no browser, use a permitted tool that can open the exact public URL or work from supplied files. The cloud browser has its own tabs and account state. [Work cloud browser availability](https://help.openai.com/en/articles/20001280-using-cloud-browser-in-chatgpt).
+
+The assistant handles [capturing and importing the pages](browser-search.md#continue-a-website-audit-from-saved-pages). If its tool returns only page text, BeyondSEO can import the verbatim excerpt for a content review. Headers, markup, indexing and site coverage stay unmeasured. A search snippet or a blocked page does not count as an inspected page.
+
 ## Claude website and desktop Skills
 
 This route also covers Claude Cowork through its Skills controls.
 
 Check the actual account capabilities separately. Saving a skill and running it in Claude Chat does not establish Cowork access; if Cowork displays an upgrade requirement, report that feature as unavailable on that account. BeyondSEO does not change the subscription or require an upgrade merely to use another available execution route.
 
-1. Use the matching `beyondseo-<version>-skill.zip` from the [release assets](https://github.com/beyondtahir/beyondseo/releases/latest), if offered. If the release provides source only, use **Prepare the upload from source** below. GitHub’s automatic source ZIP is not a direct skill upload; its enclosing folder has a different name.
-2. Enable **Code execution and file creation** in Claude's capabilities if it is available to your account.
-3. Open **Customize → Skills → Add skill → Upload skill**, then select the ZIP. Some versions label this **+ → Create skill → Upload a skill**.
-4. Enable BeyondSEO in the skill list. Start a new chat and ask: “Use BeyondSEO to explain what you can do and check whether your crawler is ready.”
+1. Download the [official skill ZIP](https://github.com/beyondtahir/beyondseo/releases/latest/download/beyondseo-skill.zip). Upload the named skill bundle. GitHub’s automatic source ZIP is meant for extraction.
+2. Check **Settings → Capabilities**. The required file capability may be called **Create and edit files** or **Code execution and file creation**. Use the settings your account or workspace permits.
+3. In the current layout, open **Plugins → Your plugins → Show all → Add → Upload plugin** and select the skill ZIP. Despite the button label, the upload screen accepts a ZIP containing `SKILL.md`. If you still have the previous layout, use **Customize → Skills → + → Create skill → Upload a skill**. [Claude’s layout changes](https://support.claude.com/en/articles/17740565-manage-plugins-skills-and-connectors-from-one-plugins-page).
+4. Find BeyondSEO in **Your plugins** (filter by **Skills**) or in the earlier Skills list. Enable it if prompted. Start a new chat or Cowork session and ask: “Use BeyondSEO. Read its backlink catalog and run the basic crawler check. Tell me which steps succeeded.”
 
 The archive contains one `beyondseo/` folder, matching `name: beyondseo`, with `SKILL.md` and every runtime resource. Its description is under Claude.ai's documented 200-character limit. The builder also checks a maximum of 200 archive files, including its receipt: Claude Desktop rejected a larger bundle at save time. Reporting and industry guidance is indexed in two consolidated files to stay within this limit without removing capabilities. Creating an account or entering hosting credentials is unnecessary for installation. Organization permissions can affect whether uploads are available. [Create a custom skill](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) · [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
 
 If the upload says **“Zip contains too many files (maximum 200)”**, use a bundle built from version 2.7.1 or later. Do not upload the GitHub source archive, remove arbitrary runtime files, or disable the scan. This observed package-limit error does not establish the cause of a different host's unexplained HTTP 422.
+
+Already installed? Open **More actions → Upload new version**. If Claude asks for a `.skill` file, make a copy of the downloaded ZIP named `beyondseo.skill`. Keep the archive contents as downloaded.
 
 Saving the skill does not install Python packages. Ask Claude to follow [crawler setup](#crawler-setup-in-a-hosted-environment) using its available execution environment. The Claude API and Claude Code have separate runtime and installation rules.
 
@@ -135,7 +154,7 @@ After setup, the launcher hands off to the installed runtime before checking the
 python3 scripts/install_skill.py --host claude-code --setup
 ```
 
-The personal location is `~/.claude/skills/beyondseo`. To install only for a project, add `--workspace "/path/to/project"`. Start a new Claude Code session, then use:
+This starts with the HTTP crawler. For native JavaScript rendering, add `--with-browser` or run `browser-setup` later. The personal location is `~/.claude/skills/beyondseo`. For a project install, add `--workspace "/path/to/project"`. If both locations have BeyondSEO, Claude Code can give the personal copy precedence. Check which `SKILL.md` it loads before troubleshooting. Start a new Claude Code session, then use:
 
 ```text
 /beyondseo Audit https://example.com and give me a practical improvement plan.
@@ -191,12 +210,12 @@ The assistant should identify an approved writable/executable runtime directory.
 
 ```sh
 python3 "/path/to/beyondseo/scripts/setup.py" --venv "/approved/runtime/beyondseo"
-python3 "/path/to/beyondseo/scripts/run.py" --runtime "/approved/runtime/beyondseo" doctor
+python3 "/path/to/beyondseo/scripts/run.py" --runtime "/approved/runtime/beyondseo" doctor --no-browser
 ```
 
 External setup builds from a temporary source copy in the selected runtime directory. It does not write build files into the original skill mount. Use the same `--runtime` when crawling. If the environment cannot execute Python or download dependencies, that remains a host capability limitation; moving files arbitrarily or changing security controls is not a supported fix.
 
-For a normal writable local skill folder, `python3 scripts/setup.py` uses its own `.venv`. Add `--http-only` to setup to skip Chromium. With the local installer use `--setup --http-only`. [Detailed runtime troubleshooting](setup.md).
+For a normal writable local skill folder, `python3 scripts/setup.py` uses its own `.venv`. The normal setup skips Chromium. With the local installer use `--setup`. [Detailed runtime troubleshooting](setup.md).
 
 ## Know when installation is complete
 
@@ -210,7 +229,7 @@ maximum of two pages and save the evidence outside the skill folder.
 Tell me whether HTTP and JavaScript rendering actually worked.
 ```
 
-There are three separate results: **skill registered**, **HTTP ready**, and **browser ready**. A successful command does not prove every requested page was read; inspect the crawl's saved coverage and errors. In HTTP-only mode a missing browser is expected and `doctor` returns a nonzero status.
+Check registration, access to bundled files, HTTP readiness, browser readiness and public page access separately. Use `doctor --no-browser` for HTTP-only setup. A skipped browser shows as untested. Check the crawl’s saved coverage and errors to see which pages were read.
 
 ## Updates and existing installations
 

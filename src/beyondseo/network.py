@@ -201,7 +201,21 @@ class Config:
 def addresses(url, allow_private=False):
     p = urlsplit(url)
     port = p.port or (443 if p.scheme == "https" else 80)
-    infos = socket.getaddrinfo(p.hostname, port, type=socket.SOCK_STREAM)
+    try:
+        infos = socket.getaddrinfo(p.hostname, port, type=socket.SOCK_STREAM)
+    except socket.gaierror as error:
+        # Resolution happens locally by design: Transport tunnels to an
+        # already validated IP and never lets a proxy resolve a target.
+        # Name the failed target lookup with an active proxy. This establishes
+        # neither a general DNS outage nor a failure of the target/proxy server.
+        proxies = getproxies_environment()
+        if proxies.get(p.scheme) and not proxy_bypass_environment(p.netloc, proxies):
+            # Preserve the OSError family so the existing bounded transient-DNS
+            # retry policy is unchanged by this diagnostic annotation.
+            raise socket.gaierror(
+                error.errno, "dns_resolution_failed_with_proxy_configured: " + str(error)
+            ) from error
+        raise
     if not infos:
         raise ValueError("DNS returned no addresses")
     for _, _, _, _, addr in infos:

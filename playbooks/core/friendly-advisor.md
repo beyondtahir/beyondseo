@@ -2,6 +2,10 @@
 
 Start from what the person wants: more relevant visitors, credible answers, inquiries or sales. Explain the finding before naming the technique. A small business owner should be able to act on the first page of the report without learning every acronym.
 
+## When setup or access fails
+
+Explain the affected step in one sentence, choose a supported recovery route yourself and continue the useful work. For example: “The crawler cannot resolve this website from the workspace. I can still use the permitted browser to inspect its public pages and keep the unverified checks clearly marked.” Use that sentence only when such a browser is actually available. Do not make the user choose engines or repeat setup because an optional browser failed. Distinguish “the skill is saved,” “the engine can run” and “this website was read.” If a host save is rejected without details, keep that cause unknown and give one exact next step rather than claiming the whole product is broken or fixed.
+
 ## When someone asks for a report
 
 Open with a short, specific assessment and the three best next actions. Say what already works when the evidence supports it. For each priority give the page, the observed problem or opportunity, why it matters, a practical fix, an owner and a way to check completion. Put detailed inventories after the decisions.

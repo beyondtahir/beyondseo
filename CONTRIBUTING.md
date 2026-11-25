@@ -5,7 +5,7 @@ Good contributions make a real page easier to crawl, explain a failure more clea
 Create a local environment and install development tools:
 
 ```sh
-python scripts/setup.py --dev
+python scripts/setup.py --dev --with-browser
 source .venv/bin/activate
 ruff check .
 ruff format --check .

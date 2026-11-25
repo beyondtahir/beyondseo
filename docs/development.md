@@ -5,7 +5,7 @@ The repository includes the native engine, source catalog, portable skill and lo
 ## Prepare the environment
 
 ```sh
-python3 scripts/setup.py --dev
+python3 scripts/setup.py --dev --with-browser
 ```
 
 Activate `.venv` with `source .venv/bin/activate` on macOS/Linux, or `.venv\Scripts\Activate.ps1` in Windows PowerShell. Windows users can replace `python3` with `py -3` for setup.
@@ -42,7 +42,7 @@ From reviewed source, run:
 
 ```sh
 python3 scripts/validate_skill.py
-python3 scripts/build_skill.py --out ../release-assets/beyondseo-2.10.0-skill.zip
+python3 scripts/build_skill.py --out ../release-assets/beyondseo-skill.zip
 ```
 
 The builder keeps the complete runtime and resources under one `beyondseo/` folder and emits a SHA-256 sidecar. Developer tests and local environments stay outside the bundle. Existing output archives are preserved. Check that the archive, tag and version fields describe the same source before attaching the ZIP and checksum to a release. Runtime tests, a format check and a host's installation decision establish different things; report their results separately.

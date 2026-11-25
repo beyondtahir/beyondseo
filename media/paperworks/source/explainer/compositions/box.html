@@ -1,0 +1,173 @@
+<template>
+<style>
+*{box-sizing:border-box;margin:0}
+#root{position:absolute;inset:0;overflow:clip;background:#111;font-family:Nunito,Arial,sans-serif;color:#fff}
+.glow{position:absolute;left:590px;top:-180px;width:1160px;height:1160px;border-radius:50%;background:radial-gradient(circle,rgba(170,30,30,.6),rgba(17,17,17,0) 68%)}
+.shadow{position:absolute;left:910px;top:780px;width:520px;height:64px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.75),rgba(0,0,0,0) 72%)}
+.world{position:absolute;inset:0;perspective:1500px;perspective-origin:1170px 360px}
+.cube,.mini{position:absolute;transform-style:preserve-3d}
+.tilt{position:absolute;transform-style:preserve-3d;left:920px;top:180px;width:500px;height:500px;transform:rotateX(-14deg)}
+.cube{left:0;top:0;width:500px;height:500px}
+.face{position:absolute;inset:0;background:#f5f3f1;color:#151515;border:4px solid #d9d2ca;padding:30px;overflow:hidden;backface-visibility:hidden}
+.shade{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(80,50,40,.14));pointer-events:none}
+.lid{background:#991b1b;border-color:#7a1414}
+.layer{position:absolute;inset:0;padding:30px}
+.tag{display:inline-block;background:#991b1b;color:#fff;font-size:30px;font-weight:900;padding:6px 20px;border-radius:30px}
+.ask{position:absolute;left:0;top:50px;width:690px;font-size:68px;line-height:1.04;font-weight:900;letter-spacing:-1.5px}
+.ask em{font-style:normal;color:#ff5a52;display:block;margin-top:10px}
+.say{position:absolute;left:72px;top:170px;width:640px;font-size:70px;line-height:1.05;font-weight:900;letter-spacing:-2px}
+.say em{font-style:normal;color:#ff5a52;display:block;margin-top:12px}
+.chips{position:absolute;left:72px;top:440px;width:640px;display:flex;flex-wrap:wrap;gap:14px}
+.chip{border:3px solid #ff5a52;color:#fff;border-radius:40px;font-size:34px;font-weight:900;padding:8px 26px}
+.bubble{position:absolute;left:30px;right:30px;top:96px;background:#151515;color:#fff;border-radius:28px 28px 6px 28px;font-size:42px;font-weight:900;line-height:1.1;padding:26px 30px}
+.reply{position:absolute;left:30px;bottom:44px;background:#e9e3dc;color:#991b1b;border-radius:28px 28px 28px 6px;font-size:33px;font-weight:900;padding:18px 26px}
+.row{display:flex;align-items:center;gap:14px;font-size:31px;font-weight:800;padding:11px 0;border-top:3px solid #e6e0d9;line-height:1.05}
+.row b{flex:none;width:50px;height:50px;border-radius:50%;background:#991b1b;color:#fff;font-size:30px;text-align:center;line-height:48px}
+.btn{position:absolute;left:50px;right:50px;top:150px;height:130px;border-radius:26px;background:#991b1b;color:#fff;font-size:58px;font-weight:900;text-align:center;line-height:124px;box-shadow:0 12px 0 #570000}
+.done{position:absolute;inset:0;border-radius:26px;background:#151515;text-align:center}
+.mf{position:absolute;inset:0;background:#f5f3f1;color:#151515;border:3px solid #cfc7be;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:900;backface-visibility:hidden;width:150px;height:150px}
+.mf.s{background:#d9d2ca}.mf.t{background:#e6e0d9}
+.mf i{position:absolute;right:-16px;top:-16px;width:58px;height:58px;border-radius:50%;background:#991b1b;color:#fff;font-style:normal;text-align:center;line-height:56px;font-size:36px}
+.mini{width:150px;height:150px}
+.logo{position:absolute;left:56px;top:440px;width:440px;clip-path:inset(9% 7% round 18px)}
+.free{position:absolute;left:76px;top:640px;font-size:54px;font-weight:900;line-height:1.05;white-space:nowrap}
+</style>
+<div id="root" data-composition-id="box" data-width="1600" data-height="900">
+<div class="glow" data-layout-allow-overlap></div><div id="shadow" class="shadow"></div>
+<div class="say" id="s0">You have a website.<em id="s0b">But customers can't find it.</em></div>
+<div class="say" id="s1">Tell your AI one sentence.</div>
+<div class="chips" id="cs"><div class="chip c">Claude</div><div class="chip c">ChatGPT</div><div class="chip c">Codex</div><div class="chip c">Cursor</div><div class="chip c">and more</div></div>
+<div class="say" id="s2">It reads your pages.<em id="s2b">Then it checks rivals and links.</em></div>
+<div class="say" id="s3">It shows what to fix<em id="s3b">and writes the words.</em></div>
+<div class="say" id="s4">You stay in control.<em id="s4b">Nothing changes until you approve.</em></div>
+<div class="say" id="s5" style="top:110px">Help customers find you on <em style="display:inline;margin:0">Google and AI.</em></div>
+<img id="logo" class="logo" src="assets/wordmark.png" alt="BeyondSEO">
+<div id="free" class="free">Free and open source.</div>
+<div class="world" data-layout-allow-overlap>
+<div id="m0" class="mini" style="left:775px;top:40px">
+  <div class="mf" style="transform:translateZ(75px)"><span>Home</span><i id="mt0">✓</i></div>
+  <div class="mf s" style="transform:rotateY(90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(-90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(-90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(180deg) translateZ(75px)"></div>
+</div>
+<div id="m1" class="mini" style="left:1375px;top:35px">
+  <div class="mf" style="transform:translateZ(75px)"><span>Services</span><i id="mt1">✓</i></div>
+  <div class="mf s" style="transform:rotateY(90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(-90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(-90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(180deg) translateZ(75px)"></div>
+</div>
+<div id="m2" class="mini" style="left:1385px;top:590px">
+  <div class="mf" style="transform:translateZ(75px)"><span>Contact</span><i id="mt2">✓</i></div>
+  <div class="mf s" style="transform:rotateY(90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(-90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(-90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(180deg) translateZ(75px)"></div>
+</div>
+<div id="m3" class="mini" style="left:770px;top:610px">
+  <div class="mf" style="transform:translateZ(75px)"><span>Rivals</span><i id="mt3">✓</i></div>
+  <div class="mf s" style="transform:rotateY(90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(-90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(-90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(180deg) translateZ(75px)"></div>
+</div>
+<div id="m4" class="mini" style="left:1090px;top:680px">
+  <div class="mf" style="transform:translateZ(75px)"><span>Backlinks</span><i id="mt4">✓</i></div>
+  <div class="mf s" style="transform:rotateY(90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(-90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(90deg) translateZ(75px)"></div>
+  <div class="mf t" style="transform:rotateX(-90deg) translateZ(75px)"></div>
+  <div class="mf s" style="transform:rotateY(180deg) translateZ(75px)"></div>
+</div>
+<div class="tilt"><div id="cube" class="cube">
+  <div class="face" style="transform:translateZ(250px)">
+    <div id="fa" class="layer"><img src="assets/stage.png" style="position:absolute;left:0;top:90px;width:100%;" alt=""><div class="tag" style="position:relative">Your website</div><div id="q" style="position:absolute;right:26px;top:22px;width:100px;height:100px;border-radius:50%;background:#151515;color:#fff;font-size:72px;font-weight:900;text-align:center;line-height:94px">?</div><div style="position:absolute;left:30px;right:30px;bottom:26px;font-size:32px;font-weight:900;text-align:center;color:#991b1b">Hidden from customers</div></div>
+    <div id="fe" class="layer"><div class="tag">Your approval</div><div id="btn" class="btn">Approve<div id="done" class="done">Approved ✓</div></div><svg id="cur" viewBox="0 0 40 48" width="84" style="position:absolute;left:330px;top:330px" fill="#151515" stroke="#fff" stroke-width="3"><path d="M4 2l30 26-14 2 8 15-7 3-8-15-9 10z"/></svg></div>
+    <div class="shade"></div>
+  </div>
+  <div class="face" style="transform:rotateY(90deg) translateZ(250px)">
+    <div id="fb" class="layer"><div class="tag">Your AI</div><div id="bubble" class="bubble">Audit my website with BeyondSEO.</div><div id="reply" class="reply">On it. Reading now.</div></div>
+    <div id="ff" class="layer" style="padding:0"><img src="assets/seo-house.png" style="position:absolute;left:-125px;top:0;height:100%" alt=""></div>
+    <div class="shade"></div>
+  </div>
+  <div class="face" style="transform:rotateY(180deg) translateZ(250px)">
+    <div class="layer"><div class="tag">Reading your pages</div><img id="s-0" src="assets/sprites/scan-0.png" style="position:absolute;left:100px;top:96px;height:370px" alt=""><img id="s-1" src="assets/sprites/scan-1.png" style="position:absolute;left:100px;top:96px;height:370px" alt=""><img id="s-3" src="assets/sprites/scan-3.png" style="position:absolute;left:100px;top:96px;height:370px" alt=""></div>
+    <div class="shade"></div>
+  </div>
+  <div class="face" style="transform:rotateY(270deg) translateZ(250px)">
+    <div class="layer"><div class="tag" style="margin-bottom:12px">Your next steps</div><div class="row r"><b>1</b>Fix these exact pages</div>
+<div class="row r"><b>2</b>Answer what customers ask</div>
+<div class="row r"><b>3</b>Learn from real rivals</div>
+<div class="row r"><b>4</b>Earn relevant links</div><img id="w-3" src="assets/sprites/write-3.png" style="position:absolute;right:20px;bottom:6px;height:118px" alt=""></div>
+    <div class="shade"></div>
+  </div>
+  <div class="face lid" style="transform:rotateX(90deg) translateZ(250px)"></div>
+  <div class="face lid" style="transform:rotateX(-90deg) translateZ(250px)"></div>
+</div></div>
+</div>
+</div>
+<script>
+const tl = gsap.timeline({paused:true});
+const BASE = -24;
+const turn = n => BASE - 90 * n;
+const hide = ids => ids.forEach(id => tl.set(id,{opacity:0},0));
+hide(["#s1","#s2","#s3","#s4","#s5","#s0b","#s2b","#s3b","#s4b","#fe","#ff","#logo","#free","#done","#cs"]);
+hide(["#s-1","#s-3"]);
+tl.set("#cube",{rotationY:turn(0)-70,scale:.2,z:-300},0);
+tl.to("#cube",{rotationY:turn(0),scale:1,z:0,duration:.8,ease:"back.out(1.5)"},0);
+tl.fromTo("#shadow",{scale:.3,opacity:0},{scale:1,opacity:1,duration:.8},0);
+// The box bobs for the whole film; every value depends only on timeline time.
+for (let i = 0; i < 12; i++) tl.to(".world",{y:i % 2 ? 0 : -12,duration:1.75,ease:"sine.inOut"},i * 1.75);
+const line = (id,at,end) => {
+  tl.fromTo(id,{opacity:0,y:34},{opacity:1,y:0,duration:.38,ease:"back.out(1.7)"},at);
+  if (end) tl.to(id,{opacity:0,y:-24,duration:.22},end);
+};
+const spin = (n,at) => tl.to("#cube",{rotationY:turn(n),duration:.72,ease:"back.out(1.35)"},at);
+// 1. The problem
+line("#s0",.15,3.45); line("#s0b",1.2);
+tl.from("#q",{scale:0,duration:.35,ease:"back.out(3)"},1.3);
+tl.to("#q",{scale:1.12,duration:.3,repeat:3,yoyo:true,ease:"sine.inOut"},1.75);
+// 2. One sentence
+spin(1,3.45); line("#s1",3.75,7.05);
+tl.fromTo("#bubble",{clipPath:"inset(0 100% 0 0 round 28px)"},{clipPath:"inset(0 0% 0 0 round 28px)",duration:1,ease:"none"},3.95);
+tl.from("#reply",{y:20,opacity:0,duration:.3,ease:"back.out(2)"},5.15);
+tl.set("#cs",{opacity:1},4.6);
+tl.from(".c",{scale:.4,opacity:0,duration:.26,stagger:.08,ease:"back.out(2.4)"},4.6);
+tl.to("#cs",{opacity:0,duration:.22},7.05);
+// 3. Reading: small boxes fly in, get ticked, then drop into the big box
+spin(2,7.05); line("#s2",7.35,10.95); line("#s2b",8.7);
+tl.set("#fa",{opacity:0},8); tl.set("#fe",{opacity:1},8);
+const minis = ["#m0","#m1","#m2","#m3","#m4"];
+const into = [[325,270],[-325,290],[-335,-230],[335,-250],[0,-370]];
+minis.forEach((id,i) => {
+  tl.set(id,{rotationX:-18,rotationY:28,z:i==4?130:40,opacity:1},0);
+  tl.fromTo(id,{scale:0,x:(i%2?240:-240),y:-160,rotationY:200},{scale:1,x:0,y:0,rotationY:28,duration:.5,ease:"back.out(1.6)"},7.45+i*.26);
+  tl.fromTo("#mt"+i,{opacity:0},{opacity:1,duration:.12},8.1+i*.4);
+  tl.to(id,{rotationY:388,duration:.5,ease:"power2.out"},8.0+i*.4);
+  tl.to(id,{x:into[i][0],y:into[i][1],scale:.1,opacity:0,duration:.42,ease:"power3.in"},10.3+i*.06);
+});
+tl.set("#s-0",{opacity:0},8.3); tl.set("#s-1",{opacity:1},8.3);
+tl.set("#s-1",{opacity:0},8.9); tl.set("#s-0",{opacity:1},8.9);
+tl.set("#s-0",{opacity:0},9.6); tl.set("#s-3",{opacity:1},9.6);
+// 4. What to fix
+spin(3,10.95); line("#s3",11.25,14.55); line("#s3b",12.35);
+tl.set("#fb",{opacity:0},12); tl.set("#ff",{opacity:1},12);
+tl.from(".r",{x:40,opacity:0,duration:.26,stagger:.2,ease:"power3.out"},11.4);
+// 5. Approval
+spin(4,14.55); line("#s4",14.85,18); line("#s4b",15.5);
+tl.from("#cur",{x:120,y:110,opacity:0,duration:.5,ease:"power3.out"},15.7);
+tl.to("#btn",{y:10,duration:.1},16.35); tl.to("#cur",{y:-8,duration:.1},16.35);
+tl.to("#done",{opacity:1,duration:.12},16.4); tl.to("#btn",{y:0,duration:.14},16.47);
+// 6. The result
+spin(5,18); line("#s5",18.3);
+tl.fromTo("#logo",{opacity:0,y:24},{opacity:1,y:0,duration:.38,ease:"back.out(1.6)"},18.7);
+tl.fromTo("#free",{opacity:0,y:24},{opacity:1,y:0,duration:.38,ease:"back.out(1.6)"},18.9);
+window.__timelines = window.__timelines || {};
+window.__timelines["box"] = tl;
+</script>
+</template>

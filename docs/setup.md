@@ -1,6 +1,6 @@
 # Set up BeyondSEO
 
-This guide takes you from a source checkout to your first saved crawl. You need Python 3.10 or newer and an internet connection for installation. Python 3.12 is the recommended starting point. Browser mode downloads a local copy of Chromium; no account is needed.
+This guide takes you from a source checkout to your first saved crawl. You need Python 3.10 or newer and an internet connection for installation. Python 3.12 is the recommended starting point. Optional browser mode uses a local copy of Chromium. No account is needed for either mode.
 
 For installation in Claude, Cowork, Claude Code, Codex, ChatGPT Work, Hermes or OpenClaw, see [use with your assistant](agent-installation.md). The same native engine supports each documented local workflow; the host still needs file, shell and network capabilities.
 
@@ -27,26 +27,28 @@ macOS or Linux:
 
 ```sh
 python3 scripts/setup.py
-python3 scripts/run.py doctor
+python3 scripts/run.py doctor --no-browser
 ```
 
 Windows PowerShell:
 
 ```powershell
 py -3 scripts/setup.py
-py -3 scripts/run.py doctor
+py -3 scripts/run.py doctor --no-browser
 ```
 
-Setup creates `.venv`, installs the local project, PDF renderer and browser library, downloads Chromium, and checks that it can launch. It does not change your system Python or send a crawl to a hosted service.
+Setup creates `.venv`, installs the crawler, and attempts to install the PDF renderer. The default setup skips Chromium and checks HTTP readiness.
+
+Add `--with-browser` if this runtime should render JavaScript itself. You can also run `python3 scripts/run.py browser-setup` later. For an unattended job that requires Chromium, use `--require-browser` to fail setup if it cannot run. If optional Chromium or PDF setup fails, HTTP crawling and HTML reporting can still work. Setup checks the local runtime. Test website access separately.
 
 The launcher works without activation or changes to PowerShell execution policy:
 
 ```powershell
-py -3 scripts/run.py doctor
+py -3 scripts/run.py doctor --no-browser
 py -3 scripts/run.py crawl https://example.com --out ../client-runs/example
 ```
 
-On Linux, a minimal installation may also need Chromium's system libraries. Run the browser project's dependency installer using this environment:
+For optional Chromium on Linux, some systems also need its system libraries. Run the browser project's dependency installer using this environment:
 
 ```sh
 .venv/bin/python -m playwright install-deps chromium
@@ -56,14 +58,16 @@ That command may request administrator access for system packages. The main Beyo
 
 ## 3. Check the installation
 
-For an assistant or a terminal where activation does not persist, use `python3 scripts/run.py doctor` (Windows: `py -3 scripts/run.py doctor`). This launcher selects this folder's `.venv` and forwards CLI arguments and exit codes. Use an absolute script path when running from another directory. It also supports `--version` and every other CLI command.
+For an assistant or a terminal where activation does not persist, use `python3 scripts/run.py doctor --no-browser` (Windows: `py -3 scripts/run.py doctor --no-browser`). This launcher selects this folder's `.venv` and forwards CLI arguments and exit codes. Use an absolute script path when running from another directory. It also supports `--version` and every other CLI command.
 
 ```sh
 python3 scripts/run.py --version
-python3 scripts/run.py doctor
+python3 scripts/run.py doctor --no-browser
 ```
 
 `doctor` executes a private filesystem write/readback and launches Chromium with a local JavaScript DOM probe. With `--target https://example.com --out ../doctor-run`, it separately checks DNS/address policy, robots, bounded sitemap discovery, one HTTP page and automatic rendering where needed. Results use PASS, WARN, FAIL, BLOCKED and NOT_TESTED, with commands and recorded evidence. Missing dependencies or a blocked target affect the exit status. A successful local runtime does not prove website/network access. The legacy `http_ready` flag means parser dependency availability only; use `runtime_checks` and `checks.target_reachable` for executed checks. An HTTP-only audit can still use `--mode http` without Chromium. PDF package availability is not a rendered PDF test.
+
+For an HTTP-only environment use `doctor --no-browser`. This explicitly skips browser launch and rendering probes, records them as NOT_TESTED, and checks the HTTP runtime independently. It does not label a skipped browser as ready. Setup also uses this route after a browser diagnostic timeout.
 
 ## 4. Run a small crawl
 
@@ -88,10 +92,12 @@ Keep the uploaded skill where the host manages it. Prepare the crawler in a sepa
 
 ```sh
 python3 /path/to/beyondseo/scripts/setup.py --venv /approved/runtime/beyondseo
-python3 /path/to/beyondseo/scripts/run.py --runtime /approved/runtime/beyondseo doctor
+python3 /path/to/beyondseo/scripts/run.py --runtime /approved/runtime/beyondseo doctor --no-browser
 ```
 
 Replace both paths with real paths in that execution environment. Setup uses a temporary source copy when building the package, so it does not write build files into the mounted skill. A denied path still needs a host-supported location; the option does not change permissions. Use the same `--runtime` for every crawler command. See [Work save and execution errors](agent-installation.md#when-work-cannot-save-or-run-it).
+
+If target DNS or native networking is unavailable, use [saved public page captures](browser-search.md#continue-a-website-audit-from-saved-pages) from an independently permitted host tool. Installing Chromium does not provide a different DNS route: its requests pass through the same protected transport as the HTTP crawler.
 
 ## Manual installation
 

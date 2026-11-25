@@ -12,7 +12,7 @@ from contextlib import closing
 from pathlib import Path
 
 
-def parser():
+def parser(extensions=True):
     root = argparse.ArgumentParser(prog="beyondseo", description=__doc__)
     from . import __version__
 
@@ -202,6 +202,9 @@ def parser():
     p.add_argument("--target")
     p.add_argument("--query")
     p.add_argument("--out", type=Path)
+    p.add_argument(
+        "--no-browser", action="store_true", help="Skip browser launch and rendering probes."
+    )
     from .research_cli import add_commands
 
     add_commands(sub)
@@ -288,12 +291,13 @@ def parser():
             p.add_argument(
                 "--expect-plan", required=True, help="SHA-256 of the reviewed plan.json."
             )
-    from . import google_access, offsite, onsite, projects
+    if extensions:
+        from . import google_access, offsite, onsite, projects
 
-    onsite.register(sub)
-    projects.register(sub)
-    google_access.register(sub)
-    offsite.register(sub)
+        onsite.register(sub)
+        projects.register(sub)
+        google_access.register(sub)
+        offsite.register(sub)
     p = sub.add_parser(
         "browser-evidence",
         help="Import actual permitted source-page browser observations; no browser is launched.",
@@ -303,6 +307,12 @@ def parser():
     p.add_argument("--brand", default="")
     p.add_argument("--alias", action="append", default=[])
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser(
+        "capture-import",
+        help="Review supplied public page HTML or observed text offline.",
+    )
+    p.add_argument("--input", type=Path, required=True, help="JSON capture manifest.")
+    p.add_argument("--out", type=Path, required=True, help="New private output folder.")
     return root
 
 
@@ -327,7 +337,27 @@ class OutputLock:
 
 
 def main(argv=None):
-    args = parser().parse_args(argv)
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    try:
+        # doctor must be able to report a runtime whose dependencies are still missing.
+        args = parser(extensions=arguments[:1] != ["doctor"]).parse_args(arguments)
+    except ModuleNotFoundError as exc:
+        print(
+            f"Missing dependency: {exc.name}. Prepare the runtime with scripts/setup.py "
+            "(use --venv with a writable folder if the skill folder is read-only).",
+            file=sys.stderr,
+        )
+        return 2
+    if args.command == "capture-import":
+        from .evidence import import_captures
+
+        try:
+            result = import_captures(args.input, args.out)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
+            print("Page capture import failed: " + str(exc), file=sys.stderr)
+            return 2
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result["inspected"] else 1
     if args.command == "browser-evidence":
         from .backlinks import import_browser_evidence
 
@@ -447,7 +477,9 @@ def main(argv=None):
     if args.command == "doctor":
         from .doctor import check_environment
 
-        return check_environment(args.target, args.query, args.out)
+        return check_environment(
+            args.target, args.query, args.out, check_browser=not args.no_browser
+        )
     if args.command == "present":
         from .reports import export_report, from_audit, from_lighthouse, from_performance
 

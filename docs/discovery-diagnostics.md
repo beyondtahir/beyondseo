@@ -17,6 +17,7 @@ The report separates skill registration (unknown to Python; confirm in the host)
 | Python/browser execution denied | Confirm the exact executable and path. Use the host-approved execution directory; request permission for that specific operation if supported. Reinstalling browser files does not grant execution permission. |
 | Explicit environment network restriction | Ask for the required host/network operation through supported controls, or use `--offline` and supplied evidence. Do not attempt to bypass the policy using another transport. |
 | DNS, connection or TLS failure | Inspect the hostname and recorded exception. Retry only after fixing connectivity, DNS or certificate trust; never disable TLS verification. |
+| `dns_failure_proxy_configured` | Local target DNS failed while the scheme's HTTP proxy was active. The recorded resolver error is retained. Native HTTP and native Chromium both require a validated destination IP. Use a separately permitted host capture and `capture-import`, or an administrator-approved resolver; installing Chromium alone cannot fix this case. This does not prove the target site or proxy is down. |
 | HTTP 401/403 | Preserve status/body evidence. The response alone does not identify a CAPTCHA, provider policy or host policy. Try another independently permitted source if appropriate. |
 | Recognized CAPTCHA/challenge | Stop that source; use another permitted source or supplied results. |
 | HTTP 429 | Respect the provider's limit; use another permitted source or return later. No retry loop. |
@@ -45,6 +46,8 @@ Official references: [skills](https://learn.chatgpt.com/docs/build-skills), [san
 ## ChatGPT Work
 
 Confirm that the workspace accepted the skill; format validation alone cannot confirm registration. Run the engine in an execution directory approved by Work, using the installer's `--runtime` path. A save HTTP 422 without details remains an unexplained submission rejection. A later Python “Permission denied” is a separate execution failure.
+
+Use **Plugins → Skills → Create → Upload from your computer** where available. Preserve the current save response and any scanner finding rather than calling every 422 a safety rejection. A local file copy, ZIP validator or successful setup cannot establish workspace registration. [Current skill upload and controls](https://help.openai.com/en/articles/20001066-skills-in-chatgpt).
 
 When an explicit code/shell network restriction is observed and policy permits it, the documented control is **Settings → Data controls → Work network access → Allow public internet access**, when available. Changes apply after the current run finishes and the environment refreshes. Web search and the remote browser have separate controls. Do not change these settings merely because one provider returned an error. If the control is unavailable, use the workspace administrator's supported process or supplied evidence.
 

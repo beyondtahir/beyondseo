@@ -64,6 +64,9 @@ def parse_sitemap(body):
 
 class Crawler:
     def __init__(self, config, out, resume=False, selectors=None):
+        from .evidence import require_native_snapshot
+
+        require_native_snapshot(out, "Native crawling")
         self.config = config
         self.out = Path(out)
         self.out.mkdir(parents=True, exist_ok=True)

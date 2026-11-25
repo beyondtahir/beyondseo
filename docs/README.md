@@ -2,7 +2,7 @@
 
 Start with the task you want to complete. Each guide connects the commands, evidence and decisions needed for that job.
 
-New in 2.10.0: coordinated SEO specialists, optional read-only Google data, original article campaigns and clearer evidence-backed reports. The native crawler, backlink library and guarded website work remain included. Read [what changed](../CHANGELOG.md) or [start with a question](../README.md#common-questions).
+New in 2.12.0: start with the basic crawler, add Chromium when you need local JavaScript rendering, and continue from page evidence if the native runtime cannot connect. Read [what changed](../CHANGELOG.md) or [start with a question](../README.md#common-questions).
 
 ## Start using BeyondSEO
 

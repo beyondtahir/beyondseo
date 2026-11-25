@@ -1,0 +1,7 @@
+node_modules/
+package.json
+package-lock.json
+assets/gsap.min.js
+.hyperframes/
+*.mp4
+snapshots/
