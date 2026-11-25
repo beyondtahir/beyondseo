@@ -229,9 +229,15 @@ def main():
     parser.add_argument(
         "--setup",
         action="store_true",
-        help="Also install Python dependencies and optional Chromium.",
+        help="Also set up the crawler without Chromium by default.",
     )
-    parser.add_argument("--http-only", action="store_true", help="With --setup, skip Chromium.")
+    browsers = parser.add_mutually_exclusive_group()
+    browsers.add_argument(
+        "--http-only", action="store_true", help="With --setup, skip Chromium (default)."
+    )
+    browsers.add_argument(
+        "--with-browser", action="store_true", help="With --setup, also prepare Chromium."
+    )
     parser.add_argument(
         "--runtime", type=Path, help="With --setup, use a host-approved external virtualenv folder."
     )
@@ -247,8 +253,8 @@ def main():
 
         if args.dest and (args.workspace or args.profile_home):
             raise ValueError("Use --workspace / --profile-home with --host, or use --dest alone.")
-        if (args.http_only or args.runtime) and not args.setup:
-            raise ValueError("--http-only and --runtime require --setup.")
+        if (args.http_only or args.with_browser or args.runtime) and not args.setup:
+            raise ValueError("--http-only, --with-browser and --runtime require --setup.")
         source = Path(__file__).resolve().parents[1]
         validate(source)
         destination = args.dest or host_destination(args.host, args.workspace, args.profile_home)
@@ -261,7 +267,9 @@ def main():
     if not args.dry_run:
         destination = Path(result["destination"])
         command = [sys.executable, str(destination / "scripts/setup.py")]
-        if args.http_only:
+        if args.with_browser:
+            command.append("--with-browser")
+        elif args.http_only:
             command.append("--http-only")
         if args.runtime:
             command.extend(["--venv", str(args.runtime.expanduser().absolute())])

@@ -117,6 +117,8 @@ The archive contains one `beyondseo/` folder, matching `name: beyondseo`, with `
 
 If the upload says **“Zip contains too many files (maximum 200)”**, use a bundle built from version 2.7.1 or later. Do not upload the GitHub source archive, remove arbitrary runtime files, or disable the scan. This observed package-limit error does not establish the cause of a different host's unexplained HTTP 422.
 
+Already installed? Open **More actions → Upload new version**. If Claude asks for a `.skill` file, make a copy of the downloaded ZIP named `beyondseo.skill`. Keep the archive contents as downloaded.
+
 Saving the skill does not install Python packages. Ask Claude to follow [crawler setup](#crawler-setup-in-a-hosted-environment) using its available execution environment. The Claude API and Claude Code have separate runtime and installation rules.
 
 ### Prepare the upload from source
@@ -149,10 +151,10 @@ After setup, the launcher hands off to the installed runtime before checking the
 ## Claude Code
 
 ```sh
-python3 scripts/install_skill.py --host claude-code --setup --http-only
+python3 scripts/install_skill.py --host claude-code --setup
 ```
 
-This starts with the HTTP crawler. For native JavaScript rendering, omit `--http-only` or run `browser-setup` later. The personal location is `~/.claude/skills/beyondseo`. For a project install, add `--workspace "/path/to/project"`. If both locations have BeyondSEO, Claude Code can give the personal copy precedence. Check which `SKILL.md` it loads before troubleshooting. Start a new Claude Code session, then use:
+This starts with the HTTP crawler. For native JavaScript rendering, add `--with-browser` or run `browser-setup` later. The personal location is `~/.claude/skills/beyondseo`. For a project install, add `--workspace "/path/to/project"`. If both locations have BeyondSEO, Claude Code can give the personal copy precedence. Check which `SKILL.md` it loads before troubleshooting. Start a new Claude Code session, then use:
 
 ```text
 /beyondseo Audit https://example.com and give me a practical improvement plan.
@@ -207,13 +209,13 @@ A sandboxed agent needs Python and optional Chromium **inside its execution envi
 The assistant should identify an approved writable/executable runtime directory. The paths below are placeholders that it must replace with actual paths from its environment:
 
 ```sh
-python3 "/path/to/beyondseo/scripts/setup.py" --http-only --venv "/approved/runtime/beyondseo"
+python3 "/path/to/beyondseo/scripts/setup.py" --venv "/approved/runtime/beyondseo"
 python3 "/path/to/beyondseo/scripts/run.py" --runtime "/approved/runtime/beyondseo" doctor --no-browser
 ```
 
 External setup builds from a temporary source copy in the selected runtime directory. It does not write build files into the original skill mount. Use the same `--runtime` when crawling. If the environment cannot execute Python or download dependencies, that remains a host capability limitation; moving files arbitrarily or changing security controls is not a supported fix.
 
-For a normal writable local skill folder, `python3 scripts/setup.py` uses its own `.venv`. Add `--http-only` to setup to skip Chromium. With the local installer use `--setup --http-only`. [Detailed runtime troubleshooting](setup.md).
+For a normal writable local skill folder, `python3 scripts/setup.py` uses its own `.venv`. The normal setup skips Chromium. With the local installer use `--setup`. [Detailed runtime troubleshooting](setup.md).
 
 ## Know when installation is complete
 

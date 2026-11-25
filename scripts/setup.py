@@ -12,11 +12,13 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--http-only", action="store_true", help="Skip the optional browser.")
-    parser.add_argument(
+    browsers = parser.add_mutually_exclusive_group()
+    browsers.add_argument("--http-only", action="store_true", help="Skip Chromium (default).")
+    browsers.add_argument("--with-browser", action="store_true", help="Also prepare Chromium.")
+    browsers.add_argument(
         "--require-browser",
         action="store_true",
-        help="Return a failure if the optional browser cannot be prepared.",
+        help="Prepare Chromium and fail if it cannot run.",
     )
     parser.add_argument("--dev", action="store_true", help="Install development tools too.")
     parser.add_argument(
@@ -25,8 +27,7 @@ def main():
         help="Host-approved writable/executable runtime folder; default: .venv inside the skill.",
     )
     args = parser.parse_args()
-    if args.http_only and args.require_browser:
-        parser.error("--http-only and --require-browser cannot be used together")
+    wants_browser = args.with_browser or args.require_browser
     if sys.version_info < (3, 10):
         print("BeyondSEO needs Python 3.10 or newer. Python 3.12 is recommended.", file=sys.stderr)
         return 2
@@ -64,7 +65,7 @@ def main():
         subprocess.run([*command, str(project) + suffix], check=True, timeout=300)
         # Optional downloads must not discard a usable base engine. Read extras
         # from this same local project so dependency constraints have one owner.
-        for extra in ["reports"] + ([] if args.http_only else ["browser"]):
+        for extra in ["reports"] + (["browser"] if wants_browser else []):
             try:
                 subprocess.run([*command, f"{project}[{extra}]"], check=True, timeout=300)
                 if extra == "browser":
@@ -95,11 +96,13 @@ def main():
     # Use the entry point through Python: executable-bit restrictions on scripts
     # are distinct from restrictions on the selected Python runtime itself.
     doctor_command = [str(python), str(root / "scripts/run.py"), "--runtime", str(env), "doctor"]
-    if args.http_only or "browser" in optional_errors:
+    if not wants_browser or "browser" in optional_errors:
         doctor_command.append("--no-browser")
     try:
         checked = subprocess.run(doctor_command, capture_output=True, text=True, timeout=60)
     except subprocess.TimeoutExpired:
+        if "--no-browser" in doctor_command:
+            raise
         optional_errors["browser"] = (
             "Browser diagnostic timed out after 60 seconds; rendering remains unverified."
         )
@@ -129,7 +132,7 @@ def main():
         )
         return 1
     browser_ready = bool(readiness.get("browser_ready"))
-    if not args.http_only and not browser_ready:
+    if wants_browser and not browser_ready:
         failure = readiness.get("checks", {}).get("browser_runtime", {}).get("failure")
         print(
             "HTTP engine ready; browser rendering not verified. "
@@ -154,6 +157,8 @@ def main():
         "Check again: "
         + shell_command([*command, "doctor", *([] if browser_ready else ["--no-browser"])])
     )
+    if not browser_ready:
+        print("Optional JavaScript rendering: " + shell_command([*command, "browser-setup"]))
     print("Skill registration is separate; confirm BeyondSEO in your assistant's skill list.")
     return 0
 

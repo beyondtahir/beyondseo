@@ -1,8 +1,10 @@
 # Changelog
 
-## Unreleased — Easier setup and a way forward when a site won't load
+## 2.12.0 — Easier setup and a way forward when a site won't load
 
-- Set up the basic crawler first. If optional Chromium or PDF setup fails, the crawler can still read initial HTML. Use `--http-only` to skip Chromium and `doctor --no-browser` to check HTTP readiness on its own.
+25 November 2026
+
+- Set up the basic crawler first. If optional Chromium or PDF setup fails, the crawler can still read initial HTML. The default setup skips Chromium. Add it with `--with-browser` or `browser-setup` for automatic JavaScript rendering.
 - Report when a target's address lookup fails with a proxy configured. Keep the original error and destination safety checks. This builds on the community report in [PR #11](https://github.com/beyondtahir/beyondseo/pull/11).
 - Continue with public HTML or actual page text captured by a permitted browser or page opener. Imported pages keep their source, date and coverage limits. Text alone supports content review.
 - Give Claude Code, Claude Desktop and ChatGPT Work separate installation steps. Check the save, file access and crawler separately. If Work cannot resolve a site, the skill tries a browser Work can already use and continues with the pages it actually reads.

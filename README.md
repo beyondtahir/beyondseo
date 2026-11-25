@@ -81,7 +81,7 @@ python3 scripts/setup.py
 python3 scripts/run.py crawl https://example.com --include-www --out ../client-runs/example
 ```
 
-Setup prepares the local crawler first, then attempts the optional PDF renderer and Chromium. For a quick start without Chromium, add `--http-only`. If you need JavaScript rendering, check browser readiness before the audit. On Windows use `py -3` instead of `python3`. No virtualenv activation or execution-policy change is needed. Open `report.md`, `readiness.md` and `coverage.json` in your output folder.
+Setup installs the crawler without downloading Chromium. For automatic JavaScript rendering, add `--with-browser` or run `python3 scripts/run.py browser-setup` later. On Windows use `py -3` instead of `python3`. Open `report.md`, `readiness.md` and `coverage.json` in your output folder.
 
 For a supported local assistant, run the matching installer from the checkout, for example:
 
@@ -384,6 +384,10 @@ Ask BeyondSEO to apply the agreed on-site plan through your agent's available ed
 <summary><strong>What's in recent releases</strong></summary>
 
 ## What's New
+
+### Easier setup, even when a site won't load
+
+**New in 2.12:** the basic crawler starts without a Chromium download. For a site that needs JavaScript, BeyondSEO can use a browser your assistant already has access to, or you can add local browser support for unattended jobs. If the workspace's crawler can't reach a site, BeyondSEO can continue from public pages its tools can open and tell you exactly what it could check.
 
 ### Meet your more capable SEO house
 

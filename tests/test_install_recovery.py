@@ -75,9 +75,20 @@ class SetupRecoveryTests(unittest.TestCase):
             code = setup.main()
         return code, stdout.getvalue(), stderr.getvalue(), calls
 
+    def test_default_setup_skips_browser_install_and_probes(self):
+        code, stdout, stderr, calls = self.run_setup(doctor_exit=0)
+        self.assertEqual(code, 0)
+        self.assertIn("HTTP mode", stdout)
+        self.assertIn("browser-setup", stdout)
+        self.assertNotIn("Optional browser setup failed", stderr)
+        self.assertFalse(any("playwright" in command for command, _ in calls))
+        self.assertTrue(
+            all("--no-browser" in command for command, _ in calls if "doctor" in command)
+        )
+
     def test_browser_download_failure_keeps_http_engine_usable(self):
         error = subprocess.CalledProcessError(1, ["python", "-m", "playwright"])
-        code, stdout, stderr, calls = self.run_setup(browser_error=error)
+        code, stdout, stderr, calls = self.run_setup(["--with-browser"], browser_error=error)
         self.assertEqual(code, 0)
         self.assertIn("HTTP mode", stdout)
         self.assertNotIn("HTTP and browser mode", stdout)
@@ -91,7 +102,8 @@ class SetupRecoveryTests(unittest.TestCase):
 
     def test_optional_browser_timeout_is_bounded_and_nonfatal_to_http(self):
         code, _, stderr, calls = self.run_setup(
-            browser_error=subprocess.TimeoutExpired(["python", "-m", "playwright"], 180)
+            ["--with-browser"],
+            browser_error=subprocess.TimeoutExpired(["python", "-m", "playwright"], 180),
         )
         self.assertEqual(code, 0)
         self.assertIn("TimeoutExpired", stderr)
@@ -107,7 +119,7 @@ class SetupRecoveryTests(unittest.TestCase):
         self.assertIn("Optional reports setup failed", stderr)
 
     def test_hung_browser_diagnostic_falls_back_to_http_diagnostic(self):
-        code, _, stderr, calls = self.run_setup(doctor_timeout=True)
+        code, _, stderr, calls = self.run_setup(["--with-browser"], doctor_timeout=True)
         self.assertEqual(code, 0)
         self.assertIn("Browser diagnostic timed out", stderr)
         probes = [command for command, _ in calls if "doctor" in command]

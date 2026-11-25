@@ -17,7 +17,7 @@ Developer tests, Git history, virtual environments, caches and client run folder
 | Install the local skill | Copies the bundle into the chosen skill folder; writes a checksum receipt | No network unless `--setup` is explicitly included; no host settings are changed |
 | Set up the crawler | Creates the selected virtualenv and installs the local Python package | Python package downloads; optional Playwright and Chromium downloads |
 | Run `doctor` | Checks package versions | Launches local Chromium when installed; optional `--target` / `--query` perform bounded network probes |
-| Set up missing browser support | Checks the current runtime; installs missing Playwright/Chromium only when `browser-setup` is requested | Official package/browser downloads and a local launch check; no permission changes |
+| Set up missing browser support | Checks the current runtime; installs missing Playwright/Chromium only when `browser-setup` or an explicit browser setup flag is requested | Official package/browser downloads and a local launch check; no permission changes |
 | Crawl a website | Reads the requested HTTP(S) site and bounded sitemap/page links; writes reports to the chosen output folder | Public network requests; optional JavaScript rendering and public page dependencies |
 | Discover candidates | Writes queries, source leads, response snapshots and provenance | Optional public native search; host results and offline imports also supported |
 | Check backlinks | Reads supplied/discovered source pages and verifies observed links | Public HTTP(S) requests within configured limits |
