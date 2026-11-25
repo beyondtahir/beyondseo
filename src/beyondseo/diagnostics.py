@@ -59,6 +59,10 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
         code = "unsupported_proxy_configuration"
     elif "dns_resolution_failed_with_proxy_configured" in lower:
         code = "dns_failure_proxy_configured"
+    elif "private_or_nonpublic_address" in lower:
+        # At least one resolved address was non-public, so the destination
+        # guard withheld the request even if another answer was public.
+        code = "destination_not_public"
     elif "robots_rule_disallowed" in lower:
         code = "robots_restricted"
     elif lower.startswith("robots_"):
