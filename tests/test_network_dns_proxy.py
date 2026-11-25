@@ -130,5 +130,46 @@ class FailureDetailProxyDnsTests(unittest.TestCase):
         self.assertIn("Reinstalling Chromium does not repair", target["remediation"])
 
 
+class NonpublicAddressClassificationTests(unittest.TestCase):
+    def test_nonpublic_answer_raises_the_named_guard_error(self):
+        info = (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("198.18.0.5", 443))
+        with patch("beyondseo.network.socket.getaddrinfo", return_value=[info]):
+            with self.assertRaises(ValueError) as caught:
+                addresses("https://example.com/")
+        self.assertIn("private_or_nonpublic_address", str(caught.exception))
+
+    def test_nonpublic_address_classifies_as_destination_not_public(self):
+        detail = failure_detail("ValueError: private_or_nonpublic_address")
+        self.assertIsNotNone(detail)
+        self.assertEqual(detail["code"], "destination_not_public")
+        self.assertEqual(detail["cause"], "destination_not_public")
+
+    def test_nonpublic_address_is_not_classified_as_a_dns_failure(self):
+        detail = failure_detail("ValueError: private_or_nonpublic_address")
+        self.assertNotIn(detail["code"], ("dns_failure", "dns_failure_proxy_configured", "unknown"))
+        dns_detail = failure_detail("Temporary failure in name resolution")
+        self.assertEqual(dns_detail["code"], "dns_failure")
+        self.assertNotEqual(detail["code"], dns_detail["code"])
+
+    def test_doctor_reports_nonpublic_destination_by_name(self):
+        from beyondseo.doctor import check_environment
+
+        stdout = io.StringIO()
+        with (
+            tempfile.TemporaryDirectory() as folder,
+            patch(
+                "beyondseo.network.addresses",
+                side_effect=ValueError("private_or_nonpublic_address"),
+            ),
+            contextlib.redirect_stdout(stdout),
+        ):
+            code = check_environment("https://example.com", out=folder, check_browser=False)
+        target = json.loads(stdout.getvalue())["checks"]["target_reachable"]
+        self.assertEqual(code, 1)
+        self.assertEqual(target["status"], "destination_not_public")
+        self.assertEqual(target["failure"]["code"], "destination_not_public")
+        self.assertIn("private_or_nonpublic_address", target["failure"]["evidence"])
+
+
 if __name__ == "__main__":
     unittest.main()
