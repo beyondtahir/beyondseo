@@ -138,6 +138,15 @@ class NonpublicAddressClassificationTests(unittest.TestCase):
                 addresses("https://example.com/")
         self.assertIn("private_or_nonpublic_address", str(caught.exception))
 
+    def test_guard_rejects_mixed_public_and_nonpublic_answers(self):
+        public = (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+        nonpublic = (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("198.18.0.5", 443))
+        with (
+            patch("beyondseo.network.socket.getaddrinfo", return_value=[public, nonpublic]),
+            self.assertRaisesRegex(ValueError, "private_or_nonpublic_address"),
+        ):
+            addresses("https://example.com/")
+
     def test_nonpublic_address_classifies_as_destination_not_public(self):
         detail = failure_detail("ValueError: private_or_nonpublic_address")
         self.assertIsNotNone(detail)

@@ -60,10 +60,8 @@ def failure_detail(error="", *, status=0, headers=None, body=b"", context="netwo
     elif "dns_resolution_failed_with_proxy_configured" in lower:
         code = "dns_failure_proxy_configured"
     elif "private_or_nonpublic_address" in lower:
-        # Resolution answered, but every address was non-public (private,
-        # loopback, or a synthetic address from an intercepting proxy), so
-        # the destination guard withheld the connection. The local answer
-        # itself establishes this; it is not a DNS failure.
+        # At least one resolved address was non-public, so the destination
+        # guard withheld the request even if another answer was public.
         code = "destination_not_public"
     elif "robots_rule_disallowed" in lower:
         code = "robots_restricted"
